@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.border-b-2 {
+    border-bottom-width: 1.5px;
+}
+
+body {
+    color:rgb(49, 52, 58);
+}
