@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <h1 class="m-2">Chats</h1>
+        <p>Leyendo los mensajes del chat en tiempo real</p>
+    
+        <form action="#" id="form-chat" class="col-8">
+            <div class="mb-3">
+                <label for="user" class="form-label">Usuario</label>
+                <input type="text" id="user" class="form-control">
+            </div>
+    
+            <div class="mb-3">
+                <label for="message" class="form-label">Mensaje</label>
+                <textarea id="message" cols="30" rows="6" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary mb-3">Enviar</button>
+        </form>
+    
+        <div id="salida"></div>
+
+    </div>
+    </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
