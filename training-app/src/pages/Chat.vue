@@ -34,9 +34,9 @@ export default {
 </script>
 
 <template> 
-    <h1 class="text-2xl bg-gray-900 text-white p-3">Chat</h1>
+    <h1 class="bg-indigo-500 text-white p-3">Chat</h1>
 
-    <div class="container p-3">
+    <div class="container p-2 mx-auto">
         
         <p class="mb-4">¿Dudas o consultas? Chateá con nosotros y podemos ayudarte.</p>
 
@@ -52,7 +52,7 @@ export default {
         @submit.prevent="sendMessage"
         id="form-chat" 
         class="col-8">
-        
+
             <div class="mt-6">
                 <div class="flex space-x-4">
                     <label for="user" class="text-sm block font-bold">Usuario</label>
@@ -68,7 +68,7 @@ export default {
                     </div>
                 </div>
             </div>
-            <div class="mb-3 mt-3">
+            <div class="mb-2 mt-3">
                 <label for="message"></label>
                 <div class="mt-2 flex">
                     <textarea 
