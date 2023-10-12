@@ -6,7 +6,12 @@ import BaseLabel from '../components/BaseLabel.vue';
 
 export default {
     name: 'Login',
-    components: { BaseButton, BaseLabel, BaseInput }
+    components: { BaseButton, BaseLabel, BaseInput },
+    data() {
+        return {
+           
+        }
+    }
 }
 
 </script>
@@ -33,6 +38,7 @@ export default {
                 
             />
         </div>
-        <BaseButton>Ingresar</BaseButton>
+        <BaseButton
+        >Ingresar</BaseButton>
     </form>
 </template>

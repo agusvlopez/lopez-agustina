@@ -5,13 +5,16 @@ import BaseButton from "../components/BaseButton.vue";
 import BaseLabel from "../components/BaseLabel.vue";
 import BaseInput from "../components/BaseInput.vue";
 import BaseTextarea from "../components/BaseTextarea.vue";
+import Loader from "../components/Loader.vue";
 
 export default {
     name: "Chat",
-    components: { BaseButton, BaseLabel, BaseInput, BaseTextarea },
+    components: { BaseButton, BaseLabel, BaseInput, BaseTextarea, Loader },
     data() {
         return {
+            messagesLoading: true,
             messages: [],
+            newMessageSaving: false,
             newMessage: {
                 user: '',
                 message: ''
@@ -20,6 +23,9 @@ export default {
     },
     methods: {
         sendMessage() {
+            if(this.newMessageSaving) return;
+
+            this.newMessageSaving = true;
             chatSaveMessage({
                 user: this.newMessage.user,
                 message: this.newMessage.message
@@ -27,6 +33,7 @@ export default {
             })
                 .then(() => {
                 this.newMessage.message = '';
+                this.newMessageSaving = false;
             });
         },
         formatDate(data) {
@@ -34,8 +41,10 @@ export default {
         }
     },
     mounted() {
+        this.messagesLoading = true;
         chatSubscribeToMessages(messages => {
             this.messages = messages;
+            this.messagesLoading = false;
         });
     },
 };
@@ -49,6 +58,8 @@ export default {
         
         <p class="mb-4">¿Dudas o consultas? Chateá con nosotros y podemos ayudarte.</p>
 
+        <template
+        v-if="!messagesLoading">
         <div>
             <div v-for="message in messages"
             :key="message.id"
@@ -59,7 +70,11 @@ export default {
                 <div class="text-right">{{ formatDate(message.created_at) }}</div>
             </div>
         </div>
-    
+    </template>
+    <template
+    v-else>
+        <Loader></Loader>
+    </template>
         <form 
         action="#" 
         @submit.prevent="sendMessage"
@@ -86,7 +101,9 @@ export default {
                     <BaseTextarea
                     id="message" 
                     v-model="newMessage.message"></BaseTextarea> 
-                    <BaseButton />
+                    <BaseButton 
+                        :loading="newMessageSaving"
+                    />
                     </div>
             </div>
            
