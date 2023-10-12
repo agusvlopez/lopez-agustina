@@ -1,5 +1,6 @@
 <script>
 import {chatSubscribeToMessages, chatSaveMessage} from "../services/chat";
+import { dateToString } from "../helpers/date";
 
 export default {
     name: "Chat",
@@ -22,6 +23,9 @@ export default {
             .then(() => {
                 this.newMessage.message = '';
             });
+        },
+        formatDate(data){
+            return dateToString(data);
         }
     },
     mounted() {
@@ -41,9 +45,13 @@ export default {
         <p class="mb-4">¿Dudas o consultas? Chateá con nosotros y podemos ayudarte.</p>
 
         <div>
-            <div v-for="message in messages">
+            <div v-for="message in messages"
+            :key="message.id"
+            class="mb-2"
+            >
                 <div><b>Usuario:</b> {{ message.user }}</div>
                 <div><b>Mensaje:</b> {{ message.message }}</div>
+                <div class="text-right">{{ formatDate(message.created_at) }}</div>
             </div>
         </div>
     
