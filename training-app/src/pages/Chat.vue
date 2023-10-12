@@ -1,9 +1,14 @@
 <script>
 import {chatSubscribeToMessages, chatSaveMessage} from "../services/chat";
 import { dateToString } from "../helpers/date";
+import BaseButton from "../components/BaseButton.vue";
+import BaseLabel from "../components/BaseLabel.vue";
+import BaseInput from "../components/BaseInput.vue";
+import BaseTextarea from "../components/BaseTextarea.vue";
 
 export default {
     name: "Chat",
+    components: { BaseButton, BaseLabel, BaseInput, BaseTextarea },
     data() {
         return {
             messages: [],
@@ -11,7 +16,7 @@ export default {
                 user: '',
                 message: ''
             }
-        }
+        };
     },
     methods: {
         sendMessage() {
@@ -20,11 +25,11 @@ export default {
                 message: this.newMessage.message
                 // ...this.newMessage,
             })
-            .then(() => {
+                .then(() => {
                 this.newMessage.message = '';
             });
         },
-        formatDate(data){
+        formatDate(data) {
             return dateToString(data);
         }
     },
@@ -63,29 +68,26 @@ export default {
 
             <div class="mt-6">
                 <div class="flex space-x-4">
-                    <label for="user" class="text-sm block font-bold">Usuario</label>
+                    <BaseLabel for="user" class="text-sm">Usuario</BaseLabel>
                     <div >
                    
-                        <input 
+                        <BaseInput 
                         type="text" 
-                        id="user" 
-                        class="mb-3 border-b-2 border-gray-500 px-3 focus:outline-none focus:border-indigo-600 flex-grow" 
+                        id="user"  
                         v-model="newMessage.user"
-                        >
+                        />
                     
                     </div>
                 </div>
             </div>
             <div class="mb-2 mt-3">
-                <label for="message"></label>
+                <BaseLabel for="message" class="text-sm"></BaseLabel>
                 <div class="mt-2 flex">
-                    <textarea 
+                    <BaseTextarea
                     id="message" 
-                    rows="1" 
-                    class="w-full border border-gray-300 p-2 focus:outline-none focus:border-blue-500" placeholder="Escribe tu mensaje..."
-                    v-model="newMessage.message"></textarea> 
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 hover:bg-indigo-600 focus:outline-none">Enviar</button>
-                </div>
+                    v-model="newMessage.message"></BaseTextarea> 
+                    <BaseButton />
+                    </div>
             </div>
            
         </form>
