@@ -7,6 +7,7 @@
 
 export function dateToString(date){
 
+    
     const dateFormatter = new Intl.DateTimeFormat('es-AR', {
         //que reglas quiero que tenga
         month: '2-digit',

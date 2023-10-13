@@ -1,9 +1,29 @@
 <script>
 import Chat from './pages/Chat.vue';
+import { subscribeToAuth, logout } from './services/auth.js';
 
 export default {
     name: "App",
-    components: {Chat}
+    components: {Chat},
+    data() {
+        return {
+            user: {
+                id: null,
+                email: null
+            }
+        }
+    },
+    methods:  {
+        handleLogout(){
+           logout();
+        }
+    },
+    mounted() {
+        subscribeToAuth(user => {
+            this.user = {...user};
+        });
+
+    }
 };
 
 </script>
@@ -24,45 +44,40 @@ export default {
                 <li>
                     <router-link to="/chat">Chat</router-link>
                 </li>
-                <li>
-                    <router-link to="/iniciar-sesion">Iniciar sesión</router-link>
-                </li>
+
+            <template
+            v-if="user.id === null"
+            >
                 <li>
                     <router-link to="/registro">Registrarse</router-link>
                 </li>
-            <!-- <template v-if="user.id === null">
+                <li>
+                    <router-link to="/iniciar-sesion">Iniciar sesión</router-link>
+                </li>
+            </template>
 
+            <template
+            v-else
+            >
+                <li>
+                    <router-link to="/registro">Mi perfil</router-link>
+                </li>
+                <li>
+                <form action=""
+                @submit.prevent="handleLogout">
+                    <button type="submit">{{user.email}} (Cerrar sesión)</button>
+                </form>
+                </li>
+            </template>
 
-                <li>
-                    <router-link to="/registro">Registro</router-link>
-                </li>
-                <li>
-                    <router-link to="/iniciar-sesion">Iniciar Sesión</router-link>
-                </li>
-            </template> -->
-
-            <!-- <template v-else>
-                <li>
-                    <router-link to="/chat">Chat</router-link>
-                </li>
-                <li>
-                    <router-link to="/perfil">Mi perfil</router-link>
-                </li>
-                <li>
-                    <form action=""
-                    @submit.prevent="handleLogout">
-                        <button type="submit">
-                            <b>{{user.email}}</b> (Cerrar sesión)</button>
-                    </form>
-                </li>
-            </template> -->
             </ul>
         </nav>
     </header>
 
     <div class="h-full">
         <!-- <Chat></Chat> -->
-        <router-view></router-view>
+        <router-view></router-view>     
+      
     </div>
     
     <footer class="flex justify-center items-center h-[100px] bgNav text-white">
