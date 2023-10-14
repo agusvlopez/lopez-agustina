@@ -16,6 +16,7 @@ export default {
     methods:  {
         handleLogout(){
            logout();
+           this.$router.push('/iniciar-sesion');
         }
     },
     mounted() {

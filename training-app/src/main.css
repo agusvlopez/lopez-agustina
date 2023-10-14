@@ -24,6 +24,7 @@ h1 {
     background-color: #0F0F0F;
 }
 
+/* Loader normal */
 .loader {
     width: 30px;
     height: 30px;
@@ -47,7 +48,33 @@ h1 {
   .loader::after {
     animation-delay: 1s;
   }
+ 
   
+/* Loader mini */
+.loader-sm {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  position: relative;
+}
+.loader-sm::after,
+.loader-sm::before {
+  content: '';  
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #5e5e5e;
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: animloader 2s linear infinite;
+  
+}
+.loader-sm::after {
+  animation-delay: 1s;
+}
+
   @keyframes animloader {
     0% {
       transform: scale(0);

@@ -1,4 +1,4 @@
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from './firebase.js';
 
 let userData = {
@@ -27,6 +27,27 @@ onAuthStateChanged(auth, user => {
         }
     
 });
+
+/**
+* @param {{email: string, password: string}} user 
+* @return {Promise}
+ */
+export async function register({email, password}) {
+    try {
+       const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+
+        return {
+            id: userCredentials.user.uid,
+            email: userCredentials.user.email,
+        }  
+    } catch (error) {
+        return {
+            code: error.code,
+            message: error.message,
+        }
+    }
+   
+}
 
 /**
 * Iniciar sesión

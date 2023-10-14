@@ -26,8 +26,7 @@ export default {
                 ...this.form,
             })
             .then(user => {
-                // console.log("user: ", user);
-                this.$emit('login', {...user});
+                this.$router.push('/');
             })
             .finally(() => {
                 this.loginLoading = false;
@@ -49,6 +48,7 @@ export default {
         <div class="mb-3">
             <BaseLabel for="email">Email</BaseLabel>
             <BaseInput
+                :disabled="loginLoading"
                 type="email" 
                 id="email"
                 v-model="form.email"
@@ -57,12 +57,14 @@ export default {
         <div class="mb-3">
             <BaseLabel for="password">Contraseña</BaseLabel>
             <BaseInput
+                :disabled="loginLoading"
                 type="password" 
                 id="password"
                 v-model="form.password"
             />
         </div>
         <BaseButton
+        :loading="loginLoading"
         >Ingresar</BaseButton>
     </form>
 </template>
