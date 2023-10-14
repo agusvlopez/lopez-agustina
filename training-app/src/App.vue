@@ -41,9 +41,7 @@ export default {
                 <li>
                     <router-link to="/precios">Precios de los planes</router-link>
                 </li>
-                <li>
-                    <router-link to="/chat">Chat</router-link>
-                </li>
+
 
             <template
             v-if="user.id === null"
@@ -60,7 +58,10 @@ export default {
             v-else
             >
                 <li>
-                    <router-link to="/registro">Mi perfil</router-link>
+                    <router-link to="/chat">Chat</router-link>
+                </li>
+                <li>
+                    <router-link to="/perfil">Mi perfil</router-link>
                 </li>
                 <li>
                 <form action=""

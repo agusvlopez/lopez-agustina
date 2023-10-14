@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from './firebase.js';
 
 let userData = {
@@ -7,6 +7,26 @@ let userData = {
 }
 //definimos la lista de observers
 let observers = [];
+
+//Si el usuario figuraba como autenitcado, lo marcamos como tal inmediatamente
+if(localStorage.getItem('user')){
+    userData = JSON.parse(localStorage.getItem('user'));
+}
+
+onAuthStateChanged(auth, user => {
+    if(user) {
+        setUserData({
+            id: user.uid,
+            email: user.email,
+        });
+        localStorage.setItem('user', JSON.stringify(userData));
+
+        }else {
+            clearUserData();
+            localStorage.removeItem('user');
+        }
+    
+});
 
 /**
 * Iniciar sesión
@@ -17,11 +37,6 @@ let observers = [];
 export function login({email, password}){
     return signInWithEmailAndPassword(auth, email, password)
     .then(userCredentials => {
-
-        setUserData({
-            id: userCredentials.user.uid,
-            email: userCredentials.user.email,
-        });
 
         return {...userData};
     })
@@ -55,14 +70,20 @@ export function logout(){
  * El observer debe ser una función que reciba como argumento un objeto y no retorne nada
  * 
  * @param {({id: null|string, email: null|string}) => void} observer
+ * @return {() => void} Función para cancelar la suscripción
  */
 export function subscribeToAuth(observer){
-
+   
     //agrego el observer a la lista de observers
     observers.push(observer);
-
+ console.log("cantidad de observers: ", observers.length);
     //Ejecutamos el observer inmediatamente con la data actual
     notify(observer);
+
+    return () => {
+        observers = observers.filter(obs => obs !== observer);
+        console.log("cantidad de observers removidos: ", observers.length);
+    }
 }
 
 /**
@@ -79,6 +100,7 @@ function notifyAll() {
  */
 function notify(observer){
     //ejecuta el observer y le pasa la data
+    //siempre pasamos una copia del objeto
     observer({...userData});
 }
 

@@ -6,6 +6,7 @@ import BaseLabel from "../components/BaseLabel.vue";
 import BaseInput from "../components/BaseInput.vue";
 import BaseTextarea from "../components/BaseTextarea.vue";
 import Loader from "../components/Loader.vue";
+import { subscribeToAuth } from "../services/auth";
 
 export default {
     name: "Chat",
@@ -16,9 +17,14 @@ export default {
             messages: [],
             newMessageSaving: false,
             newMessage: {
-                user: '',
                 message: ''
-            }
+            },
+            user: {
+                id: null,
+                email: null
+            },
+            unsubscribeAuth: () => {},
+            unsubscribeChat: () => {},
         };
     },
     methods: {
@@ -27,7 +33,7 @@ export default {
 
             this.newMessageSaving = true;
             chatSaveMessage({
-                user: this.newMessage.user,
+                user: this.user.email,
                 message: this.newMessage.message
                 // ...this.newMessage,
             })
@@ -42,11 +48,17 @@ export default {
     },
     mounted() {
         this.messagesLoading = true;
-        chatSubscribeToMessages(messages => {
+        this.unsubscribeChat = chatSubscribeToMessages(messages => {
             this.messages = messages;
             this.messagesLoading = false;
         });
+        this.unsubscribeAuth  = subscribeToAuth(newUser => this.user = {...newUser});
+    
     },
+    unmounted() {
+        this.unsubscribeChat();
+        this.unsubscribeAuth();
+    }
 };
 
 </script>
@@ -83,16 +95,8 @@ export default {
 
             <div class="mt-6">
                 <div class="flex space-x-4">
-                    <BaseLabel for="user" class="text-sm">Usuario</BaseLabel>
-                    <div >
-                   
-                        <BaseInput 
-                        type="text" 
-                        id="user"  
-                        v-model="newMessage.user"
-                        />
-                    
-                    </div>
+                    <div class="text-sm">Usuario</div>
+                    <div>{{ user.email }}</div>
                 </div>
             </div>
             <div class="mb-2 mt-3">
