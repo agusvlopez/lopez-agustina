@@ -3,6 +3,11 @@ import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy } from 
 
 const refChat = collection(db, 'chats');
 
+/**
+ * Guarda un nuevo mensaje de chat (documento) en la colección chats con la data correspondiente incluyendo la fecha y hora que se publicó. 
+ * @param {{}} data 
+ * @returns {Promise}
+ */
 export function chatSaveMessage(data){
     return addDoc(refChat, {
         ...data,
@@ -25,6 +30,7 @@ export function chatSubscribeToMessages(callback) {
             
          return {
             id: doc.id,
+            userId: doc.data().userId,
             user: doc.data().user,
             message: doc.data().message,
             created_at: doc.data().created_at.toDate(),

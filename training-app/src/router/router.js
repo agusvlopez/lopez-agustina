@@ -3,7 +3,8 @@ import Home from './../pages/Home.vue';
 import Login from './../pages/Login.vue';
 import Pricing from './../pages/Pricing.vue';
 import Register from './../pages/Register.vue';
-import Profile from './../pages/Profile.vue';
+import MyProfile from './../pages/MyProfile.vue';
+import UserProfile from './../pages/UserProfile.vue';
 import {createRouter, createWebHashHistory} from 'vue-router';
 import { subscribeToAuth } from '../services/auth';
 
@@ -14,7 +15,8 @@ const routes = [
     {path: '/chat', component: Chat,   meta: { requiresAuth: true },},   
     {path: '/iniciar-sesion', component: Login},  
     {path: '/registro', component: Register},  
-    {path: '/perfil', component: Profile,   meta: { requiresAuth: true },},  
+    {path: '/perfil', component: MyProfile,   meta: { requiresAuth: true },},
+    {path: '/usuario/:id', component: UserProfile,   meta: { requiresAuth: true },},  
 ]
 
 const router = createRouter({

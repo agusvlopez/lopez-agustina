@@ -33,6 +33,7 @@ export default {
 
             this.newMessageSaving = true;
             chatSaveMessage({
+                userId: this.user.id,
                 user: this.user.email,
                 message: this.newMessage.message
                 // ...this.newMessage,
@@ -49,6 +50,7 @@ export default {
     mounted() {
         this.messagesLoading = true;
         this.unsubscribeChat = chatSubscribeToMessages(messages => {
+            console.log(this.messages);
             this.messages = messages;
             this.messagesLoading = false;
         });
@@ -77,7 +79,15 @@ export default {
             :key="message.id"
             class="mb-2"
             >
-                <div><b>Usuario:</b> {{ message.user }}</div>
+                <div>
+                    <b>Usuario: </b>
+                    <router-link 
+                    class="transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800" 
+                    :to="`/usuario/${message.userId}`"
+                    > 
+                    {{ message.user }} 
+                    </router-link>
+                </div>
                 <div><b>Mensaje:</b> {{ message.message }}</div>
                 <div class="text-right">{{ formatDate(message.created_at) }}</div>
             </div>

@@ -1,11 +1,11 @@
 <script>
 
     export default {
-        name: 'Profile',
+        name: 'UserProfile',
     }
 
 </script>
 
 <template>
-    <h1>Mi perfil</h1>
+    <h1>Perfil de...</h1>
 </template>
