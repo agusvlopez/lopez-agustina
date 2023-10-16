@@ -5,18 +5,20 @@ import Pricing from './../pages/Pricing.vue';
 import Register from './../pages/Register.vue';
 import MyProfile from './../pages/MyProfile.vue';
 import UserProfile from './../pages/UserProfile.vue';
+import PrivateChat from './../pages/PrivateChat.vue';
 import {createRouter, createWebHashHistory} from 'vue-router';
 import { subscribeToAuth } from '../services/auth';
 
 //Defino la lista de rutas
 const routes = [
-    {path: '/', component: Home},
-    {path: '/precios', component: Pricing},
-    {path: '/chat', component: Chat,   meta: { requiresAuth: true },},   
-    {path: '/iniciar-sesion', component: Login},  
-    {path: '/registro', component: Register},  
-    {path: '/perfil', component: MyProfile,   meta: { requiresAuth: true },},
-    {path: '/usuario/:id', component: UserProfile,   meta: { requiresAuth: true },},  
+    {path: '/',                 component: Home},
+    {path: '/precios',          component: Pricing},
+    {path: '/chat',             component: Chat,            meta: { requiresAuth: true },},   
+    {path: '/iniciar-sesion',   component: Login},  
+    {path: '/registro',         component: Register},  
+    {path: '/perfil',           component: MyProfile,       meta: { requiresAuth: true },},
+    {path: '/usuario/:id',      component: UserProfile,     meta: { requiresAuth: true },},  
+    {path: '/usuario/:id/chat', component: PrivateChat,     meta: { requiresAuth: true },},  
 ]
 
 const router = createRouter({

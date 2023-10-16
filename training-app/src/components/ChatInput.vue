@@ -1,6 +1,6 @@
 <script>
 export default {
-    name: 'BaseInput',
+    name: 'ChatInput',
 
     props: ['modelValue'],
     emits: ['update:modelValue']
@@ -11,6 +11,7 @@ export default {
         <input 
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
-        class="mb-3 border-b-2 border-gray-400 px-3 focus:outline-none focus:border-indigo-600 flex-grow disabled:bg-gray-100 disabled:text-gray-500" 
+        class="flex-1 rounded-full p-2 focus:outline-none" 
+        placeholder="Escribe tu mensaje..."
         >
 </template>

@@ -7,10 +7,11 @@ import BaseInput from "../components/BaseInput.vue";
 import BaseTextarea from "../components/BaseTextarea.vue";
 import Loader from "../components/Loader.vue";
 import { subscribeToAuth } from "../services/auth";
+import ChatInput from "../components/ChatInput.vue";
 
 export default {
     name: "Chat",
-    components: { BaseButton, BaseLabel, BaseInput, BaseTextarea, Loader },
+    components: { BaseButton, BaseLabel, BaseInput, BaseTextarea, Loader, ChatInput },
     data() {
         return {
             messagesLoading: true,
@@ -66,12 +67,10 @@ export default {
 </script>
 
 <template> 
-    <h1 class="bg-indigo-500 text-white p-3">Chat</h1>
-
-    <div class="container p-2 mx-auto">
-        
-        <p class="mb-4">¿Dudas o consultas? Chateá con nosotros y podemos ayudarte.</p>
-
+    
+    <div class="bg-white rounded-lg shadow-md  max-w-xl mx-auto mt-4">
+    <h1 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-2">Chat</h1>
+    <div class="p-4">
         <template
         v-if="!messagesLoading">
         <div>
@@ -104,25 +103,28 @@ export default {
         class="col-8">
 
             <div class="mt-6">
-                <div class="flex space-x-4">
-                    <div class="text-sm">Usuario</div>
-                    <div>{{ user.email }}</div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm font-bold">Usuario: </div>
+                    <div class="text-sm">{{ user.email }}</div>
                 </div>
             </div>
             <div class="mb-2 mt-3">
                 <BaseLabel for="message" class="text-sm"></BaseLabel>
                 <div class="mt-2 flex">
-                    <BaseTextarea
+                    <ChatInput
                     id="message" 
-                    v-model="newMessage.message"></BaseTextarea> 
-                    <BaseButton 
-                        :loading="newMessageSaving"
-                    />
-                    </div>
+                    v-model="newMessage.message"
+                    class="shadow"
+                    ></ChatInput> 
+                    <BaseButton class="rounded-full p-3 ml-2"
+                    :loading="newMessageSaving"
+                    ></BaseButton>
+            
+                </div>
             </div>
            
         </form>
-
+    </div>
     </div>
 
 </template>
