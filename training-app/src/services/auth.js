@@ -1,5 +1,6 @@
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from './firebase.js';
+import { createUserProfile } from './user.js';
 
 let userData = {
     id: null,
@@ -35,6 +36,9 @@ onAuthStateChanged(auth, user => {
 export async function register({email, password}) {
     try {
        const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+
+       //Registro el perfil del usuario tambien en Firestore
+       createUserProfile(userCredentials.user.uid, {email});
 
         return {
             id: userCredentials.user.uid,
