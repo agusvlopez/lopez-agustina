@@ -89,11 +89,12 @@ export default {
                 }"
             >
                 <div 
-                class= "text-white rounded-lg p-2"
+                class= "rounded-lg p-2"
                 :class="{
                     'bg-gray-200': message.senderId !== authUser.id,
                     'text-gray-700': message.senderId !== authUser.id,
-                    'bg-indigo-500': message.senderId === authUser.id,    
+                    'bg-indigo-500': message.senderId === authUser.id, 
+                    'text-white':  message.senderId === authUser.id,
                 }"
                 >
                     {{ message.message }}

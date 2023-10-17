@@ -13,7 +13,10 @@ const privateChatCache = {};
  */
 export async function sendPrivateChatMessage({senderId, receiverId, message}) {
     
-    const messagesRef = getMessageRef({senderId, receiverId});
+    const privateChatDoc = await getPrivateChatDoc({senderId,receiverId});
+    
+    //Creo la referencia a la collection de messages.
+    const messagesRef = collection(db, `private-chats/${privateChatDoc.id}/messages`);
 
     await addDoc(messagesRef,{
         senderId,
@@ -33,12 +36,16 @@ export async function sendPrivateChatMessage({senderId, receiverId, message}) {
  */
 export async function subscribeToPrivateChat({senderId, receiverId}, callback){
 
-    const messagesRef = getMessageRef({senderId, receiverId});
+    const privateChatDoc = await getPrivateChatDoc({senderId,receiverId});
+    
+    //Creo la referencia a la collection de messages.
+    const messagesRef = collection(db, `private-chats/${privateChatDoc.id}/messages`);
+
     const q = query(
         messagesRef,
         orderBy('created_at')
     );
-
+        debugger;
     return onSnapshot(q, snapshot => {
         const messages = snapshot.docs.map(doc => {
             return {
@@ -92,18 +99,19 @@ async function getPrivateChatDoc({senderId, receiverId}){
      return privateChatDoc;
 }
 
+//No me sale...
 /**
 * Obtiene la referencia del mensaje
 */
-async function getMessageRef({senderId, receiverId}){
+// async function getMessageRef({senderId, receiverId}){
 
-    let privateChatDoc = await getPrivateChatDoc({senderId,receiverId});
+//     let privateChatDoc = await getPrivateChatDoc({senderId,receiverId});
     
-    //Creo la referencia a la collection de messages.
-    let messagesRef = collection(db, `private-chats/${privateChatDoc.id}/messages`);
+//     //Creo la referencia a la collection de messages.
+//     let messagesRef = collection(db, `private-chats/${privateChatDoc.id}/messages`);
     
-    return messagesRef;
-}
+//     return messagesRef;
+// }
 
 /**
  * 
