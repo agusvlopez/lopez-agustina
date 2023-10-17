@@ -2,11 +2,13 @@
  * Transforma un objeto Date a una representación como string con el formato:
  * AAAA-MM-DD hh:mm:ss
  * 
- * @param {Date} date 
+ * @param {Date|null} date 
+ * @returns {string|null}
  */
 
 export function dateToString(date){
 
+    if(date == null) return null;
     
     const dateFormatter = new Intl.DateTimeFormat('es-AR', {
         //que reglas quiero que tenga
