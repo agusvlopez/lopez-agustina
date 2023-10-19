@@ -14,14 +14,18 @@ import { register } from '../services/auth.js';
             newUser: {
                 email: '',
                 password: '',
+                rol: '',
             },
+
         }
     },
+
     methods: {
         async handleSubmit() {
             this.registerLoading = true;
             try {
                 await register({...this.newUser});
+                this.$router.push('/');
             } catch (error) {
                 //mensaje de error
             }
@@ -35,7 +39,7 @@ import { register } from '../services/auth.js';
 
 <template>
     <h1>Crear cuenta en Training App</h1>
-
+    
     <form 
     action="#"
     @submit.prevent="handleSubmit"
@@ -58,6 +62,13 @@ import { register } from '../services/auth.js';
                 v-model="newUser.password"
             />
         </div>
+        <BaseInput type="radio" id="admin" v-model="newUser.rol" value="admin" />
+        <label class="me-3 p-1" for="admin">Administrador/a</label>
+
+        <BaseInput type="radio" id="cliente" v-model="newUser.rol" value="cliente" />
+        <label for="cliente" class="p-1">Cliente</label>
+
+        <p>Opción seleccionada: {{ newUser.rol }}</p>
        <BaseButton
        :loading="registerLoading"
        >Crear cuenta</BaseButton>

@@ -30,19 +30,20 @@ onAuthStateChanged(auth, user => {
 });
 
 /**
-* @param {{email: string, password: string}} user 
+* @param {{email: string, password: string, rol: string}} user 
 * @return {Promise}
  */
-export async function register({email, password}) {
+export async function register({email, password, rol}) {
     try {
-       const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+       const userCredentials = await createUserWithEmailAndPassword(auth, email, password, rol);
 
        //Registro el perfil del usuario tambien en Firestore
-       createUserProfile(userCredentials.user.uid, {email});
+       createUserProfile(userCredentials.user.uid, {email, rol});
 
         return {
             id: userCredentials.user.uid,
             email: userCredentials.user.email,
+            rol: userCredentials.user.rol,
         }  
     } catch (error) {
         return {

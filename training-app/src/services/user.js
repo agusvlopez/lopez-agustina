@@ -5,7 +5,7 @@ import { db } from './firebase';
 
 /**
  * @param {string} id
- * @returns {Promise<{id: string, email: string}>}
+ * @returns {Promise<{id: string, email: string, rol: string}>}
  */
 export async function getUserProfileById(id){
 
@@ -16,6 +16,7 @@ export async function getUserProfileById(id){
     return {
         id: docSnapshot.id,
         email: docSnapshot.data().email,
+        rol: docSnapshot.data().rol,
     }
 }
 /**
