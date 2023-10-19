@@ -2,16 +2,18 @@
 import BaseButton from '../components/BaseButton.vue';
 import BaseInput from '../components/BaseInput.vue';
 import BaseLabel from '../components/BaseLabel.vue';
+import StatusMessage from '../components/StatusMessage.vue';
 import { login } from '../services/auth.js'
 
 
 export default {
     name: 'Login',
-    components: { BaseButton, BaseLabel, BaseInput },
+    components: { BaseButton, BaseLabel, BaseInput, StatusMessage },
     emits:['login'],
     data() {
         return {
             loginLoading: false,
+            loginError: false,
             form: {
                 email: '',
                 password: '',
@@ -26,8 +28,19 @@ export default {
                 ...this.form,
             })
             .then(user => {
-                this.$router.push('/');
+                if(user.email && user.id){
+                    this.$router.push('/');
+                    this.loginError = false;
+                }else{
+                    this.$router.push('/iniciar-sesion');
+                    this.loginError = true;
+                }
+                
+                console.log(user);
             })
+            .catch(err => {
+                console.log(err);
+            }) 
             .finally(() => {
                 this.loginLoading = false;
             })
@@ -40,7 +53,16 @@ export default {
 
 <template>
     <h1>Ingresar a mi Cuenta</h1>
-
+    <div>
+        <StatusMessage
+        :class="{
+                    'bg-red-100': loginError,
+                    'border-red-500': loginError,
+                    'text-red-700': loginError
+                }"
+        :validating="loginError"
+        ></StatusMessage>
+    </div>
     <form 
     action="#"
     @submit.prevent="doLogin"
