@@ -85,3 +85,40 @@ h1 {
       opacity: 0;
     }
   }
+
+/* input[type="radio"] {
+  display: none;
+}
+
+.label-radio {
+  margin: 1rem;
+  cursor: pointer;
+  color: #4f46e5;
+  font-size: 1rem;
+  border: 2px solid #4f46e5;
+  border-radius: 5px;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.label-radio:before {
+  content: "";
+  height: 30px;
+  width: 30px;
+  border: 3px solid #4f46e5;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
+input[type="radio"]:checked + label {
+  background-color: #4f46e5;
+  color: whitesmoke;
+}
+
+input[type="radio"]:checked + label:before {
+  height: 16px;
+  width: 16px;
+  border: 1rem solid whitesmoke;
+  background-color: #4f46e5;
+} */

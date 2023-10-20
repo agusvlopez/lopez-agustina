@@ -54,7 +54,7 @@ export default {
 <template> 
 <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="bg-white p-8 rounded-lg shadow-md w-96">
-    <h1 class="font-semibold mb-4">Iniciar sesión</h1>
+    <h1 class="font-bold mb-6">Iniciar sesión</h1>
    
     <div>
         <StatusMessage
@@ -88,11 +88,11 @@ export default {
                 placeholder="Ingresá tu contraseña"
             />
         </div>
-        <div class="flex justify-center w-full">
+        
             <BaseButton
             :loading="loginLoading"
             >Ingresar</BaseButton>
-        </div>
+        
     </form>
     </div>
 </div>
