@@ -1,6 +1,7 @@
 <script>
 import Chat from './pages/Chat.vue';
 import { subscribeToAuth, logout } from './services/auth.js';
+import { getUserProfileById } from './services/user.js';
 
 export default {
     name: "App",
@@ -9,19 +10,28 @@ export default {
         return {
             user: {
                 id: null,
-                email: null
-            }
+                email: null,
+                rol: null
+            },
+            loadingPanel: true,
         }
     },
     methods:  {
-        handleLogout(){
+       async handleLogout(){
            logout();
            this.$router.push('/iniciar-sesion');
-        }
+        },
+        
     },
-    mounted() {
-        subscribeToAuth(user => {
+    async mounted() {
+        subscribeToAuth( async user => {
             this.user = {...user};
+            console.log(this.user.id); 
+            let result = await getUserProfileById(this.user.id);
+
+            console.log(result.rol);
+            this.user.rol = result.rol;
+            console.log(this.user.rol);          
         });
 
     }
@@ -71,7 +81,14 @@ export default {
                 </form>
                 </li>
             </template>
-
+            <template
+             v-if="this.user.rol === 'admin'" 
+            >
+                <li>
+                    <router-link
+                    to="/panel">Panel Admin</router-link>
+                </li>
+            </template>
             </ul>
         </nav>
     </header>

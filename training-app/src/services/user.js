@@ -22,7 +22,7 @@ export async function getUserProfileById(id){
 /**
  * 
  * @param {string} id 
- * @param {{email:string}} data
+ * @param {{email:string, rol: string}} data
  * @returns {Promise} 
  */
 export async function createUserProfile(id, data) {
