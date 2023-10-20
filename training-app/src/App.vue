@@ -1,19 +1,20 @@
 <script>
+import Loader from './components/Loader.vue';
 import Chat from './pages/Chat.vue';
 import { subscribeToAuth, logout } from './services/auth.js';
 import { getUserProfileById } from './services/user.js';
 
 export default {
     name: "App",
-    components: {Chat},
+    components: { Chat, Loader },
     data() {
         return {
+            registerLoading: false,
             user: {
                 id: null,
                 email: null,
                 rol: null
             },
-            loadingPanel: true,
         }
     },
     methods:  {
@@ -25,13 +26,16 @@ export default {
     },
     async mounted() {
         subscribeToAuth( async user => {
+     
             this.user = {...user};
-            console.log(this.user.id); 
-            let result = await getUserProfileById(this.user.id);
+            if(this.user.id) {
+                 this.registerLoading = true;
+            }
 
-            console.log(result.rol);
+            let result = await getUserProfileById(this.user.id);
             this.user.rol = result.rol;
-            console.log(this.user.rol);          
+
+            this.registerLoading = false;
         });
 
     }
@@ -82,19 +86,30 @@ export default {
                 </li>
             </template>
             <template
-             v-if="this.user.rol === 'admin'" 
+             v-if="this.user.rol === 'admin' && !registerLoading " 
             >
                 <li>
                     <router-link
-                    to="/panel">Panel Admin</router-link>
+                    to="/panel-admin">Panel Admin</router-link>
                 </li>
+            </template>
+            <template
+             v-if="this.user.rol === 'cliente' && !registerLoading " 
+            >
+                <li>
+                    <router-link
+                    to="/panel-cliente">Panel Cliente</router-link>
+                </li>
+            </template>
+            <template v-if="registerLoading">
+                <Loader></Loader>
             </template>
             </ul>
         </nav>
     </header>
 
     <div class="h-full">
-        <!-- <Chat></Chat> -->
+    
         <router-view></router-view>     
       
     </div>

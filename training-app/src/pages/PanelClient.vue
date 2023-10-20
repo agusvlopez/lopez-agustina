@@ -1,9 +1,9 @@
 <script>
 export default {
-    name: 'Panel'
+    name: 'PanelClient'
 }
 </script>
 
 <template>
-    <h1>Panel</h1>
+    <h1>Panel del Cliente</h1>
 </template>

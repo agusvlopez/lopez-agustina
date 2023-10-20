@@ -6,7 +6,8 @@ import Register from './../pages/Register.vue';
 import MyProfile from './../pages/MyProfile.vue';
 import UserProfile from './../pages/UserProfile.vue';
 import PrivateChat from './../pages/PrivateChat.vue';
-import Panel from './../pages/Panel.vue';
+import PanelAdmin from './../pages/PanelAdmin.vue';
+import PanelClient from './../pages/PanelClient.vue';
 import {createRouter, createWebHashHistory} from 'vue-router';
 import { subscribeToAuth } from '../services/auth';
 
@@ -20,7 +21,8 @@ const routes = [
     {path: '/perfil',           component: MyProfile,       meta: { requiresAuth: true },},
     {path: '/usuario/:id',      component: UserProfile,     meta: { requiresAuth: true },},  
     {path: '/usuario/:id/chat', component: PrivateChat,     meta: { requiresAuth: true },},  
-    {path: '/panel',            component: Panel,           meta: { requiresAuth: true },}
+    {path: '/panel-admin',            component: PanelAdmin,           meta: { requiresAuth: true },},
+    {path: '/panel-cliente',            component: PanelClient,           meta: { requiresAuth: true },},
 ]
 
 const router = createRouter({
