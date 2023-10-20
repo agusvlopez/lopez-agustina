@@ -51,14 +51,15 @@ export default {
 
 </script>
 
-<template>
-    <h1>Ingresar a mi Cuenta</h1>
+<template> 
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-md w-96">
+    <h1 class="font-semibold mb-4">Iniciar sesión</h1>
+   
     <div>
         <StatusMessage
         :class="{
-                    'bg-red-100': loginError,
-                    'border-red-500': loginError,
-                    'text-red-700': loginError
+                    'bg-red-100 border-red-500 text-red-700 mb-2': loginError,
                 }"
         :validating="loginError"
         ></StatusMessage>
@@ -74,19 +75,25 @@ export default {
                 type="email" 
                 id="email"
                 v-model="form.email"
+                placeholder="Ingresá tu correo electrónico"
             />
         </div>
-        <div class="mb-3">
+        <div class="mb-6">
             <BaseLabel for="password">Contraseña</BaseLabel>
             <BaseInput
                 :disabled="loginLoading"
                 type="password" 
                 id="password"
                 v-model="form.password"
+                placeholder="Ingresá tu contraseña"
             />
         </div>
-        <BaseButton
-        :loading="loginLoading"
-        >Ingresar</BaseButton>
+        <div class="flex justify-center w-full">
+            <BaseButton
+            :loading="loginLoading"
+            >Ingresar</BaseButton>
+        </div>
     </form>
+    </div>
+</div>
 </template>

@@ -21,7 +21,7 @@ onAuthStateChanged(auth, user => {
             email: user.email,
         });
         localStorage.setItem('user', JSON.stringify(userData));
-
+        
         }else {
             clearUserData();
             localStorage.removeItem('user');
