@@ -8,7 +8,7 @@ export default {
 
 <template>
 <div class="sr-only">Cargando...</div>
-<div class="border border-indigo-300 shadow p-5 m-5 max-w-xl w-full mx-auto">
+<div class="border border-indigo-300 shadow p-5 m-5 max-w-full w-96 mx-auto">
   <div class="animate-pulse flex space-x-4">
     <div class="rounded-full bg-slate-200 h-20 w-20"></div>
     <div class="flex-1 space-y-7 py-2">

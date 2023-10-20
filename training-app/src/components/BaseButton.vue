@@ -15,7 +15,7 @@ import Loader from './Loader.vue';
 </script>
 
 <template>
-    <button type="submit" class="transition motion-reduce:transition-none bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-500 active:bg-indigo-800 disabled:bg-indigo-400 rounded w-full"
+    <button type="submit" class="transition motion-reduce:transition-none bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-500 active:bg-indigo-800 disabled:bg-indigo-400 rounded"
     :disabled="loading">
 
     <div v-if="!loading">

@@ -91,6 +91,7 @@ export default {
         
             <BaseButton
             :loading="loginLoading"
+            class=" w-full"
             >Ingresar</BaseButton>
         
     </form>

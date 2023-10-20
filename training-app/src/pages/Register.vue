@@ -103,6 +103,7 @@ import { register } from '../services/auth.js';
         </div>
        <BaseButton
        :loading="registerLoading"
+       class=" w-full"
        >Crear cuenta</BaseButton>
     </form>
     </div>
