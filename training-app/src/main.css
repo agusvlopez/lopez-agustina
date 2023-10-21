@@ -75,6 +75,17 @@ h1 {
   animation-delay: 1s;
 }
 
+.imgPortada {
+  background-image: url('../src/imgs/portada-home.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: 45%;
+}
+
+.portada .bg-black {
+  opacity: 80%;
+}
+
   @keyframes animloader {
     0% {
       transform: scale(0);

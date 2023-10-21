@@ -1,16 +1,14 @@
 import { addDoc, collection, getDocs, limit, onSnapshot, orderBy, query, serverTimestamp, where } from "firebase/firestore";
 import { db } from "./firebase";
 
-
 //cache
 const privateChatCache = {};
 
-
 /**
- * 
- * @param {senderId: string, receiverId: string, message: string} data
- * @returns {Promise} 
- */
+* 
+* @param {senderId: string, receiverId: string, message: string} data
+* @returns {Promise} 
+*/
 export async function sendPrivateChatMessage({senderId, receiverId, message}) {
     
     const privateChatDoc = await getPrivateChatDoc({senderId,receiverId});
@@ -60,7 +58,7 @@ export async function subscribeToPrivateChat({senderId, receiverId}, callback){
     })
 }
 
-async function getPrivateChatDoc({senderId, receiverId}){
+export async function getPrivateChatDoc({senderId, receiverId}){
     
     const cacheRef = getOfCache({senderId,receiverId});
 
@@ -98,20 +96,6 @@ async function getPrivateChatDoc({senderId, receiverId}){
     addToCache({senderId, receiverId}, privateChatDoc);
      return privateChatDoc;
 }
-
-//No me sale...
-/**
-* Obtiene la referencia del mensaje
-*/
-// async function getMessageRef({senderId, receiverId}){
-
-//     let privateChatDoc = await getPrivateChatDoc({senderId,receiverId});
-    
-//     //Creo la referencia a la collection de messages.
-//     let messagesRef = collection(db, `private-chats/${privateChatDoc.id}/messages`);
-    
-//     return messagesRef;
-// }
 
 /**
  * 

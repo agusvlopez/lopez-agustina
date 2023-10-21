@@ -51,7 +51,7 @@ export default {
     <nav class="bg-black shadow-lg">
     <div class="container mx-auto px-4">
       <div class="flex justify-between items-center py-4">
-        <router-link to="/"><img src="./imgs/logo-blanco.png" alt="Logo Training App" class="maxWidth"> </router-link>
+        <router-link to="/"><img src="./imgs/logo-blanco.png" alt="Logo Training App" class="maxWidth"></router-link>
         <div class="hidden md:flex space-x-4">
             <ul class="flex gap-4 text-white">
                 <li>
@@ -96,14 +96,6 @@ export default {
                     to="/panel-admin">Panel Admin</router-link>
                 </li>
             </template>
-            <template
-             v-if="this.user.rol === 'cliente' && !registerLoading " 
-            >
-                <li>
-                    <router-link
-                    to="/panel-cliente">Panel Cliente</router-link>
-                </li>
-            </template>
             <template v-if="registerLoading">
                 <Loader></Loader>
             </template>
@@ -145,18 +137,13 @@ export default {
         >
             <router-link to="/panel-admin" class="block text-white p-3 hover:bg-gray-600">Panel Admin</router-link>
         </template>
-      <template
-        v-if="this.user.rol === 'cliente' && !registerLoading " 
-        >
-            <router-link to="/panel-cliente" class="block text-white p-3 hover:bg-gray-600">Panel Cliente</router-link>
-        </template>
         <template v-if="registerLoading">
                 <Loader></Loader>
         </template>
     </div>
   </nav>
 </header>
-<main class="h-full">
+<main>
     <div>
         <router-view></router-view>        
     </div>

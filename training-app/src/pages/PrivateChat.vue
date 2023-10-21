@@ -20,7 +20,7 @@ export default {
                 email: null,
             },
             authUser: {
-                id:null,
+                id: null,
                 email: null,
             },
             unsubscribeAuth: () => {},
@@ -57,6 +57,7 @@ export default {
         },
         (newMessages) => this.messages = newMessages);
         this.messagesLoading = false;
+       
     },
     unmounted() {
         this.unsubscribeAuth();

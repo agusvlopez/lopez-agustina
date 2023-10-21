@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-            <div class="w-50 max-w-xl rounded-md bg-white p-2 text-gray-600 ring-2 ring-transparent transition-all hover:shadow peer-checked:text-indigo-600 peer-checked:ring-indigo-400 peer-checked:ring-offset-2">
+        <div class="w-50 max-w-xl rounded-md bg-white p-2 text-gray-600 ring-2 ring-transparent transition-all hover:shadow peer-checked:text-indigo-600 peer-checked:ring-indigo-400 peer-checked:ring-offset-2">
           <div class="flex flex-col gap-1">
             <div class="flex items-center justify-between">
               <p class="text-sm font-semibold uppercase text-gray-500 me-2"><slot></slot></p>
