@@ -128,3 +128,43 @@ function getOfCache({senderId, receiverId}){
 function getKeyForCache({senderId,receiverId}){
     return senderId + receiverId;
 }
+
+export async function getAllPrivateChatAdmin(){
+    
+    let privateChatDoc;
+    console.log("Busco el documento");
+    // const privateChatAdmin = collection(db, 'private-chats');
+    const querySnapshot = await getDocs(collection(db, 'private-chats'));
+    console.log(querySnapshot);
+
+    return privateChatDoc;
+}
+
+export async function getPrivateChatDocs(){
+   let privateChatDocId;
+    let documents = [];
+    querySnapshot.forEach((doc) => {
+        // Aquí puedes acceder a los datos de cada documento.
+        // Por ejemplo, doc.data() te proporcionará los datos del documento.
+        // Puedes ajustar esta parte según tu estructura de datos real.
+            const documentData = {
+                id: doc.id, // ID del documento
+                ...doc.data(), // Datos del documento
+            };
+    
+            documents.push(documentData);
+        });
+        // const snapshot = await getDocs( 
+        //     query(privateChatAdmin,
+        //     where('users', '==', {
+        //         [adminId]: true,
+        //         [receiverId]: true,
+        //     }),
+        //     //cuando encuentra un documento con esos valores deje de buscar:
+        //     limit(1),
+        //  ));
+     
+        privateChatDocId = querySnapshot.docs[0];
+        console.log(privateChatDocId);
+        return privateChatDocId;
+}
