@@ -1,21 +1,25 @@
 <script>
-import { doc, documentId, getDocs } from 'firebase/firestore';
+import { collection, deleteDoc, doc, documentId, getDocs, query, where } from 'firebase/firestore';
 import BaseButton from '../components/BaseButton.vue';
 import BaseInput from '../components/BaseInput.vue';
 import BaseLabel from '../components/BaseLabel.vue';
 import BaseTextarea from '../components/BaseTextarea.vue';
 import ChatInput from '../components/ChatInput.vue';
 import { getTrainings, trainingsSaveTraining, deleteDocument, getTrainingDocs, buscarYEliminarDocumento } from '../services/trainings';
+import { db } from '../services/firebase';
+import Loader from '../components/Loader.vue';
 
 export default {
     name: 'PanelTraining',
-    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea},
+    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader },
     data() {
         return {
+            trainingsLoading: true,
+            deletedTraining: false,
             documentId: null,
             trainings: [],
             doc: null,
-            buscarYEliminarDocumento: () =>{},
+            valorDeEliminacion: '',
             training: {
                 name: '',
                 img: '',
@@ -56,49 +60,73 @@ export default {
         //         console.log(this.trainings);
         //     });
         // },
-        deleteTraining(idDoc) {
-           
-            deleteDocument(idDoc)
-            .then(() => {
-                console.log('Documento eliminado con éxito.');
-            })
-            .catch((error) => {
-                console.error('Error al eliminar el documento:', error);
-            });
+        async deleteTraining(valor) {
+            this.deletedTraining = true;
+            this.trainingsLoading = true; 
+            buscarYEliminarDocumento(valor)
+            
+            let trainingsDocs = await getTrainings()
+             let trainingDoc;
+             let docs = [];
+                trainingsDocs.forEach(doc => {
+                 trainingDoc = doc.data();
+                 console.log(trainingDoc.name);
+                 docs.push(trainingDoc);
+                 console.log(this.trainings);
+             });
+             this.trainings = docs; 
+            console.log(trainingsDocs)
+            this.deletedTraining = false;
+            this.trainingsLoading = false;
 
-        }
+        },
+        
     },
     async mounted () {
+       
+        this.trainingsLoading = true; 
+      
+         console.log();
+        console.log(this.trainings);
         let trainingsAll = await getTrainings();
+      
         let trainingDoc;
-        trainingsAll.forEach(doc => {
+        trainingsAll.forEach(async doc => {
             trainingDoc = doc.data();
             this.trainings.push(trainingDoc);
+            
         });
         console.log(trainingsAll);
-        let trainingDocs = getTrainingDocs();
-        console.log(trainingDocs);
-        this.doc = await getTrainingDocs();
-        console.log(this.doc);
+        this.trainingsLoading = false;
+        // let trainingDocs = getTrainingDocs();
+       
+        // this.doc = await getTrainingDocs();
+        
         return this.trainingDoc;
+    },
+    async unmounted () {
+       
     }
 }
 </script>
 
 <template>
 <div class="container mx-auto p-4">
-    
+   <section class="border-b-2">
     <h1>Panel de entrenamientos</h1>
     <h2>Todos los entrenamientos </h2>
     <div class="flex p-4 flex-wrap">
-    
+        
+    <template
+    v-if="!trainingsLoading  && !deletedTraining" >
     <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden"
     v-for="training in trainings"
-    :key="training.id">
-    <form action="" 
-    
-    
+    :key="training.id"  
     >
+
+    <form action="" 
+            @submit.prevent="deleteTraining(training.name)"
+        >
         <div class="">
         <div class="">
             <img class="h-24 w-full object-cover" :src="training.img" alt="Imagen de la card">
@@ -109,14 +137,24 @@ export default {
             <p class="mt-1 text-gray-500">{{training.description}}</p>
             <p class="mt-1 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
 
-            <div><button @click="buscarYEliminarDocumento(this.doc, training.name)">Eliminar</button></div>
+            <BaseButton 
+            class="bg-red-500 hover:bg-red-600 mt-2">Eliminar</BaseButton> 
+        
         </div>
-        </div></form>
-        </div>  
-    </div>
- 
+        </div>
+    </form>
     
-    <h2>Cargar un nuevo entrenamiento</h2>
+
+        </div>  
+    </template>
+    <template
+    v-else>
+        <Loader></Loader>
+    </template>
+    </div>
+    </section>
+    
+    <h2 class="mt-4">Cargar un nuevo entrenamiento</h2>
     <form 
         action="#" 
         @submit.prevent="saveTraining"

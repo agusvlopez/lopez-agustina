@@ -37,36 +37,7 @@ export async function deleteDocument(documentId) {
   await deleteDoc(documentRef);
 }
 
-export async function buscarYEliminarDocumento(documento, campoName) {
-  const collectionName = 'trainings';
-  const campo = 'name';
-  let valor;
 
-  // Ajusta el valor en función del botón que se presionó.
-  if (documento === campoName) {
-    valor = campoName;
-  } 
-  
-  try {
-    const collectionRef = collection(this.$db, collectionName);
-    const q = query(collectionRef, where(campo, '==', valor));
-    const querySnapshot = await getDocs(q);
-    
-    if (querySnapshot.empty) {
-      console.log('No se encontraron documentos que coincidan con la búsqueda.');
-      return;
-    }
-    
-    // Supongamos que quieres eliminar el primer documento encontrado (ajusta esta lógica según tus necesidades).
-    const documentToDelete = querySnapshot.docs[0];
-    const documentRef = doc(this.$db, collectionName, documentToDelete.id);
-
-    await deleteDoc(documentRef);
-    console.log('Documento eliminado con éxito.');
-  } catch (error) {
-    console.error('Error al buscar y eliminar el documento:', error);
-  }
-}
 
 export async function getTrainingDocs(){
   let trainingDocId;
@@ -98,4 +69,39 @@ export async function getTrainingDocs(){
        trainingDocId = querySnapshot.docs[0];
        console.log(trainingDocId.id);
        return trainingDocId.id;
+}
+
+
+export async function buscarYEliminarDocumento(valor) {
+  const collectionName = 'trainings';
+  const campo = 'name';
+  let deleted;
+  try {
+    
+      const collectionRef = collection(db, collectionName);
+      const q = query(collectionRef, where(campo, '==', valor));
+      const querySnapshot = await getDocs(q);
+      
+      if (querySnapshot.empty) {
+      console.log('No se encontraron documentos que coincidan con la búsqueda.');
+      return;
+      }
+      
+      // Supongamos que quieres eliminar el primer documento encontrado (ajusta esta lógica según tus necesidades).
+      const documentToDelete = querySnapshot.docs[0];
+      const documentRef = doc(db, collectionName, documentToDelete.id);
+    
+     deleted = await deleteDoc(documentRef);
+      
+     
+      console.log(documentRef);
+ 
+
+     
+  } catch (error) {
+      console.error('Error al buscar y eliminar el documento:', error);
+  }
+
+  return deleted;
+
 }
