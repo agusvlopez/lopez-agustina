@@ -10,9 +10,11 @@ import { getUserProfileById } from '../services/user';
         return {
             //Aca probar el skeleton loader
             userLoading: true,
+            users: [],
             user: {
                 id: null,
                 email: null,
+                rol: null,
             }
         };
     },
@@ -21,6 +23,8 @@ import { getUserProfileById } from '../services/user';
         console.log(this.userLoading);
         this.user = await getUserProfileById(this.$route.params.id);
         this.userLoading = false;
+        this.users.push(this.user);
+        
     },
    
 }
@@ -30,6 +34,7 @@ import { getUserProfileById } from '../services/user';
 <template>
     <SkeletonLoader v-if="userLoading"></SkeletonLoader>
     <template v-else>
+        <div v-if="this.user.rol === 'admin'">
         <h1>Perfil de {{ user.email }}</h1>
         
         <h2>Conversación privada</h2>
@@ -37,6 +42,7 @@ import { getUserProfileById } from '../services/user';
         :to="`/usuario/${user.id}/chat`"
         class="transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800"
         >Iniciar una conversación privada con {{ user.email }}</router-link>
+    </div>
     </template>
 
     

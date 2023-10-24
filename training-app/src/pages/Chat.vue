@@ -8,12 +8,15 @@ import BaseTextarea from "../components/BaseTextarea.vue";
 import Loader from "../components/Loader.vue";
 import { subscribeToAuth } from "../services/auth";
 import ChatInput from "../components/ChatInput.vue";
+import { getAllUsers } from "../services/user";
 
 export default {
     name: "Chat",
     components: { BaseButton, BaseLabel, BaseInput, BaseTextarea, Loader, ChatInput },
     data() {
         return {
+            usersAdmins: [],
+            usersIds: [],
             messagesLoading: true,
             messages: [],
             newMessageSaving: false,
@@ -22,7 +25,7 @@ export default {
             },
             user: {
                 id: null,
-                email: null
+                email: null,
             },
             unsubscribeAuth: () => {},
             unsubscribeChat: () => {},
@@ -36,7 +39,7 @@ export default {
             chatSaveMessage({
                 userId: this.user.id,
                 user: this.user.email,
-                message: this.newMessage.message
+                message: this.newMessage.message,
                 // ...this.newMessage,
             })
                 .then(() => {
@@ -48,7 +51,7 @@ export default {
             return dateToString(data);
         }
     },
-    mounted() {
+    async mounted() {
         this.messagesLoading = true;
         this.unsubscribeChat = chatSubscribeToMessages(messages => {
             console.log(this.messages);
@@ -56,7 +59,31 @@ export default {
             this.messagesLoading = false;
         });
         this.unsubscribeAuth  = subscribeToAuth(newUser => this.user = {...newUser});
-    
+
+        let ids = [];
+        const idsDocs = await getAllUsers();
+        let documents = [];
+        let array = [];
+
+        console.log(idsDocs);
+        idsDocs.forEach((doc) => {
+            console.log(doc.id);
+            ids.push(doc.id);
+        })
+        this.usersIds = ids;
+        console.log(this.idsDocs);
+        if(idsDocs){
+            idsDocs.forEach((user) => {
+            array.push(user.data());
+            console.log(array);
+           })
+           console.log(array);
+            this.usersAdmins = array;
+            console.log(this.usersAdmins);
+
+        }
+        console.log(this.usersAdmins);
+     
     },
     unmounted() {
         this.unsubscribeChat();
@@ -71,6 +98,19 @@ export default {
     <div class="bg-white rounded-lg shadow-md  max-w-xl mx-auto mt-4">
     <h1 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-2">Chat</h1>
     <div class="p-4">
+        <div v-for="admin in usersAdmins"
+       >
+        <div v-if="admin.rol === 'admin'">
+            <div v-for="id in usersIds">
+             <router-link 
+                    class="transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800" 
+                    :to="`/usuario/${id}`"
+                    > 
+                    {{ admin.email }} 
+                    </router-link>
+                </div>
+        </div>
+        </div>
         <template
         v-if="!messagesLoading">
         <div>

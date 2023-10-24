@@ -15,6 +15,7 @@ export default {
     data() {
         return {
             userLoading: true,
+            users: [],
             user: {
                 id: null,
                 email: null,

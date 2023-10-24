@@ -3,7 +3,7 @@ import { db } from "./firebase";
 
 //cache
 const privateChatCache = {};
-
+const refChat = collection(db, 'private-chats');
 /**
 * 
 * @param {senderId: string, receiverId: string, message: string} data
@@ -129,15 +129,47 @@ function getKeyForCache({senderId,receiverId}){
     return senderId + receiverId;
 }
 
+export async function getUserChat({senderId, receiverId}) {
+
+    const cacheRef = getOfCache({senderId,receiverId});
+
+    if(cacheRef){
+        console.log("el cache es: ", cacheRef);
+        return cacheRef;
+    }
+
+    console.log("Busco el documento");
+    const privateChatRef = collection(db, 'private-chats');
+    let privateChatDoc;
+
+    const snapshot = await getDocs( 
+        query(privateChatRef,
+        where('users', '==', {
+            [senderId]: true,
+            [receiverId]: true,
+        }),
+        //cuando encuentra un documento con esos valores deje de buscar:
+        limit(1),
+     ));
+        
+     privateChatDoc = snapshot.docs[0];
+
+   
+    addToCache({senderId, receiverId}, privateChatDoc);
+     return privateChatDoc;
+  }
+
 export async function getAllPrivateChatAdmin(){
     
     let privateChatDoc;
     console.log("Busco el documento");
     // const privateChatAdmin = collection(db, 'private-chats');
-    const querySnapshot = await getDocs(collection(db, 'private-chats'));
-    console.log(querySnapshot);
+    // const querySnapshot = await getDocs(collection(db, 'private-chats'));
+    await getDocs(refChat);
+    let chatsDocs = querySnapshot.docs;
+    console.log(chatsDocs);
 
-    return privateChatDoc;
+    return chatsDocs;
 }
 
 export async function getPrivateChatDocs(){

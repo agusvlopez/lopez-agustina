@@ -75,9 +75,12 @@ export default {
             <template
             v-else
             >
+            <template
+            v-if="user.rol === 'cliente'">
                 <li>
                     <router-link to="/chat">Chat</router-link>
                 </li>
+            </template>
                 <li>
                     <router-link to="/perfil">Mi perfil</router-link>
                 </li>
@@ -122,8 +125,10 @@ export default {
       </template>
         <template
         v-else
-        >
+        ><template
+            v-if="user.rol === 'cliente'">
             <router-link to="/chat" class="block text-white p-3 hover:bg-gray-600">Chat</router-link>
+        </template>
             <router-link to="/perfil" class="block text-white p-3 hover:bg-gray-600">Mi perfil</router-link>
              <form 
              class="block text-white p-3 hover:bg-gray-600"

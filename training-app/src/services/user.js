@@ -1,4 +1,4 @@
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
 import { db } from './firebase';
 
 //Manejar los perfiles de usuario
@@ -30,4 +30,35 @@ export async function createUserProfile(id, data) {
     const refUser = doc(db, `users/${id}`);
     //setDoc me permite escribir un documento especifico
     return setDoc(refUser,{...data, created_at:serverTimestamp()});
+}
+
+export async function getAllUsers(){
+    const refUser = collection(db, 'users');
+
+    try {
+        // const querySnapshot = await getDocs(refUser);
+        const querySnapshot = await getDocs( 
+            query(refUser,
+            where('rol', '==', 'admin')),
+            //cuando encuentra un documento con esos valores deje de buscar:
+
+         );
+         if(querySnapshot){
+            console.log(querySnapshot);
+            const datosSubcoleccion = [];
+            let documents = [];
+        querySnapshot.forEach((doc) => {
+          datosSubcoleccion.push(doc.data());
+          console.log(doc);
+          documents.push(doc);
+        });
+        console.log(datosSubcoleccion);
+        console.log(documents);
+        return documents;
+         }
+        
+        
+      } catch (error) {
+        console.error('Error al obtener datos de la subcolección:', error);
+      }
 }
