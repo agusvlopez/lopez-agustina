@@ -32,8 +32,7 @@ export default {
     },
     methods: {
         saveTraining() {
-            // if(this.newMessageSaving) return;
-            // this.newMessageSaving = true;
+
             trainingsSaveTraining({
                 name: this.training.name,
                 img: this.training.img,
@@ -52,14 +51,7 @@ export default {
                 // this.newMessageSaving = false;
             });
         },
-        // async getDocsId(){
-        //     let trainingsDocs = await getTrainings();
-        //     console.log(trainingsDocs);
-        //     trainingsDocs.forEach(doc => {
-        //         this.trainings.push(doc);
-        //         console.log(this.trainings);
-        //     });
-        // },
+
         async deleteTraining(valor) {
             this.deletedTraining = true;
             this.trainingsLoading = true; 
@@ -98,15 +90,10 @@ export default {
         });
         console.log(trainingsAll);
         this.trainingsLoading = false;
-        // let trainingDocs = getTrainingDocs();
-       
-        // this.doc = await getTrainingDocs();
-        
+
         return this.trainingDoc;
     },
-    async unmounted () {
-       
-    }
+
 }
 </script>
 
