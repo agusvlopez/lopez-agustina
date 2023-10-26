@@ -11,7 +11,7 @@ export default {
 
 <template>
 <div class="container mx-auto p-4">
-        <h1>Panel del Administrador/a</h1> 
+        <h1 class="font-bold text-center">Panel del Administrador/a</h1> 
     
     <div>
           <p class="mb-3 font-semibold"></p>

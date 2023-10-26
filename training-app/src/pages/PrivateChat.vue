@@ -94,15 +94,15 @@ export default {
 </script>
 
 <template>
- <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4"
->
+    <section class="container p-4">
+        <h1 class="font-bold text-center mb-2">Chateá con nosotros</h1>
+        <p class="mb-6">Si tenés dudas o consultas no dudes en contactarte con nosotros para que podamos ayudarte.</p>
+    <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
     <Loader v-if="userLoading"></Loader>
     <template v-else>
-
-        
-           
         <div> 
-            <h1 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h1>
+
+            <h2 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h2>
 
         </div>
 
@@ -161,4 +161,5 @@ export default {
     
     </template>
     </div>
+    </section>
 </template>

@@ -111,7 +111,7 @@ export default {
 
                 <div class="bg-white shadow-md rounded p-4"
                 v-for="coach in coachs">
-                    <div class="">
+                    <div>
                         <img :src="coach.img" :alt="coach.name" class="h-44 w-full object-cover" >
                     </div>
                     <h3 class="text-lg font-semibold mb-2 mt-2">{{ coach.name }}</h3>

@@ -10,6 +10,7 @@ import PanelAdmin from './../pages/PanelAdmin.vue';
 import PanelClient from './../pages/PanelClient.vue';
 import PanelTraining from './../pages/PanelTraining.vue';
 import PanelChat from './../pages/PanelChat.vue';
+import ChatClient from './../pages/ChatClient.vue';
 import {createRouter, createWebHashHistory} from 'vue-router';
 import { subscribeToAuth } from '../services/auth';
 
@@ -23,6 +24,7 @@ const routes = [
     {path: '/perfil',                   component: MyProfile,       meta: { requiresAuth: true },},
     {path: '/usuario/:id',              component: UserProfile,     meta: { requiresAuth: true },},  
     {path: '/usuario/:id/chat',         component: PrivateChat,     meta: { requiresAuth: true },},  
+    {path: '/cliente/:id/chat',         component: ChatClient,     meta: { requiresAuth: true },}, 
     {path: '/panel-admin',              component: PanelAdmin,      meta: { requiresAuth: true },},
     {path: '/panel-admin/entrenamientos',      component: PanelTraining,      meta: { requiresAuth: true },},
     {path: '/panel-admin/chats',              component: PanelChat,      meta: { requiresAuth: true },},

@@ -23,7 +23,6 @@ export default {
             usersIds: [],
             usersAdmins: [],
             clients: [],
-            clientsId: [],
             user: {
                 id: null,
                 email: null,
@@ -56,33 +55,40 @@ export default {
             return dateToString(data);
         }
     },  
-    async mounted() {
+    async mounted() { 
+        this.userLoading = true;
+        this.user = await getUserProfileById(this.$route.params.id);
+        this.unsubscribeAuth = subscribeToAuth(newUser => this.authUser = newUser);
+        this.userLoading = false;
+        this.unsubscribeMessages = await subscribeToPrivateChat({
+            senderId: this.authUser.id,
+            receiverId: this.user.id
+        },
+        (newMessages) => this.messages = newMessages);
+        this.messagesLoading = false;
+       
         let user = await getAllUsers();
         let qArray = [];
         let dataArray = [];
-        let idsArray = [];
-
+        console.log(user);
+        //TO DO!!!!!!
         const refUser = collection(db, 'users');
-
+        console.log(refUser);
         const querySnapshot = await getDocs(refUser);
-
+        console.log(querySnapshot);
         querySnapshot.forEach((q) => {
-            qArray.push(q.data());       
+            qArray.push(q.data());
         });
-
-        querySnapshot.forEach((q) => {
-            idsArray.push(q);
-        });
-        this.clientsId = idsArray;
-
         qArray.forEach((q) => {
             dataArray.push(q);
+            console.log(q);
         });
-
         this.clients = dataArray;
-
+        console.log(this.clients);
+        //hacer una condicion para traer todos los chats que intercambien con admin; 
+        //despues pasarselo por el parametro de getUserProfileById()
+                
         let ids = [];
-        let data;
         const idsDocs = await getAllUsers();
         let array = [];
         let userId = {};
@@ -101,16 +107,15 @@ export default {
 
         this.users = ids;
 
-        console.log(this.users);
-        let u = ids;
-        this.usersIds.push(u);
-        console.log(this.usersIds);
+
+        console.log(this.user);
+        this.usersIds = ids;
+        console.log(this.idsDocs);
 
         this.userLoading = true;
       
         this.unsubscribeAuth = subscribeToAuth(newUser => this.authUser = newUser);
         this.userLoading = false;
-
         this.user = await getUserProfileById(userId);
         
         this.unsubscribeMessages = await subscribeToPrivateChat({
@@ -119,16 +124,18 @@ export default {
         },
         (newMessages) => this.messages = newMessages);
         this.messagesLoading = false;
-       
+       console.log(this.authUser.id, this.user.id);
         if(idsDocs){
             idsDocs.forEach((user) => {
             array.push(user.data());
-
+            console.log(array);
            })
+           console.log(array);
             this.usersAdmins = array;
+            console.log(this.usersAdmins);
         }
-       this.users.push(this.user);
-  
+        console.log(this.usersAdmins);
+       
     },
     unmounted() {
         this.unsubscribeAuth();
@@ -137,34 +144,74 @@ export default {
 };
 </script>
 
-<template>  
-<section class="container p-4">      
-    <div> 
-        <h1 class="mb-4 mt-4">Chats con clientes</h1>
-    </div>
-<div  class="flex flex-wrap"
->
-    <template
-    v-for="user in this.users"
-    :key="user.id"> 
-    <div 
-    v-if="user.email !== this.authUser.email">
-        <div class="bg-white p-4 rounded-lg shadow m-2"> 
-            <div>
-                <p class="text-md font-semibold mt-4 m-2">Usuario: {{user.email}}</p>
-                <p class="text-gray-600 m-2">Estado: Activo</p>
+<template>
 
-                 <router-link
-                :to="`/cliente/${user.id}/chat`"
-                class="transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800"
-                >Ver mensajes</router-link>
-              
+<section class="container p-4">
+        <h1 class="font-bold text-center mb-2">Chat con {{user.email}}</h1>
+    
+    <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
+    <Loader v-if="userLoading"></Loader>
+    <template v-else>
+        <div> 
 
-            </div>
+            <h2 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h2>
+
         </div>
-    </div>
-    </template>
-</div>
 
-</section>
+        
+        <h2 class="sr-only">Mensajes</h2>
+
+    
+        <!-- Mensajes del chat -->
+        <div class="mb-6 p-4">
+            <Loader v-if="messagesLoading"></Loader>
+            <template v-else>
+            <div 
+            class="flex mb-2"
+            v-for="message in messages"
+            :key="message.id"
+            :class="{
+                    'justify-end': message.senderId === authUser.id,
+                }"
+            >
+                <div 
+                class= "rounded-lg p-2"
+                :class="{
+                    'bg-gray-200': message.senderId !== authUser.id,
+                    'text-gray-700': message.senderId !== authUser.id,
+                    'bg-indigo-500': message.senderId === authUser.id, 
+                    'text-white':  message.senderId === authUser.id,
+                }"
+                >
+                    {{ message.message }}
+                    <div class="text-right">{{ formatDate(message.created_at) || "Enviando..." }}</div>
+                </div>
+            </div>
+            </template>
+        
+        </div>
+        <!-- Campo de entrada de texto -->
+        
+            <h2 class="sr-only">Enviar mensaje</h2>
+            <form action=""
+            @submit.prevent="handleSendMessage"
+            class="col-8"
+            >
+            <div class="mb-2 mt-3 p-4">
+                <BaseLabel for="message" class="sr-only">Mensaje</BaseLabel>
+                <div class="flex items-center mt-2">
+                    <ChatInput type="text" 
+                    id="message"
+                    v-model="newMessage.message"
+                    class="shadow"
+                    />
+                    <BaseButton class="rounded-full p-3 ml-2"></BaseButton>
+                </div>
+            </div>
+        </form>
+        
+    
+    </template>
+    </div>
+    </section>
 </template>

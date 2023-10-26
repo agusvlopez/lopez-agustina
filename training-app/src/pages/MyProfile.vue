@@ -89,7 +89,7 @@ import CardRadio from "../components/CardRadio.vue";
     async mounted() {
        
         subscribeToAuth(async (user) => {
-  this.rolLoading = true;
+            this.rolLoading = true;
             this.authUser = { ...user };
             if (this.user.id) {
                 this.registerLoading = true;
@@ -123,7 +123,7 @@ import CardRadio from "../components/CardRadio.vue";
 </script>
 
 <template>
-   <section class="container p-4 bg-gray-200">
+   <section class="container p-4">
        <Loader v-if="userLoading"></Loader>
        <template v-else>
         <h1 class="font-bold text-center">Mi perfil</h1>
@@ -157,7 +157,7 @@ import CardRadio from "../components/CardRadio.vue";
                         <div class="flex gap-1 mb-8">
                             <label v-if="authUser.rol == 'cliente'"  class="cursor-pointer" for="admin">
                                 <input type="radio" class="peer sr-only" id="admin" value="admin" v-model="newRol" />
-                                <CardRadio class="text-sm">Administrador/a</CardRadio>
+                                <CardRadio class="text-sm mr-1">Administrador/a</CardRadio>
                             </label>
                             <label v-if="authUser.rol == 'admin'" class="cursor-pointer" for="cliente">
                                 <input type="radio" class="peer sr-only" id="cliente" value="cliente" v-model="newRol" />
@@ -173,8 +173,9 @@ import CardRadio from "../components/CardRadio.vue";
         </div>
         </section>
 
-        <section>
+        <section v-if="authUser.rol == 'cliente'">
         <h2 class="text-xl font-bolder">Mis mensajes</h2>
+        <p class="mt-2 font-bold text-indigo-600 hover:text-indigo-700"> <router-link to="/usuario/HZSqZ8YP0OafEltH7j1assYE0AT2/chat">Ir a la conversación »</router-link> </p>
         <div class="bg-white rounded-lg shadow-md max-w-sm mx-auto m-4">
            <div> 
                <h2 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h2>

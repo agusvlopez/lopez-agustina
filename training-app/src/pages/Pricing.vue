@@ -26,7 +26,7 @@ export default {
 
 <template>
 <section class="container p-6 bg-gray-200">
-    <h1 class="text-center mb-4">Precios de nuestros planes de entrenamiento</h1>
+    <h1 class="text-center mb-4 font-bold">Precios de nuestros planes de entrenamiento</h1>
     <template v-if="!trainingsLoading">
         <div class="flex p-4 flex-wrap">
         <div class="mb-4 max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden"
