@@ -4,6 +4,7 @@ import Chat from './pages/Chat.vue';
 import { subscribeToAuth, logout } from './services/auth.js';
 import { getUserProfileById } from './services/user.js';
 
+
 export default {
     name: "App",
     components: { Chat, Loader },
@@ -78,7 +79,7 @@ export default {
             <template
             v-if="user.rol === 'cliente'">
                 <li>
-                    <router-link to="/chat">Chat</router-link>
+                    <router-link to="/usuario/HZSqZ8YP0OafEltH7j1assYE0AT2/chat">Chateá con nosotros</router-link>
                 </li>
             </template>
                 <li>
@@ -125,9 +126,10 @@ export default {
       </template>
         <template
         v-else
-        ><template
+        >
+        <template
             v-if="user.rol === 'cliente'">
-            <router-link to="/chat" class="block text-white p-3 hover:bg-gray-600">Chat</router-link>
+            <router-link to="/usuario/HZSqZ8YP0OafEltH7j1assYE0AT2/chat" class="block text-white p-3 hover:bg-gray-600">Chateá con nosotros</router-link>
         </template>
             <router-link to="/perfil" class="block text-white p-3 hover:bg-gray-600">Mi perfil</router-link>
              <form 

@@ -43,7 +43,7 @@ export async function subscribeToPrivateChat({senderId, receiverId}, callback){
         messagesRef,
         orderBy('created_at')
     );
-        debugger;
+
     return onSnapshot(q, snapshot => {
         const messages = snapshot.docs.map(doc => {
             return {
@@ -172,31 +172,44 @@ export async function getAllPrivateChatAdmin(){
     return chatsDocs;
 }
 
-export async function getPrivateChatDocs(){
-   let privateChatDocId;
-    let documents = [];
-    querySnapshot.forEach((doc) => {
-        // Aquí puedes acceder a los datos de cada documento.
-        // Por ejemplo, doc.data() te proporcionará los datos del documento.
-        // Puedes ajustar esta parte según tu estructura de datos real.
-            const documentData = {
-                id: doc.id, // ID del documento
-                ...doc.data(), // Datos del documento
-            };
+export async function getPrivateChatDocs(idUser){
+    const privateChatRef = collection(db, 'private-chats');
+    let privateChatDoc;
+    let privateChatDocId;
     
-            documents.push(documentData);
-        });
-        // const snapshot = await getDocs( 
-        //     query(privateChatAdmin,
-        //     where('users', '==', {
-        //         [adminId]: true,
-        //         [receiverId]: true,
-        //     }),
-        //     //cuando encuentra un documento con esos valores deje de buscar:
-        //     limit(1),
-        //  ));
+    
+    const snapshot = await getDocs( 
+        query(privateChatRef,
+        where(`${idUser}`, '==', true),
+        //cuando encuentra un documento con esos valores deje de buscar:
+       limit(1),
+     ));
+            console.log(snapshot);
+
+    console.log(snapshot);
+     let documents = [];
+     snapshot.forEach((doc) => {
+         // Aquí puedes acceder a los datos de cada documento.
+         // Por ejemplo, doc.data() te proporcionará los datos del documento.
+         // Puedes ajustar esta parte según tu estructura de datos real.
+             const documentData = {
+                 id: doc.id, // ID del documento
+                 ...doc.data(), // Datos del documento
+             };
+    
+             documents.push(documentData);
+         });
+//         // const snapshot = await getDocs( 
+//         //     query(privateChatAdmin,
+//         //     where('users', '==', {
+//         //         [adminId]: true,
+//         //         [receiverId]: true,
+//         //     }),
+//         //     //cuando encuentra un documento con esos valores deje de buscar:
+//         //     limit(1),
+//         //  ));
      
-        privateChatDocId = querySnapshot.docs[0];
+        privateChatDocId = snapshot.docs[0];
         console.log(privateChatDocId);
         return privateChatDocId;
 }

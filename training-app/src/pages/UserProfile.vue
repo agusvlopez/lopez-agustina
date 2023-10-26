@@ -34,7 +34,7 @@ import { getUserProfileById } from '../services/user';
 <template>
     <SkeletonLoader v-if="userLoading"></SkeletonLoader>
     <template v-else>
-        <div v-if="this.user.rol === 'admin'">
+        <div>
         <h1>Perfil de {{ user.email }}</h1>
         
         <h2>Conversación privada</h2>

@@ -82,6 +82,23 @@ h1 {
   background-position-y: 45%;
 }
 
+.closeButton {
+  background-image: url('./imgs/close.png');
+ 
+  background-repeat: no-repeat;
+  width: 15px;
+  height: 15px;
+  background-size: contain;
+}
+
+.editIcon {
+  background-image: url('./imgs/edit-text.png');
+  content: ' ';
+  background-repeat: no-repeat;
+  width: 18px;
+  height: 18px;
+  background-size: contain;
+}
 .portada .bg-black {
   opacity: 80%;
 }

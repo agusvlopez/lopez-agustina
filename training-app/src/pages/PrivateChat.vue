@@ -1,5 +1,5 @@
 <script>
-import { getUserProfileById } from '../services/user';
+import { getAllUsers, getUserProfileById } from '../services/user';
 import { dateToString } from '../helpers/date';
 import Loader from '../components/Loader.vue';
 import ChatInput from '../components/ChatInput.vue';
@@ -16,8 +16,10 @@ export default {
         return {
             userLoading: true,
             users: [],
+            usersIds: [],
+            usersAdmins: [],
             user: {
-                id: null,
+                id: 'HZSqZ8YP0OafEltH7j1assYE0AT2',
                 email: null,
             },
             authUser: {
@@ -59,6 +61,29 @@ export default {
         (newMessages) => this.messages = newMessages);
         this.messagesLoading = false;
        
+        
+        let ids = [];
+        const idsDocs = await getAllUsers();
+        let array = [];
+
+        console.log(idsDocs);
+        idsDocs.forEach((doc) => {
+            console.log(doc.id);
+            ids.push(doc.id);
+        })
+        this.usersIds = ids;
+        console.log(this.idsDocs);
+        if(idsDocs){
+            idsDocs.forEach((user) => {
+            array.push(user.data());
+            console.log(array);
+           })
+           console.log(array);
+            this.usersAdmins = array;
+            console.log(this.usersAdmins);
+
+        }
+        console.log(this.usersAdmins);
     },
     unmounted() {
         this.unsubscribeAuth();
@@ -69,17 +94,24 @@ export default {
 </script>
 
 <template>
- <div class="bg-white rounded-lg shadow-md p-4 max-w-xl mx-auto mt-4">
+ <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4"
+>
     <Loader v-if="userLoading"></Loader>
     <template v-else>
-       
-        <h1 class="mb-4">Conversación con {{ this.user.email }}</h1>
 
+        
+           
+        <div> 
+            <h1 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h1>
+
+        </div>
+
+        
         <h2 class="sr-only">Mensajes</h2>
 
     
         <!-- Mensajes del chat -->
-        <div class="mb-6">
+        <div class="mb-6 p-4">
             <Loader v-if="messagesLoading"></Loader>
             <template v-else>
             <div 
@@ -111,14 +143,18 @@ export default {
             <h2 class="sr-only">Enviar mensaje</h2>
             <form action=""
             @submit.prevent="handleSendMessage"
+            class="col-8"
             >
-            <div class="flex items-center">
+            <div class="mb-2 mt-3 p-4">
                 <BaseLabel for="message" class="sr-only">Mensaje</BaseLabel>
-                <ChatInput type="text" 
-                id="message"
-                v-model="newMessage.message"
-                />
-                <BaseButton class="rounded-full p-3 ml-2"></BaseButton>
+                <div class="flex items-center mt-2">
+                    <ChatInput type="text" 
+                    id="message"
+                    v-model="newMessage.message"
+                    class="shadow"
+                    />
+                    <BaseButton class="rounded-full p-3 ml-2"></BaseButton>
+                </div>
             </div>
         </form>
         

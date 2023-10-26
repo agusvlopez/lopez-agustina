@@ -48,14 +48,18 @@ export default {
        let trainingsAll = await getTrainings();
      
        let trainingDoc;
-     
+        let contador = 0; 
+        
         trainingsAll.forEach(async doc => {
-           trainingDoc = doc.data();
-           this.trainings.push(trainingDoc);
+           if (contador < 3) {
+            // Realiza alguna acción con el elemento
+            console.log(doc);
+            trainingDoc = doc.data();
+            this.trainings.push(trainingDoc);
+            contador++; // Incrementa el contador  
+            }
+        })
            
-       });
-    
-       
        console.log(trainingsAll);
        this.trainingsLoading = false;
        console.log(this.trainings);
@@ -66,6 +70,7 @@ export default {
 </script>
 
 <template>
+<div>
     <h1 class="hidden">Home</h1>
     <div class="portada text-white py-16 text-center imgPortada">
         <div class="container mx-auto w-3/4 p-4 bg-black rounded ">
@@ -75,33 +80,31 @@ export default {
            class="inline-block px-6 py-3 mt-6"> <router-link to="/precios">Comenzar</router-link></BaseButton> 
         </div>
     </div>
-
+    
+    <h2 class="text-2xl font-semibold mt-4 p-4">Nuestros Planes de Entrenamiento</h2>
     <template 
     v-if="!trainingsLoading">
-    <section class="container mx-auto py-12" v-for="training in trainings">
-
-        <h2 class="text-2xl font-semibold mb-4">Nuestros Planes de Entrenamiento</h2>
+    <section class="container p-4 mx-auto py-10" >
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <!-- Ejemplo de tarjeta de programa -->
-            <div class="bg-white shadow-md rounded p-4">
+            <div class="bg-white shadow-md rounded p-4" v-for="training in trainings">
                 <h3 class="text-xl font-semibold mb-2 border-b-2 pb-2 border-gray-400">{{ training.name }}</h3>
                 <p>{{ training.description }}</p>            
             </div>   
         </div>
-        <div class="text-end">
-            <router-link to="/precios" class="font-bold text-indigo-600 hover:text-indigo-700">Ver precios »</router-link>
-        </div>
-   
     </section> 
+     
     </template>
     <template v-else>
         <section class="container mx-auto py-12">
             <Loader></Loader>
         </section>
     </template>
-
+    <div class="text-end pr-4 pb-2 mb-4">
+        <router-link to="/precios" class="font-bold text-indigo-600 hover:text-indigo-700">Ver precios »</router-link>
+    </div>
     <!-- Sección de Entrenadores -->
-    <section class="bg-gray-200 py-12">
+    <section class="bg-gray-200 py-12 p-4">
         <div class="container mx-auto">
             <h2 class="text-2xl font-semibold mb-4">Nuestros Entrenadores</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -109,7 +112,7 @@ export default {
                 <div class="bg-white shadow-md rounded p-4"
                 v-for="coach in coachs">
                     <div class="">
-                        <img class="h-44 w-full object-cover" :src="coach.img" :alt="coach.name">
+                        <img :src="coach.img" :alt="coach.name" class="h-44 w-full object-cover" >
                     </div>
                     <h3 class="text-lg font-semibold mb-2 mt-2">{{ coach.name }}</h3>
                     <p>Especialidad: {{ coach.specialty }}</p>
@@ -119,5 +122,5 @@ export default {
             </div>
         </div>
     </section>
-
+</div>
 </template>

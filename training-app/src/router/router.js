@@ -37,13 +37,20 @@ const router = createRouter({
 let user = {
     id: null,
     email: null,
+    rol: 'cliente',
+}
+let admin = {
+    id: null,
+    email: null,
+    rol: 'admin',
 }
 
 subscribeToAuth(newUser => user = newUser);
+subscribeToAuth(newUserAdmin => admin = newUserAdmin);
 
 //Agrego la protección de la ruta chat
 router.beforeEach((to, from) => {
-    if(user.id === null && to.meta.requiresAuth){
+    if(user.id === null && admin.id === null && to.meta.requiresAuth){
         return '/iniciar-sesion';
     }
 })

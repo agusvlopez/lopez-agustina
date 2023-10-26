@@ -71,17 +71,17 @@ export default {
             ids.push(doc.id);
         })
         this.usersIds = ids;
-        console.log(this.idsDocs);
-        if(idsDocs){
-            idsDocs.forEach((user) => {
-            array.push(user.data());
-            console.log(array);
-           })
-           console.log(array);
-            this.usersAdmins = array;
-            console.log(this.usersAdmins);
+        console.log(this.usersIds);
+        // if(idsDocs){
+        //     idsDocs.forEach((user) => {
+        //     array.push(user.data());
+        //     console.log(array);
+        //    })
+        //    console.log(array);
+        //     this.usersAdmins = array;
+        //     console.log(this.usersAdmins);
 
-        }
+        // }
         console.log(this.usersAdmins);
      
     },
@@ -97,11 +97,10 @@ export default {
     
     <div class="bg-white rounded-lg shadow-md  max-w-xl mx-auto mt-4">
     <h1 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-2">Chat</h1>
-    <div class="p-4">
-        <div v-for="admin in usersAdmins"
-       >
+    <!-- <div v-for="admin in usersAdmins">
         <div v-if="admin.rol === 'admin'">
-            <div v-for="id in usersIds">
+            <div v-for="id in usersIds" class="p-4">
+                Chateá con alguno de nuestros administradores
              <router-link 
                     class="transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800" 
                     :to="`/usuario/${id}`"
@@ -110,7 +109,10 @@ export default {
                     </router-link>
                 </div>
         </div>
-        </div>
+    
+        </div>  -->
+    <div class="p-4">
+
         <template
         v-if="!messagesLoading">
         <div>

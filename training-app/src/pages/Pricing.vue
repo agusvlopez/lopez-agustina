@@ -1,50 +1,53 @@
 <script>
+import Loader from '../components/Loader.vue';
 import {  getTrainings } from '../services/trainings';
 
 export default {
     name: 'Pricing',
+    components: { Loader },
     data() {
         return {
             trainings: [],
-        }
+            trainingsLoading: true,
+        };
     },
-    async mounted () {
+    async mounted() {
         let trainingsAll = await getTrainings();
         let trainingDoc;
-        
-        console.log(trainingsAll);
-        console.log(this.trainings);
-        console.log(this.trainings.img);
+        this.trainingsLoading = true;
         trainingsAll.forEach(doc => {
             trainingDoc = doc.data();
             this.trainings.push(trainingDoc);
         });
-        console.log(trainingDoc);
-        
-        console.log(this.trainings);
-        
+        this.trainingsLoading = false;
     }
 }
 </script>
 
 <template>
-<section class="container p-6">
+<section class="container p-6 bg-gray-200">
     <h1 class="text-center mb-4">Precios de nuestros planes de entrenamiento</h1>
-    <div class="flex p-4 flex-wrap">
-    <div class="mb-4 max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden"
-    v-for="training in trainings">
-        <div class="">
-        <div class="">
-            <img class="h-72 w-full object-cover" :src="training.img" alt="Imagen de la card">
+    <template v-if="!trainingsLoading">
+        <div class="flex p-4 flex-wrap">
+        <div class="mb-4 max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden"
+        v-for="training in trainings">
+            <div>
+            <div>
+                <img class="h-72 w-full object-cover" :src="training.img" :alt="training.name">
+            </div>
+            <div class="p-8">
+            <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
+                <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
+                <p class="mt-2 text-gray-500">{{training.description}}</p>
+                <p class="mt-4 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
+            </div>
+            </div>
         </div>
-        <div class="p-8">
-        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
-            <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
-            <p class="mt-2 text-gray-500">{{training.description}}</p>
-            <p class="mt-4 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
         </div>
-        </div>
-    </div>
-    </div>
+    </template>
+    <template 
+    v-else>
+        <Loader></Loader>
+    </template>
 </section>
 </template>
