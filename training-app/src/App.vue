@@ -1,13 +1,12 @@
 <script>
 import Loader from './components/Loader.vue';
-import Chat from './pages/Chat.vue';
 import { subscribeToAuth, logout } from './services/auth.js';
 import { getUserProfileById } from './services/user.js';
 
 
 export default {
     name: "App",
-    components: { Chat, Loader },
+    components: { Loader },
     data() {
         return {
             registerLoading: false,

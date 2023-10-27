@@ -1,5 +1,5 @@
 import {db} from './firebase.js';
-import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy, getDocs, doc, deleteDoc, where } from "firebase/firestore";
+import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy, getDocs, doc, deleteDoc, where, updateDoc } from "firebase/firestore";
 
   const refTraining = collection(db, 'trainings');
   console.log(refTraining);
@@ -17,6 +17,13 @@ export function trainingsSaveTraining(data){
     });
 };
 
+export function trainingsEditTraining(data){
+  
+  return updateDoc(refTraining, {
+      ...data,
+      created_at: serverTimestamp(),
+  });
+};
 export async function getTrainings(){
   let getTrainings = await getDocs(refTraining);
   console.log(getTrainings);
@@ -38,7 +45,6 @@ export async function deleteDocument(documentId) {
 }
 
 
-
 export async function getTrainingDocs(){
   let trainingDocId;
   let documents = [];
@@ -46,9 +52,7 @@ export async function getTrainingDocs(){
   console.log(querySnapshot);
 
   querySnapshot.forEach((doc) => {
-       // Aquí puedes acceder a los datos de cada documento.
-       // Por ejemplo, doc.data() te proporcionará los datos del documento.
-       // Puedes ajustar esta parte según tu estructura de datos real.
+
            const documentData = {
                id: doc.id, // ID del documento
                ...doc.data(), // Datos del documento
@@ -56,16 +60,7 @@ export async function getTrainingDocs(){
    
            documents.push(documentData);
        });
-       // const snapshot = await getDocs( 
-       //     query(privateChatAdmin,
-       //     where('users', '==', {
-       //         [adminId]: true,
-       //         [receiverId]: true,
-       //     }),
-       //     //cuando encuentra un documento con esos valores deje de buscar:
-       //     limit(1),
-       //  ));
-    
+
        trainingDocId = querySnapshot.docs[0];
        console.log(trainingDocId.id);
        return trainingDocId.id;
@@ -89,6 +84,7 @@ export async function buscarYEliminarDocumento(valor) {
       
       // Supongamos que quieres eliminar el primer documento encontrado (ajusta esta lógica según tus necesidades).
       const documentToDelete = querySnapshot.docs[0];
+      console.log(documentToDelete);
       const documentRef = doc(db, collectionName, documentToDelete.id);
     
      deleted = await deleteDoc(documentRef);

@@ -35,26 +35,10 @@ export default {
                 rol: null,
             },
             unsubscribeAuth: () => {},
-            newMessage: {
-                message: '',
-            },
-            messagesLoading: true,
-            messages: [],
-            unsubscribeMessages: () => {},
+
         };
     },
     methods: {
-        handleSendMessage() {
-            sendPrivateChatMessage({
-                senderId: this.authUser.id,
-                receiverId: this.user.id,
-                message: this.newMessage.message
-            });
-            this.newMessage.message = '';
-        },
-        formatDate(data) {
-            return dateToString(data);
-        }
     },  
     async mounted() {
         let user = await getAllUsers();
@@ -89,22 +73,18 @@ export default {
 
         idsDocs.forEach(async (doc) => {      
             data = doc.data();
-            console.log(data.email);
             userId = {
                 id: doc.id,
                 email: data.email,
                 rol: data.rol
             }; 
-             console.log(userId);
              ids.push(userId); 
         });
 
         this.users = ids;
 
-        console.log(this.users);
         let u = ids;
         this.usersIds.push(u);
-        console.log(this.usersIds);
 
         this.userLoading = true;
       
@@ -113,13 +93,7 @@ export default {
 
         this.user = await getUserProfileById(userId);
         
-        this.unsubscribeMessages = await subscribeToPrivateChat({
-            senderId: this.authUser.id,
-            receiverId: this.user.id
-        },
-        (newMessages) => this.messages = newMessages);
-        this.messagesLoading = false;
-       
+
         if(idsDocs){
             idsDocs.forEach((user) => {
             array.push(user.data());
@@ -132,7 +106,6 @@ export default {
     },
     unmounted() {
         this.unsubscribeAuth();
-        this.unsubscribeMessages();
     }
 };
 </script>
@@ -142,11 +115,12 @@ export default {
     <div> 
         <h1 class="mb-4 mt-4">Chats con clientes</h1>
     </div>
-<div  class="flex flex-wrap"
+<div class="flex flex-wrap"
 >
     <template
     v-for="user in this.users"
-    :key="user.id"> 
+    :key="user.id"
+    v-if="!this.userLoading"> 
     <div 
     v-if="user.email !== this.authUser.email">
         <div class="bg-white p-4 rounded-lg shadow m-2"> 
@@ -156,13 +130,15 @@ export default {
 
                  <router-link
                 :to="`/cliente/${user.id}/chat`"
-                class="transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800"
+                class="m-2 transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800"
                 >Ver mensajes</router-link>
-              
-
             </div>
         </div>
     </div>
+    </template>
+    <template
+    v-else>
+        <Loader></Loader>
     </template>
 </div>
 

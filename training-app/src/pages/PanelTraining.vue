@@ -5,7 +5,7 @@ import BaseInput from '../components/BaseInput.vue';
 import BaseLabel from '../components/BaseLabel.vue';
 import BaseTextarea from '../components/BaseTextarea.vue';
 import ChatInput from '../components/ChatInput.vue';
-import { getTrainings, trainingsSaveTraining, deleteDocument, getTrainingDocs, buscarYEliminarDocumento } from '../services/trainings';
+import { getTrainings, trainingsSaveTraining, getTrainingDocs, buscarYEliminarDocumento } from '../services/trainings';
 import { db } from '../services/firebase';
 import Loader from '../components/Loader.vue';
 
@@ -19,10 +19,10 @@ export default {
             deletedTraining: false,
             documentId: null,
             trainings: [],
-            doc: null,
             editTraining: false,
             valorDeEliminacion: '',
             alert: false,
+            editForm: false,
             training: {
                 name: '',
                 img: '',
@@ -39,14 +39,14 @@ export default {
                 price: 0,
                 difficulty: '',
             },
+            
         };
     },
     methods: {
      async saveTraining() {
             let array = []; 
-            this.trainingsLoading = true;
-            trainingsSaveTraining({
-               
+           
+            trainingsSaveTraining({ 
                 name: this.training.name,
                 img: this.training.img,
                 description: this.training.description,
@@ -66,100 +66,87 @@ export default {
              
                 // this.newMessageSaving = false;
             });
-            let trainingDoc;
-            let trainingsAll = await getTrainings();
-                trainingsAll.forEach(async doc => {
-                trainingDoc = doc.data();
-                array.push(trainingDoc);
-            console.log(this.trainings);
-                });
+             let trainingDoc;
+             let allTrainings = await getTrainings();
+             allTrainings.forEach(async d => {
+                 trainingDoc = d.data();
+                 array.push(trainingDoc);
+             });
                 this.trainings = array;
            
         },
 
         async deleteTraining(valor) {
+            let docs = [];
             this.deletedTraining = true;
-            this.trainingsLoading = true; 
+            let trainingDocument;
             buscarYEliminarDocumento(valor)
             
-            let trainingsDocs = await getTrainings()
-             let trainingDoc;
-             let docs = [];
-                trainingsDocs.forEach(async doc => {
-                 trainingDoc = doc.data();
-                 console.log(trainingDoc.name);
-                 docs.push(trainingDoc);
-                 console.log(this.trainings);
-             });
-             this.trainings = docs; 
-            console.log(this.trainings)
-            console.log(trainingDoc)
+            let trainingsDocs = await getTrainings();
 
-            this.editLoading = false;
-            this.deletedTraining = false;
-            this.trainingsLoading = false;
-            this.alert = false;
-            this.valorDeEliminacion = '';
-        },
-        async edit() {
-            let trainingDocId;
-            const documents = [];
-            let idT;
-            this.editLoading = true;
-            // this.trainings.forEach((t)=>{
-            //     idT = t;
-            // });
-            // console.log(idT);
-            // this.training = idT;
-            const querySnapshot = await getDocs(collection(db, 'trainings'));
-            console.log(querySnapshot);
-            // let trainingDocs = allTrainings.docs;
-
-            querySnapshot.forEach(async (doc) => {
-                // Aquí puedes acceder a los datos de cada documento.
-                // Por ejemplo, doc.data() te proporcionará los datos del documento.
-                // Puedes ajustar esta parte según tu estructura de datos real.
-                    const documentData = {
-                        
-                        ...doc.data(), // Datos del documento
-                    };
-            
-                    documents.push(documentData);
-                });
-                // const snapshot = await getDocs( 
-                //     query(privateChatAdmin,
-                //     where('users', '==', {
-                //         [adminId]: true,
-                //         [receiverId]: true,
-                //     }),
-                //     //cuando encuentra un documento con esos valores deje de buscar:
-                //     limit(1),
-                //  ));
-    
+             
+            trainingsDocs.forEach(async docu => {
+                trainingDocument = docu.data();
+                docs.push(trainingDocument);
+            });
+            this.trainings = docs;
           
+            this.alert = false;
+            this.trainingsLoading = false;
+            this.deletedTraining = false;
+             this.valorDeEliminacion = ''; 
+        },
 
-            this.editTraining = false;
-            // let newTrainingData = {
-            //     name: this.newTraining.name,
-            //     img: this.newTraining.img,
-            //     description: this.newTraining.description,
-            //     coach: this.newTraining.coach,
-            //     price: this.newTraining.price,
-            //     difficulty: this.newTraining.difficulty,
-            // };      
-            trainingDocId = querySnapshot.docs;
-            console.log(trainingDocId);
-            // let idsTraining = idT;
-            // console.log(idsTraining);
-            try {     
-                await updateDoc('trainings', trainingDocId);
-                this.editLoading = false;
-            console.log('Documento editado con éxito: ', newTrainingData);
+        async edit(document) {
+            this.trainingsLoading = true;
+            let trainingsComplete = await getTrainings();
+            let data;
+            let trainingId;
+            let ids = [];
+            console.log(trainingsComplete);
+            trainingsComplete.forEach(async (d) => {      
+                data = d.data();
+            console.log(data.name);
+            trainingId = {
+                id: d.id,
+                name: data.name,
+                img: data.img,
+                description: data.description,
+                coach: data.coach,
+                price: data.price,
+                difficulty: data.difficulty,
+            }; 
 
+             ids.push(trainingId); 
+
+            });
+
+            this.trainings = ids;
+
+            const docRef = doc(db, 'trainings', trainingId.id);
+            const nuevosDatos = {
+                name: document.name,
+                img: document.img,
+                description: document.description,
+                coach: document.coach,
+                price: document.price,
+                difficulty: document.difficulty,
+            };
+
+
+            try {
+                this.editLoading = true;
+                await updateDoc(docRef, nuevosDatos);
+                this.training = nuevosDatos;
+                console.log('Documento actualizado con éxito');
             } catch (error) {
-                console.error('Error al editar el documento:', error);
+            console.error('Error al actualizar el documento:', error);
             }
-        
+
+            this.training = nuevosDatos;
+            this.editLoading = false;
+            this.trainingsLoading = false;
+   
         },
 
         editTrue() {
@@ -173,9 +160,11 @@ export default {
         openAlert(event) {
             this.valorDeEliminacion = '';
             this.alert = true;
-            console.log(event);
             this.valorDeEliminacion = event;
-            console.log(this.valorDeEliminacion);
+        },
+        openEdit(document){
+            this.editForm = true;
+            this.training = document;
         },
         closeAlert(){
             this.alert = false;
@@ -191,12 +180,10 @@ export default {
         let trainingsAll = await getTrainings();
       
         let trainingDoc;
-        trainingsAll.forEach(async doc => {
-            trainingDoc = doc.data();
-            this.trainings.push(trainingDoc);
-            
+        trainingsAll.forEach(async d => {
+            trainingDoc = d.data();
+            this.trainings.push(trainingDoc); 
         });
-        console.log(trainingsAll);
         this.trainingsLoading = false;
 
         return this.trainingDoc;
@@ -211,8 +198,8 @@ export default {
     <h1>Panel de entrenamientos</h1>
     <h2>Todos los entrenamientos </h2>
    
-    <div class="bg-red-100 border border-red-400 text-red-700 p-4 py-fit rounded relative max-w-fit mx-auto" role="alert"
-        v-if="alert &&  !trainingsLoading  && !deletedTraining"
+    <div id="alertEliminar" class="bg-red-100 border border-red-400 text-red-700 p-4 py-fit rounded relative max-w-fit mx-auto" role="alert"
+        v-if="alert && !trainingsLoading  && !deletedTraining"
         >
         <p class="font-bold">¡Atención!</p>
         <span class="block sm:inline">Estás a punto de eliminar <span class="font-bold">{{ this.valorDeEliminacion }}. </span>¿Estas seguro que queres eliminarlo?</span>
@@ -221,7 +208,7 @@ export default {
         >
         <div class="flex justify-center">
             <BaseButton 
-                class="bg-red-500 hover:bg-red-600 mt-2">Eliminar
+                class="bg-red-500 hover:bg-red-600 mt-2"> Eliminar
             </BaseButton>
         </div>
         </form>
@@ -230,12 +217,12 @@ export default {
             <title>Cerrar</title>
             <path d="M14.348 5.652a.5.5 0 01.704.704L9.703 10l5.35 5.35a.5.5 0 01-.704.704l-5.35-5.35-5.35 5.35a.5.5 0 01-.704-.704l5.35-5.35-5.35-5.35a.5.5 0 01.704-.704l5.35 5.35z" />
         </svg>
-    </span>
- </div>
+        </span>
+    </div>
 
 <div class="flex p-4 flex-wrap">    
     <template
-    v-if="!trainingsLoading  && !deletedTraining" >
+    v-if="!trainingsLoading  && !deletedTraining && !editLoading" >
     <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden p-4"
     v-for="training in trainings"
     :key="training.id"  
@@ -244,7 +231,7 @@ export default {
     @submit.prevent="openAlert(training.name)">
         <div>
         <div>
-            <img class="h-24 w-full object-cover" :src="training.img" alt="Imagen de la card">
+            <img class="h-24 w-full object-cover" :src="training.img" :alt="training.name">
         </div>
         <div class="p-4">
         <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
@@ -256,13 +243,13 @@ export default {
             class="bg-red-500 hover:bg-red-600 mt-2"
             :value="training.name"
             id="buttonAlert"
-           >Eliminar</BaseButton>
+           >Eliminar </BaseButton>
         </div>
-        </div> 
-    </form>
-            <div class="flex justify-end align-middle">
-                <button @click="editTrue" class="font-bold text-indigo-500 flex items-center"> Editar entrenamiento <span class="editIcon block ml-1"></span></button>
-            </div>
+        </div>
+     </form>
+        <div class="flex justify-end align-middle">
+            <button @click="openEdit(training)" class="font-bold text-indigo-500 flex items-center"> Editar entrenamiento <span class="editIcon block ml-1"></span></button>
+        </div>
         </div>  
     </template>
     <template
@@ -272,7 +259,7 @@ export default {
     </div>
     </section>
     <template 
-    v-if="!editTraining">
+    v-if="!editForm">
     <h2 class="mt-4">Cargar un nuevo entrenamiento</h2>
     <form 
         action="#" 
@@ -358,11 +345,10 @@ export default {
     </template>
 
     <template
-    v-if="editTraining">
+    v-if="editForm">
     <form 
         action="#" 
-        @submit.prevent="edit"
-
+        @submit.prevent="edit(this.training)"
         >
     <div class="w-auto">
         <section class="flex flex-wrap">
@@ -371,9 +357,10 @@ export default {
             <div class="mt-2">
                 <BaseInput
                 id="name" 
-                v-model="newTraining.name"
+                v-model="training.name"
                 class="shadow"
-                :placeholder="this.training.name"
+                :placeholder="training.name"
+                required
                 ></BaseInput> 
             </div>
         </div>
@@ -382,9 +369,10 @@ export default {
             <div class="mt-2">
                 <BaseInput
                 id="img" 
-                v-model="newTraining.img"
+                v-model="training.img"
                 class="shadow"
                 :placeholder="training.img"
+                required
                 ></BaseInput> 
             </div>
         </div>
@@ -394,10 +382,11 @@ export default {
             <div class="mt-2">
                 <BaseTextarea
                 id="description" 
-                v-model="newTraining.description"
+                v-model="training.description"
                 class="shadow"
                 rows="4"
                 :placeholder="training.description"
+                required
                 ></BaseTextarea> 
             </div>
         </div>
@@ -408,9 +397,10 @@ export default {
             <div class="mt-2">
                 <BaseInput
                 id="coach" 
-                v-model="newTraining.coach"
+                v-model="training.coach"
                 class="shadow"
                 :placeholder="training.coach"
+                required
                 ></BaseInput>           
             </div>
         </div>
@@ -420,9 +410,10 @@ export default {
                 <BaseInput
                 type="number"
                 id="price" 
-                v-model="newTraining.price"
+                v-model="training.price"
                 class="shadow"
                 :placeholder="training.price"
+                required
                 ></BaseInput>            
             </div>
         </div>
@@ -431,9 +422,10 @@ export default {
             <div class="mt-2">
                 <BaseInput
                 id="difficulty" 
-                v-model="newTraining.difficulty"
+                v-model="training.difficulty"
                 class="shadow"
                 :placeholder="training.difficulty"
+                required
                 ></BaseInput>             
             </div>
         </div>

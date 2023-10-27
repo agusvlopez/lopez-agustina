@@ -55,29 +55,21 @@ import CardRadio from "../components/CardRadio.vue";
         formatDate(data) {
             return dateToString(data);
         },
-        async edit() {
-            
+        async edit() {  
             const documentoRef = doc(db, 'users', this.authUser.id);
-            console.log(documentoRef);
-
             this.authUser.rol = this.newRol;
             this.editRol = false;
-            console.log(this.authUser.rol);
             let newRolUser = {rol: this.authUser.rol}
-            
-           
-            try {
-                
+
+            try {   
                 await updateDoc(documentoRef, newRolUser);
                 this.rolLoading = false;
-            console.log('Documento editado con éxito');
+                console.log('Documento editado con éxito');
             } catch (error) {
-            console.error('Error al editar el documento:', error);
-        }
-        
+                console.error('Error al editar el documento:', error);
+            } 
         },
-        editTrue() {
-          
+        editTrue() { 
             this.editRol = true;
         },
         editFalse() {
@@ -106,10 +98,8 @@ import CardRadio from "../components/CardRadio.vue";
             this.messagesLoading = false;
 
             let usuarioDocument = await getUserProfileById(this.authUser.id);
-            console.log(usuarioDocument);
-
             this.authUser.rol = usuarioDocument.rol;
-            console.log( this.authUser.rol); 
+            
             this.rolLoading = false;
         });
        
@@ -131,17 +121,25 @@ import CardRadio from "../components/CardRadio.vue";
 
         <section>
         <h2 class="text-xl font-bolder">Administrar mis datos</h2>
-        <div class="max-w-sm overflow-hidden shadow-lg bg-white mt-4 rounded-md">
-        <div class="px-6 py-4">
+       
+        <div class="max-w-md overflow-hidden shadow-lg bg-white mt-4 rounded-md">
+        <div class="px-6 py-4 flex">
+            <div class="userIcon mr-4">
+                <img src="../imgs/user.png" alt="Icono de usuario" class="w-full">
+            </div>
+            <div>
             <p class="text-lg mb-2"><span class="font-bold">Email:</span> {{ authUser.email }}</p>
             <template v-if="!rolLoading">
                 <p class="text-lg" ><span class="font-bold">Rol:</span> {{ authUser.rol }}</p>
             </template>
+           
             <template v-else>
                 <Loader></Loader>
             </template>
+          
             <div class="flex justify-end align-middle">
                 <button @click="editTrue" class="font-bold text-indigo-500 flex items-center"> Editar rol <span class="editIcon block ml-1"></span></button>
+            </div>
             </div>
         </div>
         <div class="p-2" v-if="editRol">
