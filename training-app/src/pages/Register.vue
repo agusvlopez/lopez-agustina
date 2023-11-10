@@ -88,7 +88,7 @@ import { register } from '../services/auth.js';
                 placeholder="Ingresá tu contraseña"
             />
         </div>
-        <div>
+        <!-- <div>
           <p class="mb-3 font-semibold">Elegí tu rol:</p>
           <div class="flex justify-center gap-3 mb-8">
             <label class="cursor-pointer" for="admin">
@@ -100,7 +100,7 @@ import { register } from '../services/auth.js';
               <CardRadio>Cliente</CardRadio>
             </label>
           </div>
-        </div>
+        </div> -->
        <BaseButton
        :loading="registerLoading"
        class=" w-full"

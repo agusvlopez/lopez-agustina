@@ -62,18 +62,18 @@ h2 {
  
   
 /* Loader mini */
-.loader-sm {
-  width: 20px;
-  height: 20px;
+.loader-mini {
+  width: 18px;
+  height: 18px;
   display: inline-block;
   position: relative;
 }
-.loader-sm::after,
-.loader-sm::before {
+.loader-mini::after,
+.loader-mini::before {
   content: '';  
   box-sizing: border-box;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   border: 2px solid #5e5e5e;
   position: absolute;
@@ -82,7 +82,7 @@ h2 {
   animation: animloader 2s linear infinite;
   
 }
-.loader-sm::after {
+.loader-mini::after {
   animation-delay: 1s;
 }
 

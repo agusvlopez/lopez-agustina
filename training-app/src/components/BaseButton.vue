@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 import Loader from './Loader.vue';
 
     export default {
@@ -12,6 +12,16 @@ import Loader from './Loader.vue';
     },
 
 }
+</script> -->
+<script setup>
+import Loader from './Loader.vue';
+
+defineProps({
+    loading: {
+        type: Boolean,
+        default: false,
+    }
+});
 </script>
 
 <template>
@@ -22,8 +32,9 @@ import Loader from './Loader.vue';
         <slot>Enviar</slot>
     </div>
     <div v-else>
-        <slot class="disabled:bg-indigo-200">Enviar</slot> 
-        <div class="sr-only">Cargando...</div>
+        <!-- <slot class="disabled:bg-indigo-200">Enviar</slot> 
+        <div class="sr-only">Cargando...</div> -->
+        <Loader size="small" />
     </div>
     </button>
 

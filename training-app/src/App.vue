@@ -1,48 +1,27 @@
-<script>
+<script setup>
+import { useRouter } from 'vue-router';
 import Loader from './components/Loader.vue';
-import { subscribeToAuth, logout } from './services/auth.js';
-import { getUserProfileById } from './services/user.js';
+import { logout } from './services/auth.js';
+import { useAuth } from './functions/useAuth';
 
+const { handleLogout } = useLogout();
+const { user, registerLoading } = useAuth();
 
-export default {
-    name: "App",
-    components: { Loader },
-    data() {
-        return {
-            registerLoading: false,
-            showSubmenu: false,
-            mobileMenuOpen: false,
-            mobileSubmenuOpen: false,
-            user: {
-                id: null,
-                email: null,
-                rol: null
-            },
-        }
-    },
-    methods:  {
-       async handleLogout(){
-           logout();
-           this.$router.push('/iniciar-sesion');
-        },
-        
-    },
-    async mounted() {
-        subscribeToAuth( async user => {
-     
-            this.user = {...user};
-            if(this.user.id) {
-                 this.registerLoading = true;
-            }
-
-            let result = await getUserProfileById(this.user.id);
-            this.user.rol = result.rol;
-
-            this.registerLoading = false;
-        });
-
+function useLogout() {
+    const router = useRouter();
+    
+    const handleLogout = () => {
+        logout();
+        router.push('/iniciar-sesion');
     }
-};
+
+    return {
+        handleLogout,
+    }
+}
+
+
+
 
 </script>
 
@@ -92,7 +71,7 @@ export default {
                 </li>
             </template>
             <template
-             v-if="this.user.rol === 'admin' && !registerLoading " 
+             v-if="user.rol === 'admin' && !registerLoading " 
             >
                 <li>
                     <router-link
@@ -139,7 +118,7 @@ export default {
                 </form>
         </template>
         <template
-        v-if="this.user.rol === 'admin' && !registerLoading" 
+        v-if="user.rol === 'admin' && !registerLoading" 
         >
             <router-link to="/panel-admin" class="block text-white p-3 hover:bg-gray-600">Panel Admin</router-link>
         </template>

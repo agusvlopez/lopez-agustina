@@ -1,4 +1,4 @@
-<script>
+<script >
 import BaseButton from '../components/BaseButton.vue';
 import Loader from '../components/Loader.vue';
 import { getTrainings } from '../services/trainings';

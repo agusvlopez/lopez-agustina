@@ -1,10 +1,10 @@
-<script>
+<!-- <script>
 
 export default {
     name: 'SkeletonLoader',
 
 }
-</script>
+</script> -->
 
 <template>
 <div class="sr-only">Cargando...</div>
