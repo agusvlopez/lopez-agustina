@@ -5,6 +5,7 @@ import { createUserProfile } from './user.js';
 let userData = {
     id: null,
     email: null,
+    rol: null,
 }
 //definimos la lista de observers
 let observers = [];
@@ -19,6 +20,7 @@ onAuthStateChanged(auth, user => {
         setUserData({
             id: user.uid,
             email: user.email,
+            rol: user.rol,
         });
         localStorage.setItem('user', JSON.stringify(userData));
         
@@ -43,7 +45,7 @@ export async function register({email, password, rol}) {
         return {
             id: userCredentials.user.uid,
             email: userCredentials.user.email,
-            rol: userCredentials.user.rol,
+            rol: 'cliente',
         }  
     } catch (error) {
         return {
@@ -60,7 +62,7 @@ export async function register({email, password, rol}) {
 * @param {{email: string, password: string}} user 
 * @return {Promise}
 */
-export function login({email, password}){
+export function login({email, password, rol}){
     return signInWithEmailAndPassword(auth, email, password)
     .then(userCredentials => {
 
@@ -150,5 +152,6 @@ function clearUserData() {
     setUserData({
         id: null,
         email: null,
+        rol: null
     });
 }

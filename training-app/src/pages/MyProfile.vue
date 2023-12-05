@@ -25,7 +25,7 @@ import CardRadio from "../components/CardRadio.vue";
             newRol: '',
             editRol: false,
             user: {
-                id: 'HZSqZ8YP0OafEltH7j1assYE0AT2',
+                id: 'd6dfuuXe7laEyCh33M0uxKtb9xk1',
                 email: 'admin@admin.com',
                 rol: 'admin'
             },
@@ -173,7 +173,7 @@ import CardRadio from "../components/CardRadio.vue";
 
         <section v-if="authUser.rol == 'cliente'">
         <h2 class="text-xl font-bolder">Mis mensajes</h2>
-        <p class="mt-2 font-bold text-indigo-600 hover:text-indigo-700"> <router-link to="/usuario/HZSqZ8YP0OafEltH7j1assYE0AT2/chat">Ir a la conversación »</router-link> </p>
+        <p class="mt-2 font-bold text-indigo-600 hover:text-indigo-700"> <router-link to="/usuario/d6dfuuXe7laEyCh33M0uxKtb9xk1/chat">Ir a la conversación »</router-link> </p>
         <div class="bg-white rounded-lg shadow-md max-w-sm mx-auto m-4">
            <div> 
                <h2 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h2>

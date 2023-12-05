@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { useRouter } from 'vue-router';
 import Loader from './components/Loader.vue';
 import { logout } from './services/auth.js';
@@ -19,10 +19,44 @@ function useLogout() {
         handleLogout,
     }
 }
+</script> -->
+<script setup>
+import { reactive, ref } from 'vue';
+import Loader from './components/Loader.vue';
+import { subscribeToAuth, logout } from './services/auth.js';
+import { getUserProfileById } from './services/user.js';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+const registerLoading = ref(false);
+const showSubmenu = ref(false);
+const mobileMenuOpen = ref(false);
+const mobileSubmenuOpen = ref(false);
+const user = reactive({
+  id: null,
+  email: null,
+  rol: null,
+});
 
+const handleLogout = () => {
+  logout();
+  router.push('/iniciar-sesion');
+  user.rol = null;
+};
 
+subscribeToAuth(async (userData) => {
+  user.id = userData.id;
+  user.email = userData.email;
 
+  if (user.id) {
+    registerLoading.value = true;
+  }
+
+  let result = await getUserProfileById(user.id);
+  user.rol = result.rol;
+
+  registerLoading.value = false;
+});
 </script>
 
 <template>
@@ -41,7 +75,7 @@ function useLogout() {
                 </li>
 
             <template
-            v-if="user.id === null"
+            v-if="user.id == null"
             >
                 <li>
                     <router-link to="/registro">Registrarse</router-link>
@@ -97,7 +131,7 @@ function useLogout() {
       <router-link to="/" class="block text-white p-3 hover:bg-gray-600">Home</router-link>
       <router-link to="/precios" class="block text-white p-3 hover:bg-gray-600">Precios de planes</router-link>
       <template
-        v-if="user.id === null"
+        v-if="user.id == null"
         >
         <router-link to="/registro" class="block text-white p-3 hover:bg-gray-600">Registrarse</router-link>
         <router-link to="/iniciar-sesion" class="block text-white p-2 hover:bg-gray-600">Iniciar sesión</router-link>

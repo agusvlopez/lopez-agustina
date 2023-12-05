@@ -1,4 +1,6 @@
-<script>
+<!-- PASAR A API DE COMPOSICION -->
+
+<!-- <script>
 import BaseButton from '../components/BaseButton.vue';
 import BaseInput from '../components/BaseInput.vue';
 import BaseLabel from '../components/BaseLabel.vue';
@@ -49,8 +51,44 @@ import { register } from '../services/auth.js';
     },
 
 }
-</script>
+</script> -->
+<script setup>
+import { ref } from 'vue';
+import BaseButton from '../components/BaseButton.vue';
+import BaseInput from '../components/BaseInput.vue';
+import BaseLabel from '../components/BaseLabel.vue';
+import StatusMessage from '../components/StatusMessage.vue';
+import { register } from '../services/auth.js';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+const registerLoading = ref(false);
+const registerError = ref(false);
+const newUser = ref({
+  email: '',
+  password: '',
+  rol: 'cliente',
+});
+
+const handleSubmit = async () => {
+  registerLoading.value = true;
+  try {
+    await register({ ...newUser.value });
+    if (newUser.value.email && newUser.value.password) {
+      // Redirect to home on successful registration
+      router.push('/');
+      registerError.value = false;
+    } else {
+      // Redirect to registration page if required fields are not filled
+      router.push('/registro');
+      registerError.value = true;
+    }
+  } catch (error) {
+    // Handle error message
+  }
+  registerLoading.value = false;
+};
+</script>
 <template>
 <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="bg-white p-8 rounded-lg shadow-md w-96">

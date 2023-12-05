@@ -11,12 +11,12 @@ export async function getUserProfileById(id){
 
     //Busco el documento
     const refUser = doc(db, `users/${id}`);
+    console.log(refUser);
     const docSnapshot = await getDoc(refUser);
-
+    console.log(docSnapshot);
     return {
         id: docSnapshot.id,
-        email: docSnapshot.data().email,
-        rol: docSnapshot.data().rol,
+        ...docSnapshot.data()
     }
 }
 /**

@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 import Loader from '../components/Loader.vue';
 import { subscribeToAuth } from '../services/auth';
 import { getAllPrivateChatAdmin, getPrivateChatDocs, getUserChat, sendPrivateChatMessage, subscribeToPrivateChat } from '../services/private-chat';
@@ -142,6 +142,64 @@ export default {
         this.unsubscribeMessages();
     }
 };
+</script> -->
+
+<script setup>
+import BaseButton from '../components/BaseButton.vue';
+import Loader from '../components/Loader.vue';
+import ChatInput from '../components/ChatInput.vue';
+import BaseLabel from '../components/BaseLabel.vue';
+import { sendPrivateChatMessage, subscribeToPrivateChat } from '../services/private-chat';
+import { dateToString } from '../helpers/date';
+import { useAuth } from '../functions/useAuth';
+import { useUserProfile } from '../functions/useUserProfile';
+import { onUnmounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const { user: authUser } = useAuth();
+const { user, userLoading } = useUserProfile(route.params.id);
+const { newMessage, messages, messagesLoading, handleSendMessage } = usePrivateChat(authUser, user);
+
+function usePrivateChat(senderUser, receiverUser) {
+  const newMessage = ref({
+    message: '',
+  });
+  const messagesLoading = ref(true);
+  const messages = ref([]);
+  let unsubscribeMessages = () => {};
+
+  async function handleSendMessage() {
+    sendPrivateChatMessage({
+      senderId: senderUser.value.id,
+      receiverId: receiverUser.value.id,
+      message: newMessage.value.message,
+    });
+    newMessage.value.message = '';
+  }
+
+  watch(receiverUser, async (newReceiverUser) => {
+    if (newReceiverUser.id !== null) {
+      unsubscribeMessages = await subscribeToPrivateChat(
+        {
+          senderId: senderUser.value.id,
+          receiverId: newReceiverUser.id,
+        },
+        (newMessages) => (messages.value = newMessages)
+      );
+      messagesLoading.value = false;
+    }
+  });
+
+  onUnmounted(() => unsubscribeMessages());
+
+  return {
+    newMessage,
+    messages,
+    messagesLoading,
+    handleSendMessage,
+  };
+}
 </script>
 
 <template>
@@ -184,7 +242,7 @@ export default {
                 }"
                 >
                     {{ message.message }}
-                    <div class="text-right">{{ formatDate(message.created_at) || "Enviando..." }}</div>
+                    <div class="text-right">{{ dateToString(message.created_at) || "Enviando..." }}</div>
                 </div>
             </div>
             </template>

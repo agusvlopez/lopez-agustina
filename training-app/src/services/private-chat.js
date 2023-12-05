@@ -4,6 +4,7 @@ import { db } from "./firebase";
 //cache
 const privateChatCache = {};
 const refChat = collection(db, 'private-chats');
+
 /**
 * 
 * @param {senderId: string, receiverId: string, message: string} data

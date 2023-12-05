@@ -10,15 +10,16 @@ export function useAuth() {
         email: null,
         rol: null,
     });
-
     let unsubscribeAuth;
+    
     onMounted(async () => {
         unsubscribeAuth = subscribeToAuth(newUser => user.value = {...newUser});
         if(user.value.id) {
             registerLoading.value = true;
         }
         let result = await getUserProfileById(user.value.id);
-        user.value.rol = result.value.rol;
+        console.log(result);
+        user.value.rol = result.rol;
 
         registerLoading.value = false;
     });

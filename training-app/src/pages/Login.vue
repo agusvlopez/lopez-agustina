@@ -14,6 +14,7 @@ const loginError = ref(false);
 const form = ref({
     email: '',
     password: '',
+    rol: ''
 })
 
 const doLogin = async () => {

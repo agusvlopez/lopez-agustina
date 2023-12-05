@@ -32,26 +32,13 @@ import { getUserProfileById } from '../services/user';
 </script> -->
 <!-- CHEQUEAR SI HACE FALTA QUE EXISTA ESTE COMPONENTE -->
 <script setup>
-import { onMounted, ref } from 'vue';
 import SkeletonLoader from '../components/SkeletonLoader.vue';
-import { getUserProfileById } from '../services/user';
 import { useRoute } from 'vue-router';
-
+import { useUserProfile } from '../functions/useUserProfile'
 const route = useRoute();
+const { user, userLoading } = useUserProfile(route.params.id);
 
-const userLoading = ref(true);
-const users = ref([]);
-const user = ref({
-    id: null, 
-    email: null,
-    rol: null,
-});
 
-onMounted(async () => {
-    userLoading.value = true;
-    user.value = await getUserProfileById(route.params.id);
-    userLoading.value = false;
-})
 </script>
 
 <template>

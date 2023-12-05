@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 import { getAllUsers, getUserProfileById } from '../services/user';
 import { dateToString } from '../helpers/date';
 import Loader from '../components/Loader.vue';
@@ -91,12 +91,71 @@ export default {
     }
    
 }
+</script> -->
+<script setup>
+import BaseButton from '../components/BaseButton.vue';
+import Loader from '../components/Loader.vue';
+import ChatInput from '../components/ChatInput.vue';
+import BaseLabel from '../components/BaseLabel.vue';
+import { sendPrivateChatMessage, subscribeToPrivateChat } from '../services/private-chat';
+import { dateToString } from '../helpers/date';
+import { useAuth } from '../functions/useAuth';
+import { useUserProfile } from '../functions/useUserProfile';
+import { onUnmounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const { user: authUser } = useAuth();
+const { user, userLoading } = useUserProfile(route.params.id);
+const { newMessage, messages, messagesLoading, handleSendMessage } = usePrivateChat(authUser, user);
+
+function usePrivateChat(senderUser, receiverUser) {
+    const newMessage = ref({
+        message: '',
+    });
+    const messagesLoading = ref(true);
+    const messages = ref([]);
+    let unsubscribeMessages = () => {};
+
+    async function handleSendMessage() {
+        sendPrivateChatMessage({
+            senderId: senderUser.value.id,
+            receiverId: receiverUser.value.id,
+            message: newMessage.value.message,
+        });
+        newMessage.value.message = '';
+    }
+
+    watch(receiverUser, async newReceiverUser => {
+        if(newReceiverUser.id !== null) {
+            unsubscribeMessages = await subscribeToPrivateChat(
+                {
+                    senderId: senderUser.value.id,
+                    receiverId: newReceiverUser.id,
+                },
+                newMessages => messages.value = newMessages
+            );
+            messagesLoading.value = false;
+        }
+    });
+
+    onUnmounted(() => unsubscribeMessages());
+
+    return {
+        newMessage,
+        messages,
+        messagesLoading,
+        handleSendMessage,
+    }
+}
+console.log(user.email);
 </script>
 
 <template>
-    <section class="container p-4">
-        <h1 class="font-bold text-center mb-2">Chateá con nosotros</h1>
-        <p class="mb-6">Si tenés dudas o consultas no dudes en contactarte con nosotros para que podamos ayudarte.</p>
+
+<section class="container p-4">
+        <h1 class="font-bold text-center mb-2">Chat con {{user.email}}</h1>
+    
     <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
     <Loader v-if="userLoading"></Loader>
     <template v-else>
@@ -119,7 +178,7 @@ export default {
             v-for="message in messages"
             :key="message.id"
             :class="{
-                    'justify-end': message.senderId === authUser.id,
+                    'justify-end': message.senderUser === authUser.id,
                 }"
             >
                 <div 
@@ -132,7 +191,7 @@ export default {
                 }"
                 >
                     {{ message.message }}
-                    <div class="text-right">{{ formatDate(message.created_at) || "Enviando..." }}</div>
+                    <div class="text-right">{{ dateToString(message.created_at) || "Enviando..." }}</div>
                 </div>
             </div>
             </template>
