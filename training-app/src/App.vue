@@ -21,42 +21,23 @@ function useLogout() {
 }
 </script> -->
 <script setup>
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import Loader from './components/Loader.vue';
 import { subscribeToAuth, logout } from './services/auth.js';
 import { getUserProfileById } from './services/user.js';
 import { useRouter } from 'vue-router';
+import { useAuth } from './functions/useAuth';
 
-const router = useRouter();
-const registerLoading = ref(false);
-const showSubmenu = ref(false);
 const mobileMenuOpen = ref(false);
-const mobileSubmenuOpen = ref(false);
-const user = reactive({
-  id: null,
-  email: null,
-  rol: null,
-});
+const { user } = useAuth();
+const router = useRouter();
 
 const handleLogout = () => {
   logout();
   router.push('/iniciar-sesion');
-  user.rol = null;
+  
 };
 
-subscribeToAuth(async (userData) => {
-  user.id = userData.id;
-  user.email = userData.email;
-
-  if (user.id) {
-    registerLoading.value = true;
-  }
-
-  let result = await getUserProfileById(user.id);
-  user.rol = result.rol;
-
-  registerLoading.value = false;
-});
 </script>
 
 <template>
@@ -89,7 +70,7 @@ subscribeToAuth(async (userData) => {
             v-else
             >
             <template
-            v-if="user.rol === 'cliente'">
+            v-if="user.rol === 'cliente' && user.fullProfileLoaded">
                 <li>
                     <router-link to="/usuario/HZSqZ8YP0OafEltH7j1assYE0AT2/chat">Chateá con nosotros</router-link>
                 </li>
@@ -105,14 +86,14 @@ subscribeToAuth(async (userData) => {
                 </li>
             </template>
             <template
-             v-if="user.rol === 'admin' && !registerLoading " 
+             v-if="user.rol === 'admin' && user.fullProfileLoaded" 
             >
                 <li>
                     <router-link
                     to="/panel-admin">Panel Admin</router-link>
                 </li>
             </template>
-            <template v-if="registerLoading">
+            <template v-if="user.id !== null &&!user.fullProfileLoaded">
                 <Loader></Loader>
             </template>
             </ul>
@@ -152,11 +133,11 @@ subscribeToAuth(async (userData) => {
                 </form>
         </template>
         <template
-        v-if="user.rol === 'admin' && !registerLoading" 
+        v-if="user.rol === 'admin' && user.fullProfileLoaded" 
         >
             <router-link to="/panel-admin" class="block text-white p-3 hover:bg-gray-600">Panel Admin</router-link>
         </template>
-        <template v-if="registerLoading">
+        <template v-if="!user.fullProfileLoaded">
                 <Loader></Loader>
         </template>
     </div>

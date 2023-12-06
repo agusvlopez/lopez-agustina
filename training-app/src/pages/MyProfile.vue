@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 import { collection, doc, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
 import { subscribeToAuth } from "../services/auth";
 import { getPrivateChatDoc, subscribeToPrivateChat } from '../services/private-chat';
@@ -110,9 +110,217 @@ import CardRadio from "../components/CardRadio.vue";
     }
 }
 
-</script>
+</script> -->
+<script setup>
+import { useAuth } from '../functions/useAuth';
+import BaseButton from '../components/BaseButton.vue';
+import BaseInput from '../components/BaseInput.vue';
+import BaseLabel from '../components/BaseLabel.vue';
+import { editProfile, editProfilePhoto } from '../services/auth';
+import { ref } from 'vue';
+import Loader from '../components/Loader.vue';
+import UserProfileData from '../components/UserProfileData.vue';
 
+const { user } = useAuth();
+const {
+    editing,
+    editingLoading,
+    editData,
+    handleEditShow,
+    handleEditCancel,
+    handleEditForm
+} = useProfileEdit(user);
+
+const {
+    editingPhoto,
+    editingPhotoLoading,
+    photoData,
+    handlePhotoFormShow,
+    handlePhotoFormCancel,
+    handlePhotoFormSubmit,
+    handlePhotoFileChange
+} = usePhotoEdit();
+
+function useProfileEdit(user) {
+    const editing = ref(false);
+    const editingLoading = ref(false);
+    const editData = ref({
+        displayName: '',
+        trainings: []
+    });
+
+    const handleEditShow = () => {
+        editData.value.displayName = user.value.displayName;
+        editData.value.trainings = user.value.trainings;
+        editing.value = true;
+    }
+    const handleEditCancel = () => editing.value = false;
+    const handleEditForm = async () => {
+        try {
+            editingLoading.value = true;
+            await editProfile({
+                displayName: editData.value.displayName,
+                trainings: editData.value.trainings,
+            })
+        } catch (error) {
+            console.log("error: ", error);
+            //Notificación de error
+        }
+        editingLoading.value = false;
+    }
+
+    return {
+        editing,
+        editingLoading,
+        editData,
+        handleEditShow,
+        handleEditCancel,
+        handleEditForm
+    }
+}
+
+function usePhotoEdit() {
+    const editingPhoto = ref(false);
+    const editingPhotoLoading = ref(false);
+    const photoData = ref({
+        file: null,
+        preview: null,
+    });
+
+    const handlePhotoFormShow = () => editingPhoto.value = true;
+
+    const handlePhotoFormCancel = () => editingPhoto.value = false;
+
+    const handlePhotoFormSubmit = async () => {
+        editingPhotoLoading.value = true;
+
+        try {
+            await editProfilePhoto(photoData.value.file);
+        } catch (error) {
+            //TODO
+            console.error(error);
+        }
+        editingPhotoLoading.value = false;
+    }
+
+    const handlePhotoFileChange = event => {
+        console.log("evento: ", event);
+        photoData.value.file = event.target.files[0];
+
+        const reader = new FileReader();
+
+        reader.addEventListener('load', function() {
+            photoData.value.preview = reader.result;
+            console.log(reader.result);
+        });
+
+        reader.readAsDataURL(photoData.value.file);
+    }
+
+    return {
+        editingPhoto,
+        editingPhotoLoading,
+        photoData,
+        handlePhotoFormShow,
+        handlePhotoFormCancel,
+        handlePhotoFormSubmit,
+        handlePhotoFileChange
+    }
+}
+
+</script>
 <template>
+<h1 class="font-bold text-center">Mi perfil</h1>
+<template v-if="user.fullProfileLoaded">
+    <template v-if="!editing && !editingPhoto">
+        <section class="container p-4">
+            <UserProfileData :user="user" />
+            <div class="flex gap-2">
+            <BaseButton
+            @click="handleEditShow"
+            >Editar mis datos</BaseButton>
+
+            <BaseButton
+            @click="handlePhotoFormShow"
+            >Editar mi foto de perfil</BaseButton>
+        </div>
+        </section>   
+    </template>
+    <template v-else-if="editing">
+        <form 
+            action="#"
+            method="post"
+            @submit.prevent="handleEditForm"
+        >
+            <div class="mb-2">
+                <BaseLabel for="displayName">Nombre de Usuario</BaseLabel>
+                <BaseInput
+                    id="displayName"
+                    :disabled="editingLoading"
+                    v-model="editData.displayName"
+                />
+            </div>
+            <div class="mb-2">
+                <BaseLabel for="trainings">Entrenamientos</BaseLabel>
+                <BaseInput
+                    id="trainings"
+                    :disabled="editingLoading"
+                    v-model="editData.trainings"
+                />
+            </div>
+            <BaseButton
+                class="mb-4"
+                :loading="editingLoading"
+            >Actualizar mis Datos</BaseButton>
+        </form>
+        <BaseButton
+            @click="handleEditCancel"
+        >Cancelar</BaseButton>
+
+    </template>
+    <template v-else>
+        <form action="#"
+        method="post"
+        @submit.prevent="handlePhotoFormSubmit"
+        >
+        <div class="mb-2">
+                    <BaseLabel for="newPhoto">Imagen de Perfil</BaseLabel>
+
+                    <input 
+                        class="w-full px-1.5 py-1 border border-gray-400 rounded disabled:bg-gray-100"
+                        type="file"
+                        id="newPhoto"
+                        :disabled="editingPhotoLoading"
+                        @change="handlePhotoFileChange"
+                    />
+                </div>
+                <div 
+                    class="mb-2"
+                    v-if="photoData.preview !== null"
+                >
+                    <p>Previsualización de la imagen seleccionada</p>
+                    <img :src="photoData.preview" alt="">
+                </div>
+
+                <BaseButton
+                    class="mb-4"
+                    :loading="editingPhotoLoading"
+                >Actualizar mi Imagen de Perfil</BaseButton>
+
+                <hr class="mb-4">
+
+                <BaseButton
+                    @click="handlePhotoFormCancel"
+                >Cancelar</BaseButton>
+        
+        </form>
+    </template>
+    </template>
+    <template v-else>
+        <Loader />
+    </template>
+</template>
+<!-- <template>
    <section class="container p-4">
        <Loader v-if="userLoading"></Loader>
        <template v-else>
@@ -127,18 +335,13 @@ import CardRadio from "../components/CardRadio.vue";
             <div class="userIcon mr-4">
                 <img src="../imgs/user.png" alt="Icono de usuario" class="w-full">
             </div>
-            <div>
+            <div>            
             <p class="text-lg mb-2"><span class="font-bold">Email:</span> {{ authUser.email }}</p>
-            <template v-if="!rolLoading">
-                <p class="text-lg" ><span class="font-bold">Rol:</span> {{ authUser.rol }}</p>
-            </template>
-           
-            <template v-else>
-                <Loader></Loader>
-            </template>
-          
+            <p class="text-lg mb-2"><span class="font-bold">Nombre:</span> {{ authUser.displayName || "No especificado" }}</p>
+            <p class="text-lg mb-2"><span class="font-bold">Entrenamientos contratados:</span> {{ authUser.trainings || "No hay entrenamientos contratados." }}</p>
+
             <div class="flex justify-end align-middle">
-                <button @click="editTrue" class="font-bold text-indigo-500 flex items-center"> Editar rol <span class="editIcon block ml-1"></span></button>
+                <button @click="editTrue" class="font-bold text-indigo-500 flex items-center"> Editar <span class="editIcon block ml-1"></span></button>
             </div>
             </div>
         </div>
@@ -180,7 +383,6 @@ import CardRadio from "../components/CardRadio.vue";
    
            </div>
          
-           <!-- Mensajes del chat -->
            <div class="mb-6 p-4">
                <Loader v-if="messagesLoading"></Loader>
                <template v-else>
@@ -207,9 +409,7 @@ import CardRadio from "../components/CardRadio.vue";
                </div>
                </template>
            
-           </div>
-           <!-- Campo de entrada de texto -->
-           
+           </div>           
                <h2 class="sr-only">Enviar mensaje</h2>
                <form action=""
                @submit.prevent="handleSendMessage"
@@ -233,4 +433,4 @@ import CardRadio from "../components/CardRadio.vue";
     </div>
        </template>
     </section>  
-</template>
+</template> -->

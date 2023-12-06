@@ -1,33 +1,45 @@
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import { auth } from './firebase.js';
-import { createUserProfile } from './user.js';
+import { createUserProfile, getUserProfileById, updateUserProfile } from './user.js';
+import { getFileURL, uploadFile } from './storage.js';
 
 let userData = {
     id: null,
     email: null,
     rol: null,
+    displayName: null,
+    photoURL: null,
+    trainings: null,
+    fullProfileLoaded: false,
 }
 //definimos la lista de observers
 let observers = [];
 
 //Si el usuario figuraba como autenitcado, lo marcamos como tal inmediatamente
-if(localStorage.getItem('user')){
+if(localStorage.getItem('user')) {
     userData = JSON.parse(localStorage.getItem('user'));
 }
 
-onAuthStateChanged(auth, user => {
+onAuthStateChanged(auth, async user => {
     if(user) {
         setUserData({
             id: user.uid,
             email: user.email,
-            rol: user.rol,
-        });
-        localStorage.setItem('user', JSON.stringify(userData));
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+        }); 
         
-        }else {
-            clearUserData();
-            localStorage.removeItem('user');
-        }
+        //Busco en firestore
+        const fullData = await getUserProfileById(user.uid);
+        setUserData({
+            rol: fullData.rol,
+            trainings: fullData.trainings,
+            fullProfileLoaded: true,
+        });
+    }else {
+        clearUserData();
+        localStorage.removeItem('user');
+    }
     
 });
 
@@ -52,8 +64,7 @@ export async function register({email, password, rol}) {
             code: error.code,
             message: error.message,
         }
-    }
-   
+    }  
 }
 
 /**
@@ -62,7 +73,7 @@ export async function register({email, password, rol}) {
 * @param {{email: string, password: string}} user 
 * @return {Promise}
 */
-export function login({email, password, rol}){
+export function login({email, password, rol}) {
     return signInWithEmailAndPassword(auth, email, password)
     .then(userCredentials => {
 
@@ -74,7 +85,53 @@ export function login({email, password, rol}){
             message: error.message,
         }
     });
+}
 
+/**
+* @param {{displayName: string|null, photoURL: string|null, trainings: Array|null}} data
+* @returns {Promise}
+*/
+export async function editProfile({displayName, photoURL, trainings}) {
+    try {
+        const data = {};
+        if(displayName !== undefined) data.displayName = displayName;
+        if(photoURL !== undefined) data.photoURL = photoURL;
+
+        //Actualizo en Authentication
+        const promiseAuth = updateProfile(auth.currentUser, data);
+
+        if(trainings !== undefined) data.trainings = career;
+
+        //Actualizo en Firestore
+        const promiseProfile = updateUserProfile(userData.id, data);
+
+        await Promise.all([promiseAuth, promiseProfile]);
+
+        //Actualizo los datos de userData y localStorage
+        setUserData({
+            displayName,
+            photoURL,
+            trainings
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * 
+ * @param {File} file 
+ * @returns {Promise}
+ */
+export async function editProfilePhoto(file) {
+   const path = `users/${userData.id}/user`;
+   await uploadFile(path, file)
+
+   const photoURL = await getFileURL(path);
+
+   return editProfile({
+    photoURL
+   })
 }
 
 /**
@@ -82,7 +139,7 @@ export function login({email, password, rol}){
  * @returns {Promise}
  * 
  */
-export function logout(){
+export function logout() {
     
     const promise = signOut(auth);
     
@@ -97,14 +154,14 @@ export function logout(){
  * Agrega un observer(callback) para ser notificado de los cambios en el estado de autenticación.
  * El observer debe ser una función que reciba como argumento un objeto y no retorne nada
  * 
- * @param {({id: null|string, email: null|string}) => void} observer
+ * @param {({id: null|string, email: null|string, rol: null|string, displayName: null|string, trainings: null|Array}) => void} observer
  * @return {() => void} Función para cancelar la suscripción
  */
 export function subscribeToAuth(observer){
    
     //agrego el observer a la lista de observers
     observers.push(observer);
- console.log("cantidad de observers: ", observers.length);
+    console.log("cantidad de observers: ", observers.length);
     //Ejecutamos el observer inmediatamente con la data actual
     notify(observer);
 
@@ -135,13 +192,14 @@ function notify(observer){
 
 /**
  * 
- * @param {id: null|string, email: null|string} newData 
+ * @param {id: null|string, email: null|string, rol: null|string, trainings: null|Array} newData 
  */
 function setUserData(newData) {
     userData = {
         ...userData,
         ...newData,
     }
+    localStorage.setItem('user', JSON.stringify(userData));
     notifyAll();
 }
 
@@ -152,6 +210,11 @@ function clearUserData() {
     setUserData({
         id: null,
         email: null,
-        rol: null
+        rol: null,
+        displayName: null,
+        photoURL: null,
+        trainings: null,
+        fullProfileLoaded: false,
     });
+    localStorage.removeItem('user');
 }

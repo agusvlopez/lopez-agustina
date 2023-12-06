@@ -47,6 +47,8 @@ const { user, userLoading } = useUserProfile(route.params.id);
         <div>
         <h1>Perfil de {{ user.email }}</h1>
         
+        <UserProfileData :user="user" />
+
         <h2>Conversación privada</h2>
         <router-link
         :to="`/usuario/${user.id}/chat`"

@@ -5,7 +5,7 @@ import { db } from './firebase';
 
 /**
  * @param {string} id
- * @returns {Promise<{id: string, email: string, rol: string}>}
+ * @returns {Promise<{id: string, email: string, rol: string, displayName: string|null, photoURL: string|null, trainings: Array|null}>}
  */
 export async function getUserProfileById(id){
 
@@ -19,6 +19,7 @@ export async function getUserProfileById(id){
         ...docSnapshot.data()
     }
 }
+
 /**
  * 
  * @param {string} id 
@@ -53,10 +54,22 @@ export async function getAllUsers(){
         console.log(datosSubcoleccion);
         console.log(documents);
         return documents;
-         }
-        
-        
-      } catch (error) {
+        }
+            
+    } catch (error) {
         console.error('Error al obtener datos de la subcolección:', error);
-      }
+    }
+}
+
+/**
+ * 
+ * @param {string} id 
+ * @param {{displayName: string|null, photoURL: string|null, trainings: Array|null}} data
+ * @returns {Promise} 
+ */
+export async function updateUserProfile(id, data) {
+    return updateDoc(
+        doc(db, `users/${id}`),
+        {...data}
+    )
 }

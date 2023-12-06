@@ -25,7 +25,7 @@ const doLogin = async () => {
         })
         .then(user => {
             if(user.email && user.id){
-                router.push('/');
+                router.push('/perfil');
                 loginError.value = false;
             }else{
                 router.push('/iniciar-sesion');;

@@ -8,6 +8,9 @@ export const useUserProfile = (id) => {
         id: null, 
         email: null,
         rol: null,
+        displayName: null,
+        trainings: null,
+        photoURL: null,
     });
     
     onMounted(async () => {
