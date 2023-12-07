@@ -31,19 +31,25 @@ const handleSubmit = async () => {
         });
         registerError.value = false;
     } else {
+            setNotification({
+                message: 'Por favor, completa todos los campos requeridos.',
+                type: 'error'
+            });
+            setTimeout(() => {
+                setNotification(null);
+            }, 3000);
+            registerError.value = true;
+        }
+    } catch (error) {
         setNotification({
-            message: 'Por favor, completa todos los campos requeridos.',
+            message: error.message || 'Hubo un error durante el registro.',
             type: 'error'
         });
-        registerError.value = true;
+        setTimeout(() => {
+            setNotification(null);
+        }, 3000);
     }
-  } catch (error) {
-    setNotification({
-        message: error.message || 'Hubo un error durante el registro.',
-        type: 'error'
-    });
-  }
-  registerLoading.value = false;
+    registerLoading.value = false;
 };
 
 </script>

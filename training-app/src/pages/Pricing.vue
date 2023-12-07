@@ -30,15 +30,23 @@ const addTrainingToCurrentUser = async (training) => {
   try {
     if (userId) {
       await addTrainingToUser(userId, training);
+      
       setNotification({
         message: 'Entrenamiento contratado con éxito.',
         type: 'success'
       });
+      setTimeout(() => {
+        setNotification(null);
+      }, 3000);
+
     } else {
       setNotification({
-            message: 'Hubo un error al intentar contratar el entrenamiento. Por favor intente nuevamente más tarde.',
-            type: 'error'
-        });
+        message: 'Hubo un error al intentar contratar el entrenamiento. Por favor intente nuevamente más tarde.',
+        type: 'error'
+      });
+      setTimeout(() => {
+        setNotification(null);
+      }, 3000);
     }
   } catch (error) {
     console.error('Error al añadir el entrenamiento al usuario:', error);

@@ -161,7 +161,9 @@ const handleLogout = () => {
 </header>
 <main>
     <div class="container h-full m-auto p-4">
-        <Notification :message="notification.message" :type="notification.type" />
+        <div v-if="notification">
+            <Notification :message="notification.message" :type="notification.type" />
+        </div>
         <router-view></router-view>
     </div>
 </main>

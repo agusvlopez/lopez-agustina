@@ -103,15 +103,6 @@ export async function buscarYEliminarDocumento(valor) {
 
 }
 
-// export function trainingsEditTraining(documentId, data) {
-//   const documentRef = doc(db, 'trainings', documentId);
-
-//   return updateDoc(documentRef, {
-//     ...data,
-//     created_at: serverTimestamp(),
-//   });
-// }
-
 export async function getTrainingIds() {
   const querySnapshot = await getDocs(collection(db, 'trainings'));
   const trainingIds = querySnapshot.docs.map(doc => doc.id);

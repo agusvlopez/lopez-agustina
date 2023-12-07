@@ -31,6 +31,10 @@ const doLogin = async () => {
             message: '¡Hola de nuevo!',
             type: 'success'
         });
+        setTimeout(() => {
+            setNotification(null);
+        }, 3000);
+
         router.push('/perfil');
         
     } catch (error) {
@@ -38,6 +42,9 @@ const doLogin = async () => {
             message: error,
             type: 'error'
         });
+        setTimeout(() => {
+            setNotification(null);
+        }, 3000);
     }
     loginLoading.value = false;
 }

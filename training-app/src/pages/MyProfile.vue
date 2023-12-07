@@ -177,6 +177,10 @@ function useProfileEdit(user) {
                 message: 'Se editó correctamente la información de tu perfil.',
                 type: 'success'
             });
+            setTimeout(() => {
+                setNotification(null);
+            }, 3000);
+
             handleEditCancel();
         } catch (error) {
             console.log("error: ", error);
@@ -185,6 +189,9 @@ function useProfileEdit(user) {
                 message: error,
                 type: 'error'
             });
+            setTimeout(() => {
+                setNotification(null);
+            }, 3000);
         }
         editingLoading.value = false;
     }
@@ -222,11 +229,17 @@ function usePhotoEdit() {
                 message: 'Foto agregada con éxito.',
                 type: 'success'
             });
+            setTimeout(() => {
+                setNotification(null);
+            }, 3000);
         } catch (error) {
             setNotification({
                 message: "Hubo un error al intentar agregar la foto. Por favor intente nuevamente en unos instantes.",
                 type: 'error'
             });
+            setTimeout(() => {
+                setNotification(null);
+            }, 3000);
             console.error(error);
         }         
     }
