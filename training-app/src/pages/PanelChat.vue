@@ -11,23 +11,26 @@ import BaseButton from '../components/BaseButton.vue';
 import { dateToString } from '../helpers/date';
 import { db } from '../services/firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import ProfileImage from '../components/ProfileImage.vue';
 
 
 export default {
     name: 'PanelChat',
-    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader },
+    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader, ProfileImage },
     data() {
         return {
             userLoading: true,
             users: [],
             usersIds: [],
             usersAdmins: [],
+            nonAdminUsers: [],
             clients: [],
             clientsId: [],
             user: {
                 id: null,
                 email: null,
                 rol: null,
+                photoURL: null,
             },
             authUser: {
                 id: null,
@@ -68,6 +71,7 @@ export default {
         let ids = [];
         let data;
         const idsDocs = await getAllUsers();
+        console.log(idsDocs);
         let array = [];
         let userId = {};
 
@@ -76,7 +80,8 @@ export default {
             userId = {
                 id: doc.id,
                 email: data.email,
-                rol: data.rol
+                rol: data.rol,
+                photoURL: data.photoURL
             }; 
              ids.push(userId); 
         });
@@ -103,6 +108,8 @@ export default {
         }
        this.users.push(this.user);
   
+        // Filtrar usuarios que no son administradores
+        this.nonAdminUsers = this.users.filter(user => user.rol == 'cliente');
     },
     unmounted() {
         this.unsubscribeAuth();
@@ -110,37 +117,34 @@ export default {
 };
 </script>
 
-<template>  
-<section class="container p-4">      
-    <div> 
+<template>
+    <section class="container p-4">
+      <div>
         <h1 class="mb-4 mt-4">Chats con clientes</h1>
-    </div>
-<div class="flex flex-wrap"
->
-    <template
-    v-for="user in this.users"
-    :key="user.id"
-    v-if="!this.userLoading"> 
-    <div 
-    v-if="user.email !== this.authUser.email">
-        <div class="bg-white p-4 rounded-lg shadow m-2"> 
-            <div>
-                <p class="text-md font-semibold mt-4 m-2">Usuario: {{user.email}}</p>
+      </div>
+      <div class="flex flex-wrap">
+        <template v-for="user in nonAdminUsers" :key="user.id" v-if="!this.userLoading">
+          <div v-if="user.rol != 'admin'">
+            <div class="bg-white p-4 rounded-lg shadow m-2">
+              <div>
+                <ProfileImage
+                    :src="user.photoURL"
+                    class="pb-4 w-60"
+                />
+                <p class="text-md font-semibold mt-4 m-2">Usuario: {{ user.email }}</p>
                 <p class="text-gray-600 m-2">Estado: Activo</p>
-
-                 <router-link
-                :to="`/usuario/${user.id}/chat`"
-                class="m-2 transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800"
+  
+                <router-link
+                  :to="`/usuario/${user.id}/chat`"
+                  class="m-2 transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800"
                 >Ver mensajes</router-link>
+              </div>
             </div>
-        </div>
-    </div>
-    </template>
-    <template
-    v-else>
-        <Loader></Loader>
-    </template>
-</div>
-
-</section>
-</template>
+          </div>
+        </template>
+        <template v-else-if="userLoading">
+          <Loader></Loader>
+        </template>
+      </div>
+    </section>
+  </template>

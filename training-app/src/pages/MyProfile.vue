@@ -122,6 +122,7 @@ import Loader from '../components/Loader.vue';
 import UserProfileData from '../components/UserProfileData.vue';
 import { notificationKey } from '../symbols/symbols';
 import { getUserTrainings } from '../services/user';
+import { useRoute } from 'vue-router';
 
 const { setNotification } = inject(notificationKey);
 
@@ -132,7 +133,6 @@ const trainingsLoading = ref(true);
 onMounted(async () => {
     trainings.value = await getUserTrainings(user.value.id);
     trainingsLoading.value = false;
-
 });
 
 const {
@@ -177,6 +177,7 @@ function useProfileEdit(user) {
                 message: 'Se editó correctamente la información de tu perfil.',
                 type: 'success'
             });
+            handleEditCancel();
         } catch (error) {
             console.log("error: ", error);
             //Notificación de error          
@@ -215,11 +216,19 @@ function usePhotoEdit() {
 
         try {
             await editProfilePhoto(photoData.value.file);
+            handlePhotoFormCancel();
+            
+            setNotification({
+                message: 'Foto agregada con éxito.',
+                type: 'success'
+            });
         } catch (error) {
-            //TODO
+            setNotification({
+                message: "Hubo un error al intentar agregar la foto. Por favor intente nuevamente en unos instantes.",
+                type: 'error'
+            });
             console.error(error);
-        }
-        editingPhotoLoading.value = false;
+        }         
     }
 
     const handlePhotoFileChange = event => {
@@ -267,6 +276,10 @@ function usePhotoEdit() {
             >Editar mi foto de perfil</BaseButton>
         </div>
         </section>   
+        <section v-if="user.rol == 'cliente'">
+            <h2 class="text-xl font-bolder">Mis mensajes con Training App</h2>
+            <p class="mt-2 font-bold text-indigo-600 hover:text-indigo-700"> <router-link to="/usuario/d6dfuuXe7laEyCh33M0uxKtb9xk1/chat">Ir a la conversación »</router-link> </p>
+        </section>
     </template>
     <template v-else-if="editing">
         <form 
