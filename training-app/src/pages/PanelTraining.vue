@@ -189,15 +189,15 @@ export default {
 }
 </script>
 
-<template>
-<div class="container mx-auto p-4">
+<template class="container mx-auto p-4">
+
    <section class="border-b-2">
     <h1>Panel de entrenamientos</h1>
     <h2>Todos los entrenamientos </h2>
    
-    <div id="alertEliminar" class="bg-red-100 border border-red-400 text-red-700 p-4 py-fit rounded relative max-w-fit mx-auto" role="alert"
+    <div id="alertEliminar" role="alert"
         v-if="alert && !trainingsLoading  && !deletedTraining"
-        >
+    >
             <!-- Usar el componente DeleteTrainingModal -->
     <!-- <DeleteTrainingModal
       :show-modal="alert && !trainingsLoading && !deletedTraining"
@@ -205,61 +205,64 @@ export default {
       @delete-training="deleteTraining"
       @close-modal="closeAlert"
     ></DeleteTrainingModal> -->
-        <p class="font-bold">¡Atención!</p>
-        <span class="block sm:inline">Estás a punto de eliminar <span class="font-bold">{{ this.valorDeEliminacion }}. </span>¿Estas seguro que queres eliminarlo?</span>
-        <form action="" 
-            @submit.prevent="deleteTraining(this.valorDeEliminacion)"
-        >
-        <div class="flex justify-center">
-            <BaseButton 
-                class="bg-red-500 hover:bg-red-600 mt-2"> Eliminar
-            </BaseButton>
+        <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+            <div class="bg-red-100 p-8 shadow-lg rounded-lg max-w-md border border-2 border-red-400 text-red-700">    
+            <p class="font-bold">¡Atención!</p>
+                <span class="block sm:inline">Estás a punto de eliminar <span class="font-bold">{{ this.valorDeEliminacion }}. </span>¿Estas seguro que queres eliminarlo?</span>
+                <form action="" 
+                    @submit.prevent="deleteTraining(this.valorDeEliminacion)"
+                >
+                <div class="flex justify-center">
+                    <BaseButton 
+                        class="bg-red-500 hover:bg-red-600 mt-2"> Eliminar
+                    </BaseButton>
+                </div>
+                </form>
+                <span class="absolute top-0 bottom-0 right-0 px-4 py-2">
+                <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" @click="closeAlert()">
+                    <title>Cerrar</title>
+                    <path d="M14.348 5.652a.5.5 0 01.704.704L9.703 10l5.35 5.35a.5.5 0 01-.704.704l-5.35-5.35-5.35 5.35a.5.5 0 01-.704-.704l5.35-5.35-5.35-5.35a.5.5 0 01.704-.704l5.35 5.35z" />
+                </svg>
+                </span>
+            </div>
         </div>
-        </form>
-        <span class="absolute top-0 bottom-0 right-0 px-4 py-2">
-        <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" @click="closeAlert()">
-            <title>Cerrar</title>
-            <path d="M14.348 5.652a.5.5 0 01.704.704L9.703 10l5.35 5.35a.5.5 0 01-.704.704l-5.35-5.35-5.35 5.35a.5.5 0 01-.704-.704l5.35-5.35-5.35-5.35a.5.5 0 01.704-.704l5.35 5.35z" />
-        </svg>
-        </span>
     </div>
+    <div class="flex p-4 flex-wrap">    
+        <template
+        v-if="!trainingsLoading  && !deletedTraining && !editLoading" >
+        <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden p-4"
+        v-for="training in trainings"
+        :key="training.id"  
+        >
+        <form action=""
+        @submit.prevent="openAlert(training.name)">
+            <div>
+            <div>
+                <img class="h-24 w-full object-cover" :src="training.img" :alt="training.name">
+            </div>
+            <div class="p-4">
+            <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
+                <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
+                <p class="mt-1 text-gray-500">{{training.description}}</p>
+                <p class="mt-1 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
 
-<div class="flex p-4 flex-wrap">    
-    <template
-    v-if="!trainingsLoading  && !deletedTraining && !editLoading" >
-    <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden p-4"
-    v-for="training in trainings"
-    :key="training.id"  
-    >
-    <form action=""
-    @submit.prevent="openAlert(training.name)">
-        <div>
-        <div>
-            <img class="h-24 w-full object-cover" :src="training.img" :alt="training.name">
-        </div>
-        <div class="p-4">
-        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
-            <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
-            <p class="mt-1 text-gray-500">{{training.description}}</p>
-            <p class="mt-1 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
-
-            <BaseButton 
-            class="bg-red-500 hover:bg-red-600 mt-2"
-            :value="training.name"
-            id="buttonAlert"
-           >Eliminar </BaseButton>
-        </div>
-        </div>
-     </form>
-        <div class="flex justify-end align-middle">
-            <button @click="openEdit(training)" class="font-bold text-indigo-500 flex items-center"> Editar entrenamiento <span class="editIcon block ml-1"></span></button>
-        </div>
-        </div>  
-    </template>
-    <template
-    v-else>
-        <Loader></Loader>
-    </template>
+                <BaseButton 
+                class="bg-red-500 hover:bg-red-600 mt-2"
+                :value="training.name"
+                id="buttonAlert"
+            >Eliminar </BaseButton>
+            </div>
+            </div>
+        </form>
+            <div class="flex justify-end align-middle">
+                <button @click="openEdit(training)" class="font-bold text-indigo-500 flex items-center"> Editar entrenamiento <span class="editIcon block ml-1"></span></button>
+            </div>
+            </div>  
+        </template>
+        <template
+        v-else>
+            <Loader></Loader>
+        </template>
     </div>
     </section>
     <template 
@@ -268,7 +271,6 @@ export default {
         <BaseButton @click="showTrainingForm">Agregar entrenamiento</BaseButton>
         <BaseButton v-if="showingTrainingForm" @click="cancelTrainingForm">Cancelar</BaseButton>
     </div>
-
     <!-- <TrainingForm v-if="showingTrainingForm" /> -->
     <div v-if="showingTrainingForm">
         <h2 class="mt-4">Cargar un nuevo entrenamiento</h2>
@@ -447,7 +449,4 @@ export default {
         >Editar</BaseButton>    
     </form>  
     </template>
-
-</div>
-
 </template>
