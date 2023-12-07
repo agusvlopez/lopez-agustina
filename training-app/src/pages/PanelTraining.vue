@@ -8,10 +8,12 @@ import ChatInput from '../components/ChatInput.vue';
 import { getTrainings, trainingsSaveTraining, getTrainingDocs, buscarYEliminarDocumento } from '../services/trainings';
 import { db } from '../services/firebase';
 import Loader from '../components/Loader.vue';
+import TrainingForm from '../components/TrainingForm.vue';
+import DeleteTrainingModal from '../components/DeleteTrainingModal.vue';
 
 export default {
     name: 'PanelTraining',
-    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader },
+    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader, TrainingForm, DeleteTrainingModal },
     data() {
         return {
             editLoading: false,
@@ -23,6 +25,7 @@ export default {
             valorDeEliminacion: '',
             alert: false,
             editForm: false,
+            showingTrainingForm: false,
             training: {
                 name: '',
                 img: '',
@@ -97,56 +100,35 @@ export default {
              this.valorDeEliminacion = ''; 
         },
 
-        async edit(document) {
-            this.trainingsLoading = true;
-            let trainingsComplete = await getTrainings();
-            let data;
-            let trainingId;
-            let ids = [];
-            console.log(trainingsComplete);
-            trainingsComplete.forEach(async (d) => {      
-                data = d.data();
-            console.log(data.name);
-            trainingId = {
-                id: d.id,
-                name: data.name,
-                img: data.img,
-                description: data.description,
-                coach: data.coach,
-                price: data.price,
-                difficulty: data.difficulty,
-            }; 
-
-             ids.push(trainingId); 
-
-            });
-
-            this.trainings = ids;
-
-            const docRef = doc(db, 'trainings', trainingId.id);
-            const nuevosDatos = {
-                name: document.name,
-                img: document.img,
-                description: document.description,
-                coach: document.coach,
-                price: document.price,
-                difficulty: document.difficulty,
-            };
-
-
+        async edit() {
             try {
                 this.editLoading = true;
-                await updateDoc(docRef, nuevosDatos);
-                this.training = nuevosDatos;
+
+                const docRef = this.$fire.firestore.collection('trainings').doc(this.training.id);
+                const nuevosDatos = {
+                name: this.training.name,
+                img: this.training.img,
+                description: this.training.description,
+                coach: this.training.coach,
+                price: this.training.price,
+                difficulty: this.training.difficulty,
+                };
+
+                await docRef.update(nuevosDatos);
+
+                // Actualiza el entrenamiento en la lista local
+                const index = this.trainings.findIndex(t => t.id === this.training.id);
+                if (index !== -1) {
+                this.trainings[index] = nuevosDatos;
+                }
+
                 console.log('Documento actualizado con éxito');
             } catch (error) {
-            console.error('Error al actualizar el documento:', error);
+                console.error('Error al actualizar el documento:', error);
+            } finally {
+                this.editLoading = false;
+                this.editForm = false; // Cierra el formulario después de la edición
             }
-
-            this.training = nuevosDatos;
-            this.editLoading = false;
-            this.trainingsLoading = false;
-   
         },
 
         editTrue() {
@@ -168,6 +150,14 @@ export default {
         },
         closeAlert(){
             this.alert = false;
+        },
+
+        showTrainingForm () {
+        // Aquí puedes agregar lógica adicional si es necesario
+        this.showingTrainingForm = true;
+        },
+        cancelTrainingForm () {
+            this.showingTrainingForm = false;
         }
 
     },
@@ -189,6 +179,13 @@ export default {
         return this.trainingDoc;
     },
 
+      // Asegúrate de cancelar la suscripción cuando el componente se destruye
+  beforeDestroy() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  },
+
 }
 </script>
 
@@ -201,6 +198,13 @@ export default {
     <div id="alertEliminar" class="bg-red-100 border border-red-400 text-red-700 p-4 py-fit rounded relative max-w-fit mx-auto" role="alert"
         v-if="alert && !trainingsLoading  && !deletedTraining"
         >
+            <!-- Usar el componente DeleteTrainingModal -->
+    <!-- <DeleteTrainingModal
+      :show-modal="alert && !trainingsLoading && !deletedTraining"
+      :valor-de-eliminacion="valorDeEliminacion"
+      @delete-training="deleteTraining"
+      @close-modal="closeAlert"
+    ></DeleteTrainingModal> -->
         <p class="font-bold">¡Atención!</p>
         <span class="block sm:inline">Estás a punto de eliminar <span class="font-bold">{{ this.valorDeEliminacion }}. </span>¿Estas seguro que queres eliminarlo?</span>
         <form action="" 
@@ -260,95 +264,103 @@ export default {
     </section>
     <template 
     v-if="!editForm">
-    <h2 class="mt-4">Cargar un nuevo entrenamiento</h2>
-    <form 
-        action="#" 
-        @submit.prevent="saveTraining"
-        >
-    <div class="w-auto">
-        <section class="flex flex-wrap">
-        <div class="m-3 flex-auto w-64">
-            <BaseLabel for="name" class="text-sm">Nombre: </BaseLabel>
-            <div class="mt-2">
-                <BaseInput
-                id="name" 
-                v-model="training.name"
-                class="shadow"
-                required
-                ></BaseInput> 
-            </div>
-        </div>
-        <div class="m-3 flex-auto w-64">
-            <BaseLabel for="img" class="text-sm">URL de la imagen: </BaseLabel>
-            <div class="mt-2">
-                <BaseInput
-                id="img" 
-                v-model="training.img"
-                class="shadow"
-                ></BaseInput> 
-            </div>
-        </div>
-    </section>
-        <div class="m-3">
-            <BaseLabel for="description" class="text-sm">Descripción: </BaseLabel>
-            <div class="mt-2">
-                <BaseTextarea
-                id="description" 
-                v-model="training.description"
-                class="shadow"
-                rows="4"
-                required
-                ></BaseTextarea> 
-            </div>
-        </div>
-    
-    <section class="flex flex-wrap">
-        <div class="m-3 flex-auto">
-            <BaseLabel for="coach" class="text-sm">Coach: </BaseLabel>
-            <div class="mt-2">
-                <BaseInput
-                id="coach" 
-                v-model="training.coach"
-                class="shadow"
-                required
-                ></BaseInput>           
-            </div>
-        </div>
-        <div class="m-3 flex-auto">
-            <BaseLabel for="price" class="text-sm">Precio: $</BaseLabel>
-            <div class="mt-2">
-                <BaseInput
-                type="number"
-                id="price" 
-                v-model="training.price"
-                class="shadow"
-                required
-                ></BaseInput>            
-            </div>
-        </div>
-        <div class="m-3 flex-auto">
-            <BaseLabel for="difficulty" class="text-sm">Dificultad: </BaseLabel>
-            <div class="mt-2">
-                <BaseInput
-                id="difficulty" 
-                v-model="training.difficulty"
-                class="shadow"
-                required
-                ></BaseInput>             
-            </div>
-        </div>
-    </section>
+    <div class="flex gap-4">
+        <BaseButton @click="showTrainingForm">Agregar entrenamiento</BaseButton>
+        <BaseButton v-if="showingTrainingForm" @click="cancelTrainingForm">Cancelar</BaseButton>
     </div>
-        <BaseButton class="rounded-full p-3 ml-2"
-        ></BaseButton>    
-    </form>  
+
+    <!-- <TrainingForm v-if="showingTrainingForm" /> -->
+    <div v-if="showingTrainingForm">
+        <h2 class="mt-4">Cargar un nuevo entrenamiento</h2>
+        <form 
+            action="#" 
+            @submit.prevent="saveTraining"
+            >
+        <div class="w-auto">
+            <section class="flex flex-wrap">
+            <div class="m-3 flex-auto w-64">
+                <BaseLabel for="name" class="text-sm">Nombre: </BaseLabel>
+                <div class="mt-2">
+                    <BaseInput
+                    id="name" 
+                    v-model="training.name"
+                    class="shadow"
+                    required
+                    ></BaseInput> 
+                </div>
+            </div>
+            <div class="m-3 flex-auto w-64">
+                <BaseLabel for="img" class="text-sm">URL de la imagen: </BaseLabel>
+                <div class="mt-2">
+                    <BaseInput
+                    id="img" 
+                    v-model="training.img"
+                    class="shadow"
+                    ></BaseInput> 
+                </div>
+            </div>
+        </section>
+            <div class="m-3">
+                <BaseLabel for="description" class="text-sm">Descripción: </BaseLabel>
+                <div class="mt-2">
+                    <BaseTextarea
+                    id="description" 
+                    v-model="training.description"
+                    class="shadow"
+                    rows="4"
+                    required
+                    ></BaseTextarea> 
+                </div>
+            </div>
+        
+        <section class="flex flex-wrap">
+            <div class="m-3 flex-auto">
+                <BaseLabel for="coach" class="text-sm">Coach: </BaseLabel>
+                <div class="mt-2">
+                    <BaseInput
+                    id="coach" 
+                    v-model="training.coach"
+                    class="shadow"
+                    required
+                    ></BaseInput>           
+                </div>
+            </div>
+            <div class="m-3 flex-auto">
+                <BaseLabel for="price" class="text-sm">Precio: $</BaseLabel>
+                <div class="mt-2">
+                    <BaseInput
+                    type="number"
+                    id="price" 
+                    v-model="training.price"
+                    class="shadow"
+                    required
+                    ></BaseInput>            
+                </div>
+            </div>
+            <div class="m-3 flex-auto">
+                <BaseLabel for="difficulty" class="text-sm">Dificultad: </BaseLabel>
+                <div class="mt-2">
+                    <BaseInput
+                    id="difficulty" 
+                    v-model="training.difficulty"
+                    class="shadow"
+                    required
+                    ></BaseInput>             
+                </div>
+            </div>
+        </section>
+        </div>
+            <BaseButton class="rounded-full p-3 ml-2"
+            ></BaseButton>    
+        </form>  
+    </div>
     </template>
 
     <template
     v-if="editForm">
     <form 
         action="#" 
-        @submit.prevent="edit(this.training)"
+        @submit.prevent="edit"
         >
     <div class="w-auto">
         <section class="flex flex-wrap">

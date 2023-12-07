@@ -127,10 +127,12 @@ const { setNotification } = inject(notificationKey);
 
 const { user } = useAuth();
 const trainings = ref([]);
-
+const trainingsLoading = ref(true);
 // Obtener los entrenamientos del usuario
 onMounted(async () => {
     trainings.value = await getUserTrainings(user.value.id);
+    trainingsLoading.value = false;
+
 });
 
 const {
@@ -157,12 +159,10 @@ function useProfileEdit(user) {
     const editingLoading = ref(false);
     const editData = ref({
         displayName: '',
-        trainings: []
     });
 
     const handleEditShow = () => {
         editData.value.displayName = user.value.displayName;
-        editData.value.trainings = user.value.trainings;
         editing.value = true;
     }
     const handleEditCancel = () => editing.value = false;
@@ -171,7 +171,6 @@ function useProfileEdit(user) {
             editingLoading.value = true;
             await editProfile({
                 displayName: editData.value.displayName,
-                trainings: editData.value.trainings,
             });
 
             setNotification({
@@ -235,6 +234,7 @@ function usePhotoEdit() {
         });
 
         reader.readAsDataURL(photoData.value.file);
+        
     }
 
     return {
@@ -251,7 +251,7 @@ function usePhotoEdit() {
 </script>
 <template>
 <h1 class="font-bold text-center">Mi perfil</h1>
-<template v-if="user.fullProfileLoaded">
+<template v-if="user.fullProfileLoaded && !trainingsLoading">
     <template v-if="!editing && !editingPhoto">
         <section class="container p-4">
 
@@ -280,14 +280,6 @@ function usePhotoEdit() {
                     id="displayName"
                     :disabled="editingLoading"
                     v-model="editData.displayName"
-                />
-            </div>
-            <div class="mb-2">
-                <BaseLabel for="trainings">Entrenamientos</BaseLabel>
-                <BaseInput
-                    id="trainings"
-                    :disabled="editingLoading"
-                    v-model="editData.trainings"
                 />
             </div>
             <BaseButton
