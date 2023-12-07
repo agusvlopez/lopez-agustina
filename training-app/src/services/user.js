@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore';
 import { db } from './firebase';
 
 //Manejar los perfiles de usuario
@@ -73,3 +73,31 @@ export async function updateUserProfile(id, data) {
         {...data}
     )
 }
+
+/**
+ * Agrega un documento a la subcolección "trainings" dentro de la colección "users".
+ * @param {string} userId - ID del usuario al que se le añadirá el entrenamiento.
+ * @param {Object} trainingData - Datos del entrenamiento a añadir.
+ * @returns {Promise}
+ */
+export async function addTrainingToUser(userId, trainingData) {
+    try {
+      // Verifica si el usuario ya tiene el entrenamiento
+      const userRef = doc(db, 'users', userId);
+      const userTrainingsRef = collection(userRef, 'trainings');
+  
+      // Añade el entrenamiento a la subcolección "trainings" del usuario
+      const newTrainingRef = await addDoc(userTrainingsRef, trainingData);
+  
+      // Obtiene el ID del nuevo entrenamiento
+      const trainingId = newTrainingRef.id;
+  
+      // Actualiza el documento con el ID del entrenamiento
+      await setDoc(newTrainingRef, { id: trainingId }, { merge: true });
+  
+      console.log('Entrenamiento añadido con éxito al usuario.');
+    } catch (error) {
+      console.error('Error al añadir el entrenamiento al usuario:', error);
+      throw error;
+    }
+  }

@@ -44,20 +44,19 @@ onAuthStateChanged(auth, async user => {
 });
 
 /**
-* @param {{email: string, password: string, rol: string}} user 
+* @param {{email: string, password: string}} user 
 * @return {Promise}
  */
-export async function register({email, password, rol}) {
+export async function register({email, password}) {
     try {
-       const userCredentials = await createUserWithEmailAndPassword(auth, email, password, rol);
-
+       const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+        console.log(userCredentials);
        //Registro el perfil del usuario tambien en Firestore
-       createUserProfile(userCredentials.user.uid, {email, rol});
+       createUserProfile(userCredentials.user.uid, {email});
 
         return {
             id: userCredentials.user.uid,
             email: userCredentials.user.email,
-            rol: 'cliente',
         }  
     } catch (error) {
         return {
@@ -80,10 +79,11 @@ export function login({email, password, rol}) {
         return {...userData};
     })
     .catch(error => {
-        return {
-            code: error.code,
-            message: error.message,
-        }
+        throw error;
+        // return {
+        //     code: error.code,
+        //     message: error.message,
+        // }
     });
 }
 
@@ -100,7 +100,7 @@ export async function editProfile({displayName, photoURL, trainings}) {
         //Actualizo en Authentication
         const promiseAuth = updateProfile(auth.currentUser, data);
 
-        if(trainings !== undefined) data.trainings = career;
+        if(trainings !== undefined) data.trainings = trainings;
 
         //Actualizo en Firestore
         const promiseProfile = updateUserProfile(userData.id, data);
@@ -218,3 +218,7 @@ function clearUserData() {
     });
     localStorage.removeItem('user');
 }
+
+export function getUserId() {
+    return userData.id;
+  }

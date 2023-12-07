@@ -1,0 +1,1 @@
+export const notificationKey = Symbol('notification');

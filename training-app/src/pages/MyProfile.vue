@@ -117,9 +117,12 @@ import BaseButton from '../components/BaseButton.vue';
 import BaseInput from '../components/BaseInput.vue';
 import BaseLabel from '../components/BaseLabel.vue';
 import { editProfile, editProfilePhoto } from '../services/auth';
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import Loader from '../components/Loader.vue';
 import UserProfileData from '../components/UserProfileData.vue';
+import { notificationKey } from '../symbols/symbols';
+
+const { setNotification } = inject(notificationKey);
 
 const { user } = useAuth();
 const {
@@ -161,10 +164,19 @@ function useProfileEdit(user) {
             await editProfile({
                 displayName: editData.value.displayName,
                 trainings: editData.value.trainings,
-            })
+            });
+
+            setNotification({
+                message: 'Se editó correctamente la información de tu perfil.',
+                type: 'success'
+            });
         } catch (error) {
             console.log("error: ", error);
-            //Notificación de error
+            //Notificación de error          
+            setNotification({
+                message: error,
+                type: 'error'
+            });
         }
         editingLoading.value = false;
     }

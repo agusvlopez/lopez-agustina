@@ -1,27 +1,41 @@
-<script>
+<script setup>
 import Loader from '../components/Loader.vue';
-import {  getTrainings } from '../services/trainings';
+import Basebutton from '../components/basebutton.vue';
+import { ref, onMounted } from 'vue';
+import { getTrainings } from '../services/trainings';
+import { addTrainingToUser } from '../services/user';
+import { getUserId } from '../services/auth';
 
-export default {
-    name: 'Pricing',
-    components: { Loader },
-    data() {
-        return {
-            trainings: [],
-            trainingsLoading: true,
-        };
-    },
-    async mounted() {
-        let trainingsAll = await getTrainings();
-        let trainingDoc;
-        this.trainingsLoading = true;
-        trainingsAll.forEach(doc => {
-            trainingDoc = doc.data();
-            this.trainings.push(trainingDoc);
-        });
-        this.trainingsLoading = false;
+const trainings = ref([]);
+const trainingsLoading = ref(true);
+
+onMounted(async () => {
+  try {
+    const trainingsAll = await getTrainings();
+    trainingsLoading.value = true;
+
+    trainings.value = trainingsAll.map(doc => doc.data());
+
+    trainingsLoading.value = false;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+});
+
+const addTrainingToCurrentUser = async (training) => {
+  const userId = getUserId();
+
+  try {
+    if (userId) {
+      await addTrainingToUser(userId, training);
+      console.log('Entrenamiento añadido al usuario con éxito.');
+    } else {
+      console.error('userId es undefined.');
     }
-}
+  } catch (error) {
+    console.error('Error al añadir el entrenamiento al usuario:', error);
+  }
+};
 </script>
 
 <template>
@@ -29,20 +43,24 @@ export default {
     <h1 class="text-center mb-4 font-bold">Precios de nuestros planes de entrenamiento</h1>
     <template v-if="!trainingsLoading">
         <div class="flex p-4 flex-wrap">
-        <div class="mb-4 max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden"
-        v-for="training in trainings">
-            <div>
-            <div>
-                <img class="h-72 w-full object-cover" :src="training.img" :alt="training.name">
+            <div class="mb-4 max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden"
+            v-for="training in trainings" :key="training.id">
+                <div>
+                    <div>
+                        <img class="h-72 w-full object-cover" :src="training.img" :alt="training.name">
+                    </div>
+                    <div class="p-8">
+                        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
+                        <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
+                        <p class="mt-2 text-gray-500">{{training.description}}</p>
+                        <p class="mt-4 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
+                    </div>            
+                </div>
+                <Basebutton 
+                class="m-2"
+                @click="addTrainingToCurrentUser(training)"
+                >Obtener entrenamiento</Basebutton>
             </div>
-            <div class="p-8">
-            <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
-                <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
-                <p class="mt-2 text-gray-500">{{training.description}}</p>
-                <p class="mt-4 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
-            </div>
-            </div>
-        </div>
         </div>
     </template>
     <template 

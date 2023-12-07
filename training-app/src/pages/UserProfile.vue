@@ -32,7 +32,7 @@ import { getUserProfileById } from '../services/user';
 </script> -->
 <!-- CHEQUEAR SI HACE FALTA QUE EXISTA ESTE COMPONENTE -->
 <script setup>
-import SkeletonLoader from '../components/SkeletonLoader.vue';
+import SkeletonContext from '../components/SkeletonContext.vue';
 import { useRoute } from 'vue-router';
 import { useUserProfile } from '../functions/useUserProfile'
 const route = useRoute();
@@ -42,20 +42,18 @@ const { user, userLoading } = useUserProfile(route.params.id);
 </script>
 
 <template>
-    <SkeletonLoader v-if="userLoading"></SkeletonLoader>
-    <template v-else>
+    <SkeletonContext :loading="userLoading">
+    <!-- <SkeletonLoader v-if="userLoading"></SkeletonLoader> --> 
         <div>
-        <h1>Perfil de {{ user.email }}</h1>
-        
-        <UserProfileData :user="user" />
+            <h1>Perfil de {{ user.email }}</h1>
+            
+            <UserProfileData :user="user" />
 
-        <h2>Conversación privada</h2>
-        <router-link
-        :to="`/usuario/${user.id}/chat`"
-        class="transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800"
-        >Iniciar una conversación privada con {{ user.email }}</router-link>
-    </div>
-    </template>
-
-    
+            <h2>Conversación privada</h2>
+            <router-link
+            :to="`/usuario/${user.id}/chat`"
+            class="transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800"
+            >Iniciar una conversación privada con {{ user.email }}</router-link>
+        </div>
+    </SkeletonContext>  
 </template>

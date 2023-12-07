@@ -21,16 +21,32 @@ function useLogout() {
 }
 </script> -->
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, provide, reactive, readonly, ref } from 'vue';
 import Loader from './components/Loader.vue';
 import { subscribeToAuth, logout } from './services/auth.js';
 import { getUserProfileById } from './services/user.js';
 import { useRouter } from 'vue-router';
 import { useAuth } from './functions/useAuth';
+import { notificationKey } from './symbols/symbols';
+import Notification from './components/Notification.vue';
 
 const mobileMenuOpen = ref(false);
 const { user } = useAuth();
 const router = useRouter();
+
+const notification = ref({
+    message: null,
+    type: 'success'
+});
+
+function setNotification(data) {
+    notification.value = data;
+}
+//Defino qué quiere proveer App
+provide(notificationKey, {
+    notification: readonly(notification),
+    setNotification,
+});
 
 const handleLogout = () => {
   logout();
@@ -144,8 +160,9 @@ const handleLogout = () => {
   </nav>
 </header>
 <main>
-    <div>
-        <router-view></router-view>        
+    <div class="container h-full m-auto p-4">
+        <Notification :message="notification.message" :type="notification.type" />
+        <router-view></router-view>
     </div>
 </main>
     <footer class="flex justify-center items-center h-[100px] bgNav text-white">
