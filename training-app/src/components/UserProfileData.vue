@@ -6,8 +6,13 @@ defineProps({
     user: {
         type: Object,
         required: true,
-    }
+    },
+    trainings: {
+        type: Array,
+        default: () => [],
+    },
 });
+
 </script>
 
 <template>
@@ -24,7 +29,14 @@ defineProps({
             <dt class="mb-1 font-bold">Nombre de Usuario</dt>
             <dd class="mb-2">{{ user.displayName || 'No especificado' }}</dd>
             <dt class="mb-1 font-bold">Entrenamientos contratados:</dt>
-            <dd class="mb-2">{{ user.trainings || 'No hay entrenamientos contratados' }}</dd>
+            <dd class="mb-2">
+                <ul>
+                    <li v-for="training in trainings" :key="training.id">
+                        {{ training.name }} - Dificultad: {{ training.difficulty }}
+                    </li>
+                </ul>
+                <p v-if="trainings.length === 0">No hay entrenamientos contratados</p>
+            </dd>
         </dl> 
     </div>
 </template>

@@ -7,17 +7,42 @@ import { db } from './firebase';
  * @param {string} id
  * @returns {Promise<{id: string, email: string, rol: string, displayName: string|null, photoURL: string|null, trainings: Array|null}>}
  */
-export async function getUserProfileById(id){
+/**
+ * @param {string} id
+ * @returns {Promise<{id: string, email: string, rol: string, displayName: string|null, photoURL: string|null, trainings: Array|null}>}
+ */
+export async function getUserProfileById(id) {
+    try {
+        const userPromise = getUserData(id);
+        const trainingsPromise = getUserTrainings(id);
 
-    //Busco el documento
-    const refUser = doc(db, `users/${id}`);
-    console.log(refUser);
-    const docSnapshot = await getDoc(refUser);
-    console.log(docSnapshot);
-    return {
-        id: docSnapshot.id,
-        ...docSnapshot.data()
+        const [userData, trainingsData] = await Promise.all([userPromise, trainingsPromise]);
+
+        return {
+            id: userData.id,
+            ...userData,
+            trainings: trainingsData,
+        };
+    } catch (error) {
+        console.error('Error al obtener el perfil del usuario:', error);
+        throw error;
     }
+}
+
+async function getUserData(id) {
+    const userRef = doc(db, `users/${id}`);
+    const userDoc = await getDoc(userRef);
+    return {
+        id: userDoc.id,
+        ...userDoc.data(),
+    };
+}
+
+export async function getUserTrainings(id) {
+    const userRef = doc(db, `users/${id}`);
+    const trainingsRef = collection(userRef, 'trainings');
+    const trainingsSnapshot = await getDocs(trainingsRef);
+    return trainingsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
 
 /**

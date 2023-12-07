@@ -117,14 +117,22 @@ import BaseButton from '../components/BaseButton.vue';
 import BaseInput from '../components/BaseInput.vue';
 import BaseLabel from '../components/BaseLabel.vue';
 import { editProfile, editProfilePhoto } from '../services/auth';
-import { inject, ref } from 'vue';
+import { inject, onMounted, ref } from 'vue';
 import Loader from '../components/Loader.vue';
 import UserProfileData from '../components/UserProfileData.vue';
 import { notificationKey } from '../symbols/symbols';
+import { getUserTrainings } from '../services/user';
 
 const { setNotification } = inject(notificationKey);
 
 const { user } = useAuth();
+const trainings = ref([]);
+
+// Obtener los entrenamientos del usuario
+onMounted(async () => {
+    trainings.value = await getUserTrainings(user.value.id);
+});
+
 const {
     editing,
     editingLoading,
@@ -246,7 +254,9 @@ function usePhotoEdit() {
 <template v-if="user.fullProfileLoaded">
     <template v-if="!editing && !editingPhoto">
         <section class="container p-4">
-            <UserProfileData :user="user" />
+
+            <UserProfileData :user="user" :trainings="trainings" />
+            
             <div class="flex gap-2">
             <BaseButton
             @click="handleEditShow"
