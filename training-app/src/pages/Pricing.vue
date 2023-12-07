@@ -1,10 +1,13 @@
 <script setup>
 import Loader from '../components/Loader.vue';
 import Basebutton from '../components/basebutton.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, inject } from 'vue';
 import { getTrainings } from '../services/trainings';
 import { addTrainingToUser } from '../services/user';
 import { getUserId } from '../services/auth';
+import { notificationKey } from '../symbols/symbols';
+
+const { notification, setNotification } = inject(notificationKey);
 
 const trainings = ref([]);
 const trainingsLoading = ref(true);
@@ -24,13 +27,18 @@ onMounted(async () => {
 
 const addTrainingToCurrentUser = async (training) => {
   const userId = getUserId();
-
   try {
     if (userId) {
       await addTrainingToUser(userId, training);
-      console.log('Entrenamiento añadido al usuario con éxito.');
+      setNotification({
+        message: 'Entrenamiento contratado con éxito.',
+        type: 'success'
+      });
     } else {
-      console.error('userId es undefined.');
+      setNotification({
+            message: 'Hubo un error al intentar contratar el entrenamiento. Por favor intente nuevamente más tarde.',
+            type: 'error'
+        });
     }
   } catch (error) {
     console.error('Error al añadir el entrenamiento al usuario:', error);
