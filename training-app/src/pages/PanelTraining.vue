@@ -93,19 +93,17 @@ export default {
             this.alert = false;
             this.trainingsLoading = false;
             this.deletedTraining = false;
-             this.valorDeEliminacion = ''; 
+            this.valorDeEliminacion = ''; 
         },
 
         async edit() {
             try {
                 this.editLoading = true;
-                // Obtener todos los IDs de entrenamientos
-                const trainingIds = await getTrainingIds();
 
-                // Supongamos que quieres editar el primer entrenamiento encontrado
+                const trainingIds = await getTrainingIds();
                 const trainingId = trainingIds[0];
+
                 await trainingsEditTraining(trainingId, {
-                    // Asegúrate de incluir los campos correctos que deseas actualizar
                     name: this.training.name,
                     img: this.training.img,
                     description: this.training.description,
@@ -114,18 +112,17 @@ export default {
                     difficulty: this.training.difficulty,
                 });
 
-                // Actualiza el entrenamiento en la lista local si es necesario
                 const index = this.trainings.findIndex(t => t.id === this.training.id);
                 if (index !== -1) {
                     this.trainings[index] = { ...this.training };
                 }
-
                 console.log('Entrenamiento actualizado con éxito');
+
             } catch (error) {
                 console.error('Error al actualizar el entrenamiento:', error);
             } finally {
                 this.editLoading = false;
-                this.editForm = false; // Cierra el formulario después de la edición
+                this.editForm = false;
             }
         },
 
@@ -145,6 +142,9 @@ export default {
         openEdit(document){
             this.editForm = true;
             this.training = document;
+        },
+        closeEdit(){
+            this.editForm = false;
         },
         closeAlert(){
             this.alert = false;
@@ -359,101 +359,98 @@ export default {
         </form>  
     </div>
     </template>
-
-    <template
-    v-if="editForm">
+    <template v-if="editForm">
     <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
-      <div class="bg-white p-8 shadow-md rounded-lg max-w-md">
+        <div class="bg-white p-6 shadow-md rounded-lg max-w-xxl">
         <p class="text-xl font-semibold mb-4">Editar Entrenamiento</p>
-    <form 
-        action="#" 
-        @submit.prevent="edit"
-        >
-    <div class="w-auto">
-        <section class="flex flex-wrap">
-        <div class="m-3 flex-auto w-64">
-            <BaseLabel for="name" class="text-sm">Nombre: </BaseLabel>
-            <div class="mt-2">
+        <form action="#" @submit.prevent="edit">
+            <div class="flex flex-wrap">
+            <div class="p-2 w-full lg:w-1/2">
+                <BaseLabel for="name" class="text-sm">Nombre: </BaseLabel>
+                <div class="mt-2">
                 <BaseInput
-                id="name" 
-                v-model="training.name"
-                class="shadow"
-                :placeholder="training.name"
-                required
-                ></BaseInput> 
+                    id="name"
+                    v-model="training.name"
+                    class="shadow"
+                    :placeholder="training.name"
+                    required
+                ></BaseInput>
+                </div>
             </div>
-        </div>
-        <div class="m-3 flex-auto w-64">
-            <BaseLabel for="img" class="text-sm">URL de la imagen: </BaseLabel>
-            <div class="mt-2">
+            <div class="p-2 w-full lg:w-1/2">
+                <BaseLabel for="img" class="text-sm">URL de la imagen: </BaseLabel>
+                <div class="mt-2">
                 <BaseInput
-                id="img" 
-                v-model="training.img"
-                class="shadow"
-                :placeholder="training.img"
-                required
-                ></BaseInput> 
+                    id="img"
+                    v-model="training.img"
+                    class="shadow"
+                    :placeholder="training.img"
+                    required
+                ></BaseInput>
+                </div>
             </div>
-        </div>
-    </section>
-        <div class="m-3">
+            </div>
+            <div class="p-2 w-full">
             <BaseLabel for="description" class="text-sm">Descripción: </BaseLabel>
             <div class="mt-2">
                 <BaseTextarea
-                id="description" 
+                id="description"
                 v-model="training.description"
                 class="shadow"
                 rows="4"
                 :placeholder="training.description"
                 required
-                ></BaseTextarea> 
+                ></BaseTextarea>
             </div>
-        </div>
-    
-    <section class="flex flex-wrap">
-        <div class="m-3 flex-auto">
-            <BaseLabel for="coach" class="text-sm">Coach: </BaseLabel>
-            <div class="mt-2">
+            </div>
+            <div class="flex flex-wrap">
+            <div class="p-2 w-full lg:w-1/2">
+                <BaseLabel for="coach" class="text-sm">Coach: </BaseLabel>
+                <div class="mt-2">
                 <BaseInput
-                id="coach" 
-                v-model="training.coach"
-                class="shadow"
-                :placeholder="training.coach"
-                required
-                ></BaseInput>           
+                    id="coach"
+                    v-model="training.coach"
+                    class="shadow"
+                    :placeholder="training.coach"
+                    required
+                ></BaseInput>
+                </div>
             </div>
-        </div>
-        <div class="m-3 flex-auto">
-            <BaseLabel for="price" class="text-sm">Precio: $</BaseLabel>
-            <div class="mt-2">
+            <div class="p-2 w-full lg:w-1/2">
+                <BaseLabel for="price" class="text-sm">Precio: $</BaseLabel>
+                <div class="mt-2">
                 <BaseInput
-                type="number"
-                id="price" 
-                v-model="training.price"
-                class="shadow"
-                :placeholder="training.price"
-                required
-                ></BaseInput>            
+                    type="number"
+                    id="price"
+                    v-model="training.price"
+                    class="shadow"
+                    :placeholder="training.price"
+                    required
+                ></BaseInput>
+                </div>
             </div>
-        </div>
-        <div class="m-3 flex-auto">
-            <BaseLabel for="difficulty" class="text-sm">Dificultad: </BaseLabel>
-            <div class="mt-2">
+            <div class="p-2 w-full sm:w-1/2">
+                <BaseLabel for="difficulty" class="text-sm">Dificultad: </BaseLabel>
+                <div class="mt-2">
                 <BaseInput
-                id="difficulty" 
-                v-model="training.difficulty"
-                class="shadow"
-                :placeholder="training.difficulty"
-                required
-                ></BaseInput>             
+                    id="difficulty"
+                    v-model="training.difficulty"
+                    class="shadow"
+                    :placeholder="training.difficulty"
+                    required
+                ></BaseInput>
+                </div>
             </div>
+            </div>
+            <div class="flex gap-4 justify-end">
+                <button 
+                @click="closeEdit"
+                class="rounded-full shadow-lg text-indigo-700 p-3 ml-2"
+                >Cerrar</button>
+                <BaseButton class="rounded-full p-3 ml-2">Editar</BaseButton>
+            </div>
+        </form>
         </div>
-    </section>
     </div>
-        <BaseButton class="rounded-full p-3 ml-2"
-        >Editar</BaseButton>    
-    </form> 
-    </div>
-    </div> 
     </template>
 </template>
