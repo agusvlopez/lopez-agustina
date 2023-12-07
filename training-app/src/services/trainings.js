@@ -17,13 +17,14 @@ export function trainingsSaveTraining(data){
     });
 };
 
-export function trainingsEditTraining(data){
-  
-  return updateDoc(refTraining, {
+export function trainingsEditTraining(trainingId, data){
+  const trainingRef = doc(db, 'trainings', trainingId);
+  return updateDoc(trainingRef, {
       ...data,
       created_at: serverTimestamp(),
   });
 };
+
 export async function getTrainings(){
   let getTrainings = await getDocs(refTraining);
   console.log(getTrainings);
@@ -100,4 +101,20 @@ export async function buscarYEliminarDocumento(valor) {
 
   return deleted;
 
+}
+
+// export function trainingsEditTraining(documentId, data) {
+//   const documentRef = doc(db, 'trainings', documentId);
+
+//   return updateDoc(documentRef, {
+//     ...data,
+//     created_at: serverTimestamp(),
+//   });
+// }
+
+export async function getTrainingIds() {
+  const querySnapshot = await getDocs(collection(db, 'trainings'));
+  const trainingIds = querySnapshot.docs.map(doc => doc.id);
+
+  return trainingIds;
 }

@@ -1,19 +1,16 @@
 <script>
-import { collection, deleteDoc, doc, documentId, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import BaseButton from '../components/BaseButton.vue';
 import BaseInput from '../components/BaseInput.vue';
 import BaseLabel from '../components/BaseLabel.vue';
 import BaseTextarea from '../components/BaseTextarea.vue';
 import ChatInput from '../components/ChatInput.vue';
-import { getTrainings, trainingsSaveTraining, getTrainingDocs, buscarYEliminarDocumento } from '../services/trainings';
-import { db } from '../services/firebase';
+import { getTrainingIds, getTrainings, trainingsSaveTraining, trainingsEditTraining, buscarYEliminarDocumento } from '../services/trainings';
 import Loader from '../components/Loader.vue';
-import TrainingForm from '../components/TrainingForm.vue';
-import DeleteTrainingModal from '../components/DeleteTrainingModal.vue';
+
 
 export default {
     name: 'PanelTraining',
-    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader, TrainingForm, DeleteTrainingModal },
+    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader },
     data() {
         return {
             editLoading: false,
@@ -87,7 +84,6 @@ export default {
             
             let trainingsDocs = await getTrainings();
 
-             
             trainingsDocs.forEach(async docu => {
                 trainingDocument = docu.data();
                 docs.push(trainingDocument);
@@ -103,28 +99,30 @@ export default {
         async edit() {
             try {
                 this.editLoading = true;
+                // Obtener todos los IDs de entrenamientos
+                const trainingIds = await getTrainingIds();
 
-                const docRef = this.$fire.firestore.collection('trainings').doc(this.training.id);
-                const nuevosDatos = {
-                name: this.training.name,
-                img: this.training.img,
-                description: this.training.description,
-                coach: this.training.coach,
-                price: this.training.price,
-                difficulty: this.training.difficulty,
-                };
+                // Supongamos que quieres editar el primer entrenamiento encontrado
+                const trainingId = trainingIds[0];
+                await trainingsEditTraining(trainingId, {
+                    // Asegúrate de incluir los campos correctos que deseas actualizar
+                    name: this.training.name,
+                    img: this.training.img,
+                    description: this.training.description,
+                    coach: this.training.coach,
+                    price: this.training.price,
+                    difficulty: this.training.difficulty,
+                });
 
-                await docRef.update(nuevosDatos);
-
-                // Actualiza el entrenamiento en la lista local
+                // Actualiza el entrenamiento en la lista local si es necesario
                 const index = this.trainings.findIndex(t => t.id === this.training.id);
                 if (index !== -1) {
-                this.trainings[index] = nuevosDatos;
+                    this.trainings[index] = { ...this.training };
                 }
 
-                console.log('Documento actualizado con éxito');
+                console.log('Entrenamiento actualizado con éxito');
             } catch (error) {
-                console.error('Error al actualizar el documento:', error);
+                console.error('Error al actualizar el entrenamiento:', error);
             } finally {
                 this.editLoading = false;
                 this.editForm = false; // Cierra el formulario después de la edición
@@ -206,13 +204,17 @@ export default {
       @close-modal="closeAlert"
     ></DeleteTrainingModal> -->
         <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
-            <div class="bg-red-100 p-8 shadow-lg rounded-lg max-w-md border border-2 border-red-400 text-red-700">    
+            <div class="bg-red-100 p-8 shadow-lg rounded-lg max-w-md border-2 border-red-400 text-red-700">    
             <p class="font-bold">¡Atención!</p>
                 <span class="block sm:inline">Estás a punto de eliminar <span class="font-bold">{{ this.valorDeEliminacion }}. </span>¿Estas seguro que queres eliminarlo?</span>
-                <form action="" 
+                <form action="#" 
                     @submit.prevent="deleteTraining(this.valorDeEliminacion)"
                 >
-                <div class="flex justify-center">
+                <div class="flex gap-4 justify-between mt-4">
+                    <BaseButton 
+                    @click="closeAlert()"
+                        class="mt-2"> Cancelar
+                    </BaseButton>
                     <BaseButton 
                         class="bg-red-500 hover:bg-red-600 mt-2"> Eliminar
                     </BaseButton>
@@ -360,6 +362,9 @@ export default {
 
     <template
     v-if="editForm">
+    <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+      <div class="bg-white p-8 shadow-md rounded-lg max-w-md">
+        <p class="text-xl font-semibold mb-4">Editar Entrenamiento</p>
     <form 
         action="#" 
         @submit.prevent="edit"
@@ -447,6 +452,8 @@ export default {
     </div>
         <BaseButton class="rounded-full p-3 ml-2"
         >Editar</BaseButton>    
-    </form>  
+    </form> 
+    </div>
+    </div> 
     </template>
 </template>
