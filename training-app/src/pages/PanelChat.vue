@@ -129,7 +129,7 @@ export default {
                 <p class="text-gray-600 m-2">Estado: Activo</p>
 
                  <router-link
-                :to="`/cliente/${user.id}/chat`"
+                :to="`/usuario/${user.id}/chat`"
                 class="m-2 transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800"
                 >Ver mensajes</router-link>
             </div>

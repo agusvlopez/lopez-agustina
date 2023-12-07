@@ -95,18 +95,19 @@ export default {
 <script setup>
 import BaseButton from '../components/BaseButton.vue';
 import Loader from '../components/Loader.vue';
-import ChatInput from '../components/ChatInput.vue';
-import BaseLabel from '../components/BaseLabel.vue';
 import { sendPrivateChatMessage, subscribeToPrivateChat } from '../services/private-chat';
 import { dateToString } from '../helpers/date';
 import { useAuth } from '../functions/useAuth';
 import { useUserProfile } from '../functions/useUserProfile';
 import { onUnmounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import BaseLabel from '../components/BaseLabel.vue';
+import ChatInput from '../components/ChatInput.vue';
 
 const route = useRoute();
 const { user: authUser } = useAuth();
 const { user, userLoading } = useUserProfile(route.params.id);
+console.log(route.params.id)
 const { newMessage, messages, messagesLoading, handleSendMessage } = usePrivateChat(authUser, user);
 
 function usePrivateChat(senderUser, receiverUser) {
@@ -148,51 +149,40 @@ function usePrivateChat(senderUser, receiverUser) {
         handleSendMessage,
     }
 }
-console.log(user.email);
 </script>
 
 <template>
+    <Loader v-if="userLoading" />
+    <template v-else>
+    <section class="container p-4">    
 
-<section class="container p-4">
         <h1 class="font-bold text-center mb-2">Chat con {{user.email}}</h1>
     
     <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
-    <Loader v-if="userLoading"></Loader>
-    <template v-else>
         <div> 
-
             <h2 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h2>
-
-        </div>
-
-        
+        </div>        
         <h2 class="sr-only">Mensajes</h2>
-
-    
+   
         <!-- Mensajes del chat -->
-        <div class="mb-6 p-4">
+        <div class="flex flex-col items-start min-h-[400px] p-4 rounded mb-4">
             <Loader v-if="messagesLoading"></Loader>
             <template v-else>
             <div 
-            class="flex mb-2"
+            class="max-w-[70%] p-2 rounded mb-2"
             v-for="message in messages"
             :key="message.id"
-            :class="{
-                    'justify-end': message.senderUser === authUser.id,
-                }"
-            >
-                <div 
-                class= "rounded-lg p-2"
                 :class="{
                     'bg-gray-200': message.senderId !== authUser.id,
                     'text-gray-700': message.senderId !== authUser.id,
                     'bg-indigo-500': message.senderId === authUser.id, 
                     'text-white':  message.senderId === authUser.id,
+                    'self-end': message.senderId === authUser.id,
                 }"
                 >
                     {{ message.message }}
                     <div class="text-right">{{ dateToString(message.created_at) || "Enviando..." }}</div>
-                </div>
+               
             </div>
             </template>
         
@@ -210,15 +200,13 @@ console.log(user.email);
                     <ChatInput type="text" 
                     id="message"
                     v-model="newMessage.message"
-                    class="shadow"
+                    class="shadow border border-gray-300"
                     />
                     <BaseButton class="rounded-full p-3 ml-2"></BaseButton>
                 </div>
             </div>
         </form>
-        
-    
-    </template>
     </div>
     </section>
+    </template>
 </template>

@@ -88,7 +88,7 @@ const handleLogout = () => {
             <template
             v-if="user.rol === 'cliente' && user.fullProfileLoaded">
                 <li>
-                    <router-link to="/usuario/HZSqZ8YP0OafEltH7j1assYE0AT2/chat">Chateá con nosotros</router-link>
+                    <router-link to="/usuario/d6dfuuXe7laEyCh33M0uxKtb9xk1/chat">Chateá con nosotros</router-link>
                 </li>
             </template>
                 <li>
@@ -138,7 +138,7 @@ const handleLogout = () => {
         >
         <template
             v-if="user.rol === 'cliente'">
-            <router-link to="/usuario/HZSqZ8YP0OafEltH7j1assYE0AT2/chat" class="block text-white p-3 hover:bg-gray-600">Chateá con nosotros</router-link>
+            <router-link to="/usuario/d6dfuuXe7laEyCh33M0uxKtb9xk1/chat" class="block text-white p-3 hover:bg-gray-600">Chateá con nosotros</router-link>
         </template>
             <router-link to="/perfil" class="block text-white p-3 hover:bg-gray-600">Mi perfil</router-link>
              <form 

@@ -185,7 +185,7 @@ function usePrivateChat(senderUser, receiverUser) {
           senderId: senderUser.value.id,
           receiverId: newReceiverUser.id,
         },
-        (newMessages) => (messages.value = newMessages)
+        newMessages => (messages.value = newMessages)
       );
       messagesLoading.value = false;
     }
@@ -203,17 +203,15 @@ function usePrivateChat(senderUser, receiverUser) {
 </script>
 
 <template>
-
+    <Loader v-if="userLoading"></Loader>
+    <template v-else>
 <section class="container p-4">
         <h1 class="font-bold text-center mb-2">Chat con {{user.email}}</h1>
     
     <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
-    <Loader v-if="userLoading"></Loader>
-    <template v-else>
+
         <div> 
-
             <h2 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h2>
-
         </div>
 
         
@@ -266,10 +264,8 @@ function usePrivateChat(senderUser, receiverUser) {
                     <BaseButton class="rounded-full p-3 ml-2"></BaseButton>
                 </div>
             </div>
-        </form>
-        
-    
-    </template>
+        </form>  
     </div>
     </section>
+    </template>
 </template>
