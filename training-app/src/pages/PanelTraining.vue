@@ -7,7 +7,6 @@ import ChatInput from '../components/ChatInput.vue';
 import { getTrainingIds, getTrainings, trainingsSaveTraining, trainingsEditTraining, buscarYEliminarDocumento } from '../services/trainings';
 import Loader from '../components/Loader.vue';
 
-
 export default {
     name: 'PanelTraining',
     components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader },
@@ -132,11 +131,9 @@ export default {
                 this.editForm = false;
             }
         },
-
         editTrue() {
             this.editTraining = true;
         },
-
         editFalse() {
             this.rolLoading = false;
             this.editTraining = false;
@@ -157,18 +154,14 @@ export default {
         closeAlert(){
             this.alert = false;
         },
-
         showTrainingForm () {
-        // Aquí puedes agregar lógica adicional si es necesario
         this.showingTrainingForm = true;
         },
         cancelTrainingForm () {
             this.showingTrainingForm = false;
         }
-
     },
-    async mounted () {
-       
+    async mounted () {    
         this.trainingsLoading = true; 
       
          console.log();
@@ -190,289 +183,271 @@ export default {
           this.unsubscribe();
         }
     },
-
 }
 </script>
 
 <template class="container mx-auto p-4">
-
    <section class="border-b-2">
-    <h1>Panel de entrenamientos</h1>
-    <h2>Todos los entrenamientos </h2>
-    <div class="flex gap-4 mt-4 mb-4">
-        <BaseButton
-            @click="showTrainingForm"
-            class="rounded-full "
-        >Agregar entrenamiento +</BaseButton>
-    </div>
-    <div id="alertEliminar" role="alert"
-        v-if="alert && !trainingsLoading  && !deletedTraining"
-    >
-            <!-- Usar el componente DeleteTrainingModal -->
-    <!-- <DeleteTrainingModal
-      :show-modal="alert && !trainingsLoading && !deletedTraining"
-      :valor-de-eliminacion="valorDeEliminacion"
-      @delete-training="deleteTraining"
-      @close-modal="closeAlert"
-    ></DeleteTrainingModal> -->
-        <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
-            <div class="bg-red-100 p-8 shadow-lg rounded-lg max-w-md border-2 border-red-400 text-red-700">    
-            <p class="font-bold">¡Atención!</p>
-                <span class="block sm:inline">Estás a punto de eliminar <span class="font-bold">{{ this.valorDeEliminacion }}. </span>¿Estas seguro que queres eliminarlo?</span>
-                <form action="#" 
-                    @submit.prevent="deleteTraining(this.valorDeEliminacion)"
-                >
-                <div class="flex gap-4 justify-between mt-4">
-                    <BaseButton 
-                    @click="closeAlert()"
-                        class="mt-2"> Cancelar
-                    </BaseButton>
-                    <BaseButton 
-                        class="bg-red-500 hover:bg-red-600 mt-2"> Eliminar
-                    </BaseButton>
-                </div>
-                </form>
-                <span class="absolute top-0 bottom-0 right-0 px-4 py-2">
-                <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" @click="closeAlert()">
-                    <title>Cerrar</title>
-                    <path d="M14.348 5.652a.5.5 0 01.704.704L9.703 10l5.35 5.35a.5.5 0 01-.704.704l-5.35-5.35-5.35 5.35a.5.5 0 01-.704-.704l5.35-5.35-5.35-5.35a.5.5 0 01.704-.704l5.35 5.35z" />
-                </svg>
-                </span>
-            </div>
+        <h1>Panel de entrenamientos</h1>
+        <h2>Todos los entrenamientos </h2>
+        <div class="flex gap-4 mt-4 mb-4">
+            <BaseButton
+                @click="showTrainingForm"
+                class="rounded-full "
+            >Agregar entrenamiento +</BaseButton>
         </div>
-    </div>
-    <div class="flex p-4 flex-wrap">    
-        <template
-        v-if="!trainingsLoading  && !deletedTraining && !editLoading" >
-        <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden p-4"
-        v-for="training in trainings"
-        :key="training.id"  
+        <div id="alertEliminar" role="alert"
+            v-if="alert && !trainingsLoading  && !deletedTraining"
         >
-        <form action=""
-        @submit.prevent="openAlert(training.name)">
-            <div>
-            <div>
-                <img class="h-24 w-full object-cover" :src="training.img" :alt="training.name">
-            </div>
-            <div class="p-4">
-            <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
-                <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
-                <p class="mt-1 text-gray-500">{{training.description}}</p>
-                <p class="mt-1 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
-
-                <BaseButton 
-                class="bg-red-500 hover:bg-red-600 mt-2"
-                :value="training.name"
-                id="buttonAlert"
-            >Eliminar </BaseButton>
-            </div>
-            </div>
-        </form>
-            <div class="flex justify-end align-middle">
-                <button @click="openEdit(training)" class="font-bold text-indigo-500 flex items-center"> Editar entrenamiento <span class="editIcon block ml-1"></span></button>
-            </div>
-            </div>  
-        </template>
-        <template
-        v-else>
-            <Loader></Loader>
-        </template>
-    </div>
-    </section>
-    <template 
-    v-if="!editForm">
-    <!-- <TrainingForm v-if="showingTrainingForm" /> -->
-    <div v-if="showingTrainingForm">
-        <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
-        <div class="bg-white p-6 shadow-md rounded-lg max-w-xxl">
-        <h2 class="mt-4">Cargar un nuevo entrenamiento</h2>
-        <form 
-            action="#" 
-            @submit.prevent="saveTraining"
-            >
-        <div class="w-auto">
-            <section class="flex flex-wrap">
-            <div class="m-3 flex-auto w-64">
-                <BaseLabel for="name" class="text-sm">Nombre: </BaseLabel>
-                <div class="mt-2">
-                    <BaseInput
-                    id="name" 
-                    v-model="training.name"
-                    class="shadow"
-                    required
-                    ></BaseInput> 
+            <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+                <div class="bg-white p-8 shadow-lg rounded-lg max-w-md border-2 border-red-400 text-red-700">    
+                <p class="font-bold">¡Atención!</p>
+                    <span class="block sm:inline">Estás a punto de eliminar <span class="font-bold">{{ this.valorDeEliminacion }}. </span>¿Estas seguro que queres eliminarlo?</span>
+                    <form action="#" 
+                        @submit.prevent="deleteTraining(this.valorDeEliminacion)"
+                    >
+                    <div class="flex gap-4 justify-between mt-4">
+                        <BaseButton 
+                        @click="closeAlert()"
+                            class="mt-2"> Cancelar
+                        </BaseButton>
+                        <BaseButton 
+                            class="bg-red-500 hover:bg-red-600 mt-2"> Eliminar
+                        </BaseButton>
+                    </div>
+                    </form>
                 </div>
             </div>
-            <div class="m-3 flex-auto w-64">
-                <BaseLabel for="img" class="text-sm">URL de la imagen: </BaseLabel>
-                <div class="mt-2">
-                    <BaseInput
-                    id="img" 
-                    v-model="training.img"
-                    class="shadow"
-                    ></BaseInput> 
-                </div>
-            </div>
-        </section>
-            <div class="m-3">
-                <BaseLabel for="description" class="text-sm">Descripción: </BaseLabel>
-                <div class="mt-2">
-                    <BaseTextarea
-                    id="description" 
-                    v-model="training.description"
-                    class="shadow"
-                    rows="4"
-                    required
-                    placeholder="Escribe la descripción del entrenamiento..."
-                    ></BaseTextarea> 
-                </div>
-            </div>
-        
-        <section class="flex flex-wrap">
-            <div class="m-3 flex-auto">
-                <BaseLabel for="coach" class="text-sm">Coach: </BaseLabel>
-                <div class="mt-2">
-                    <BaseInput
-                    id="coach" 
-                    v-model="training.coach"
-                    class="shadow"
-                    required
-                    ></BaseInput>           
-                </div>
-            </div>
-            <div class="m-3 flex-auto">
-                <BaseLabel for="price" class="text-sm">Precio: $</BaseLabel>
-                <div class="mt-2">
-                    <BaseInput
-                    type="number"
-                    id="price" 
-                    v-model="training.price"
-                    class="shadow"
-                    required
-                    ></BaseInput>            
-                </div>
-            </div>
-            <div class="m-3 flex-auto">
-                <BaseLabel for="difficulty" class="text-sm">Dificultad: </BaseLabel>
-                <div class="mt-2">
-                    <BaseInput
-                    id="difficulty" 
-                    v-model="training.difficulty"
-                    class="shadow"
-                    required
-                    ></BaseInput>             
-                </div>
-            </div>
-        </section>
         </div>
-            <div class="flex justify-between">
-                <BaseButton 
-                    class="rounded-full p-3 ml-2 bg-white border border-indigo-600 text-indigo-700 hover:text-white hover:bg-indigo-600"
-                    @click="cancelTrainingForm"
-                >Cancelar</BaseButton> 
+        <div class="flex p-4 flex-wrap">    
+            <template
+            v-if="!trainingsLoading  && !deletedTraining && !editLoading" >
+            <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden p-4"
+            v-for="training in trainings"
+            :key="training.id"  
+            >
+            <form action=""
+            @submit.prevent="openAlert(training.name)">
+                <div>
+                <div>
+                    <img class="h-24 w-full object-cover" :src="training.img" :alt="training.name">
+                </div>
+                <div class="p-4">
+                <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
+                    <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
+                    <p class="mt-1 text-gray-500">{{training.description}}</p>
+                    <p class="mt-1 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
 
-                <BaseButton 
-                class="rounded-full p-3 ml-2"
-                ></BaseButton>  
-            </div> 
-        </form>
-        
-    </div>
-    </div>  
-    </div>
+                    <BaseButton 
+                    class="bg-red-500 hover:bg-red-600 mt-2"
+                    :value="training.name"
+                    id="buttonAlert"
+                >Eliminar </BaseButton>
+                </div>
+                </div>
+            </form>
+                <div class="flex justify-end align-middle">
+                    <button @click="openEdit(training)" class="font-bold text-indigo-500 flex items-center"> Editar entrenamiento <span class="editIcon block ml-1"></span></button>
+                </div>
+                </div>  
+            </template>
+            <template
+            v-else>
+                <Loader></Loader>
+            </template>
+        </div>
+    </section>
+        <template 
+        v-if="!editForm">
+        <!-- <TrainingForm v-if="showingTrainingForm" /> -->
+            <div v-if="showingTrainingForm">
+                <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+                    <div class="bg-white p-6 shadow-md rounded-lg max-w-xxl">
+                        <h2 class="mt-4">Cargar un nuevo entrenamiento</h2>
+                        <form 
+                            action="#" 
+                            @submit.prevent="saveTraining"
+                        >
+                        <div class="w-auto">
+                            <section class="flex flex-wrap">
+                                <div class="m-3 flex-auto w-64">
+                                    <BaseLabel for="name" class="text-sm">Nombre: </BaseLabel>
+                                    <div class="mt-2">
+                                        <BaseInput
+                                            id="name" 
+                                            v-model="training.name"
+                                            class="shadow"
+                                            required
+                                        ></BaseInput> 
+                                    </div>
+                                </div>
+                                <div class="m-3 flex-auto w-64">
+                                    <BaseLabel for="img" class="text-sm">URL de la imagen: </BaseLabel>
+                                    <div class="mt-2">
+                                        <BaseInput
+                                            id="img" 
+                                            v-model="training.img"
+                                            class="shadow"
+                                        ></BaseInput> 
+                                    </div>
+                                </div>
+                            </section>
+                            <div class="m-3">
+                                <BaseLabel for="description" class="text-sm">Descripción: </BaseLabel>
+                                <div class="mt-2">
+                                    <BaseTextarea
+                                    id="description" 
+                                    v-model="training.description"
+                                    class="shadow"
+                                    rows="4"
+                                    required
+                                    placeholder="Escribe la descripción del entrenamiento..."
+                                    ></BaseTextarea> 
+                                </div>
+                            </div>         
+                            <section class="flex flex-wrap">
+                                <div class="m-3 flex-auto">
+                                    <BaseLabel for="coach" class="text-sm">Coach: </BaseLabel>
+                                    <div class="mt-2">
+                                        <BaseInput
+                                            id="coach" 
+                                            v-model="training.coach"
+                                            class="shadow"
+                                            required
+                                        ></BaseInput>           
+                                    </div>
+                                </div>
+                                <div class="m-3 flex-auto">
+                                    <BaseLabel for="price" class="text-sm">Precio: $</BaseLabel>
+                                    <div class="mt-2">
+                                        <BaseInput
+                                            type="number"
+                                            id="price" 
+                                            v-model="training.price"
+                                            class="shadow"
+                                            required
+                                        ></BaseInput>            
+                                    </div>
+                                </div>
+                                <div class="m-3 flex-auto">
+                                    <BaseLabel for="difficulty" class="text-sm">Dificultad: </BaseLabel>
+                                    <div class="mt-2">
+                                        <BaseInput
+                                            id="difficulty" 
+                                            v-model="training.difficulty"
+                                            class="shadow"
+                                            required
+                                        ></BaseInput>             
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <div class="flex justify-between">
+                            <button 
+                                class="rounded-full shadow text-indigo-700 p-3 ml-2"
+                                @click="cancelTrainingForm"
+                            >Cancelar</button> 
+                            <BaseButton 
+                            class="rounded-full p-3 ml-2"
+                            ></BaseButton>  
+                        </div> 
+                    </form>   
+                </div>
+            </div>  
+        </div>
     </template>
     <template v-if="editForm">
-    <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
-        <div class="bg-white p-6 shadow-md rounded-lg max-w-xxl">
-        <p class="text-xl font-semibold mb-4">Editar Entrenamiento</p>
-        <form action="#" @submit.prevent="edit">
-            <div class="flex flex-wrap">
-            <div class="p-2 w-full lg:w-1/2">
-                <BaseLabel for="name" class="text-sm">Nombre: </BaseLabel>
-                <div class="mt-2">
-                <BaseInput
-                    id="name"
-                    v-model="editedTraining.name"
-                    class="shadow"
-                    :placeholder="editedTraining.name"
-                    required
-                ></BaseInput>
-                </div>
+        <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+            <div class="bg-white p-6 shadow-md rounded-lg max-w-xxl">
+                <p class="text-xl font-semibold mb-4">Editar Entrenamiento</p>
+                <form action="#" @submit.prevent="edit">
+                    <div class="flex flex-wrap">
+                        <div class="p-2 w-full lg:w-1/2">
+                            <BaseLabel for="name" class="text-sm">Nombre: </BaseLabel>
+                            <div class="mt-2">
+                            <BaseInput
+                                id="name"
+                                v-model="editedTraining.name"
+                                class="shadow"
+                                :placeholder="editedTraining.name"
+                                required
+                            ></BaseInput>
+                            </div>
+                        </div>
+                        <div class="p-2 w-full lg:w-1/2">
+                            <BaseLabel for="img" class="text-sm">URL de la imagen: </BaseLabel>
+                            <div class="mt-2">
+                            <BaseInput
+                                id="img"
+                                v-model="editedTraining.img"
+                                class="shadow"
+                                :placeholder="editedTraining.img"
+                                required
+                            ></BaseInput>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-2 w-full">
+                        <BaseLabel for="description" class="text-sm">Descripción: </BaseLabel>
+                        <div class="mt-2">
+                            <BaseTextarea
+                            id="description"
+                            v-model="editedTraining.description"
+                            class="shadow"
+                            rows="4"
+                            :placeholder="editedTraining.description"
+                            required
+                            ></BaseTextarea>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="p-2 w-full lg:w-1/2">
+                            <BaseLabel for="coach" class="text-sm">Coach: </BaseLabel>
+                            <div class="mt-2">
+                            <BaseInput
+                                id="coach"
+                                v-model="editedTraining.coach"
+                                class="shadow"
+                                :placeholder="editedTraining.coach"
+                                required
+                            ></BaseInput>
+                            </div>
+                        </div>
+                        <div class="p-2 w-full lg:w-1/2">
+                            <BaseLabel for="price" class="text-sm">Precio: $</BaseLabel>
+                            <div class="mt-2">
+                            <BaseInput
+                                type="number"
+                                id="price"
+                                v-model="editedTraining.price"
+                                class="shadow"
+                                :placeholder="editedTraining.price"
+                                required
+                            ></BaseInput>
+                            </div>
+                        </div>
+                        <div class="p-2 w-full sm:w-1/2">
+                            <BaseLabel for="difficulty" class="text-sm">Dificultad: </BaseLabel>
+                            <div class="mt-2">
+                            <BaseInput
+                                id="difficulty"
+                                v-model="editedTraining.difficulty"
+                                class="shadow"
+                                :placeholder="editedTraining.difficulty"
+                                required
+                            ></BaseInput>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 justify-end">
+                        <button 
+                        @click="closeEdit"
+                        class="rounded-full shadow-lg text-indigo-700 p-3 ml-2"
+                        >Cerrar</button>
+                        <BaseButton type="submit" class="rounded-full p-3 ml-2">Editar</BaseButton>
+                    </div>
+                </form>
             </div>
-            <div class="p-2 w-full lg:w-1/2">
-                <BaseLabel for="img" class="text-sm">URL de la imagen: </BaseLabel>
-                <div class="mt-2">
-                <BaseInput
-                    id="img"
-                    v-model="editedTraining.img"
-                    class="shadow"
-                    :placeholder="editedTraining.img"
-                    required
-                ></BaseInput>
-                </div>
-            </div>
-            </div>
-            <div class="p-2 w-full">
-            <BaseLabel for="description" class="text-sm">Descripción: </BaseLabel>
-            <div class="mt-2">
-                <BaseTextarea
-                id="description"
-                v-model="editedTraining.description"
-                class="shadow"
-                rows="4"
-                :placeholder="editedTraining.description"
-                required
-                ></BaseTextarea>
-            </div>
-            </div>
-            <div class="flex flex-wrap">
-            <div class="p-2 w-full lg:w-1/2">
-                <BaseLabel for="coach" class="text-sm">Coach: </BaseLabel>
-                <div class="mt-2">
-                <BaseInput
-                    id="coach"
-                    v-model="editedTraining.coach"
-                    class="shadow"
-                    :placeholder="editedTraining.coach"
-                    required
-                ></BaseInput>
-                </div>
-            </div>
-            <div class="p-2 w-full lg:w-1/2">
-                <BaseLabel for="price" class="text-sm">Precio: $</BaseLabel>
-                <div class="mt-2">
-                <BaseInput
-                    type="number"
-                    id="price"
-                    v-model="editedTraining.price"
-                    class="shadow"
-                    :placeholder="editedTraining.price"
-                    required
-                ></BaseInput>
-                </div>
-            </div>
-            <div class="p-2 w-full sm:w-1/2">
-                <BaseLabel for="difficulty" class="text-sm">Dificultad: </BaseLabel>
-                <div class="mt-2">
-                <BaseInput
-                    id="difficulty"
-                    v-model="editedTraining.difficulty"
-                    class="shadow"
-                    :placeholder="editedTraining.difficulty"
-                    required
-                ></BaseInput>
-                </div>
-            </div>
-            </div>
-            <div class="flex gap-4 justify-end">
-                <button 
-                @click="closeEdit"
-                class="rounded-full shadow-lg text-indigo-700 p-3 ml-2"
-                >Cerrar</button>
-                <BaseButton type="submit" class="rounded-full p-3 ml-2">Editar</BaseButton>
-            </div>
-        </form>
         </div>
-    </div>
     </template>
 </template>

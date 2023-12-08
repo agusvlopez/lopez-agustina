@@ -1,12 +1,3 @@
-<!-- <script>
-export default {
-    name: 'BaseInput',
-
-    props: ['modelValue'],
-    emits: ['update:modelValue']
-}
-</script> -->
-
 <script setup>
 defineProps({
     modelValue: {

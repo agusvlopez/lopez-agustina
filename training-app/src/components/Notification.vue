@@ -1,15 +1,7 @@
 <script setup>
-import { ref, onMounted } from 'vue';
 
 const props = defineProps(['message', 'type',]);
-// const isVisible = ref(true);
 
-// onMounted(() => {
-//   // Oculta la notificación después de 1 segundo
-//   setTimeout(() => {
-//     isVisible.value = false;
-//   }, 1000);
-// });
 </script>
 
 <template>

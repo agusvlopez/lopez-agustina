@@ -1,11 +1,3 @@
-<!-- <script>
-
-export default {
-    name: 'SkeletonLoader',
-
-}
-</script> -->
-
 <template>
 <div class="sr-only">Cargando...</div>
 <div class="border border-indigo-300 shadow p-5 m-5 max-w-full w-96 mx-auto">

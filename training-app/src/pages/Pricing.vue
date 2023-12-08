@@ -64,6 +64,7 @@ const addTrainingToCurrentUser = async (training) => {
       }, 3000);
     }
   } catch (error) {
+
     setNotification({
         message: 'Entrenamiento ya contratado.',
         type: 'error'
@@ -73,7 +74,6 @@ const addTrainingToCurrentUser = async (training) => {
       }, 3000);
   }
 };
-
 </script>
 
 <template>

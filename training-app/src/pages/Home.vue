@@ -3,7 +3,6 @@ import BaseButton from '../components/BaseButton.vue';
 import Loader from '../components/Loader.vue';
 import { getTrainings } from '../services/trainings';
 
-
 export default {
     name: 'Home',
     components: { BaseButton, Loader },
@@ -37,8 +36,7 @@ export default {
                     specialty: "Entrenamiento de fuerza"
                 },
             ],
-        }
-        
+        }  
     },
 
     async mounted () {
@@ -93,7 +91,6 @@ export default {
             </div>   
         </div>
     </section> 
-     
     </template>
     <template v-else>
         <section class="container mx-auto py-12">
@@ -108,7 +105,6 @@ export default {
         <div class="container mx-auto">
             <h2 class="text-2xl font-semibold mb-4">Nuestros Entrenadores</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
                 <div class="bg-white shadow-md rounded p-4"
                 v-for="coach in coachs">
                     <div>
@@ -116,9 +112,7 @@ export default {
                     </div>
                     <h3 class="text-lg font-semibold mb-2 mt-2">{{ coach.name }}</h3>
                     <p>Especialidad: {{ coach.specialty }}</p>
-                </div>
-                
-                
+                </div>         
             </div>
         </div>
     </section>

@@ -1,5 +1,4 @@
 <script setup>
-import noImage from '../imgs/no-image.jpg';
 import ProfileImage from './ProfileImage.vue';
 
 defineProps({
@@ -29,13 +28,14 @@ defineProps({
             <dt class="mb-1 font-bold">Nombre de Usuario</dt>
             <dd class="mb-2">{{ user.displayName || 'No especificado' }}</dd>
             <dt class="mb-1 font-bold">Entrenamientos contratados:</dt>
-            <dd class="mb-2">
+            <dd class="mb-2 mt-2">
                 <ul>
                     <li v-for="training in trainings" :key="training.id">
+                        <span class="dumbbellIcon inline-block mr-1"></span>
                         {{ training.training.name }} - Dificultad: {{ training.training.difficulty }}
                     </li>
                 </ul>
-                <p v-if="trainings.length === 0">No hay entrenamientos contratados</p>
+                <p v-if="trainings.length === 0">No hay entrenamientos contratados.</p>
             </dd>
         </dl> 
     </div>

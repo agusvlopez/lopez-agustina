@@ -54,9 +54,9 @@ const handleSubmit = async () => {
 
 </script>
 <template>
-        <form 
-    action="#"
-    @submit.prevent="handleSubmit"
+    <form 
+        action="#"
+        @submit.prevent="handleSubmit"
     >
         <div class="mb-3">
             <BaseLabel for="email">Email</BaseLabel>
@@ -76,8 +76,7 @@ const handleSubmit = async () => {
                 id="password"
                 v-model="newUser.password"
                 placeholder="Ingresá tu contraseña"
-            />
-           
+            />    
         </div>
        <BaseButton
        :loading="registerLoading"

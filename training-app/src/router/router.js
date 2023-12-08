@@ -6,7 +6,6 @@ import MyProfile from './../pages/MyProfile.vue';
 import UserProfile from './../pages/UserProfile.vue';
 import PrivateChat from './../pages/PrivateChat.vue';
 import PanelAdmin from './../pages/PanelAdmin.vue';
-import PanelClient from './../pages/PanelClient.vue';
 import PanelTraining from './../pages/PanelTraining.vue';
 import PanelChat from './../pages/PanelChat.vue';
 import ChatClient from './../pages/ChatClient.vue';
@@ -26,7 +25,6 @@ const routes = [
     {path: '/panel-admin',                      component: PanelAdmin,      meta: { requiresAuth: true },},
     {path: '/panel-admin/entrenamientos',       component: PanelTraining,      meta: { requiresAuth: true },},
     {path: '/panel-admin/chats',                component: PanelChat,      meta: { requiresAuth: true },},
-    {path: '/panel-cliente',                    component: PanelClient,     meta: { requiresAuth: true },},
 ]
 
 const router = createRouter({

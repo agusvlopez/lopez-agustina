@@ -1,25 +1,3 @@
-<!-- <script>
-
-export default {
-    name: 'Loader',
-    props: {
-        size: {
-            type: String,
-            default: 'normal'   
-        },
-    },
-    computed: {
-        loaderClass() {
-            return {
-                'loader-sm': this.size === 'small',
-                'loader': this.size === 'normal'
-            }
-        }
-    }
-}
-
-</script> -->
-
 <script setup>
 import { computed } from 'vue';
 import { BUTTON_SIZES, BUTTON_SIZE_NORMAL,BUTTON_SIZE_SMALL } from './../constants/constants';
@@ -32,7 +10,6 @@ const props = defineProps( {
         validator: value => BUTTON_SIZES.includes(value),
     },
 });
-
 const loaderClass = computed(() => {
     return {
         'loader-mini': props.size === BUTTON_SIZE_SMALL,
@@ -40,8 +17,8 @@ const loaderClass = computed(() => {
     }
 });
 </script>
-<template>
 
+<template>
     <div :class="loaderClass">
         <div class="sr-only">Cargando...</div>
     </div>

@@ -1,11 +1,3 @@
-<!-- <script>
-export default {
-    name: 'BaseTextarea',
-
-    props: ['modelValue'],
-    emits: ['update:modelValue']
-}
-</script> -->
 <script setup>
 defineProps(['modelValue']);
 

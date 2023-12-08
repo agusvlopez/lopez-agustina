@@ -154,59 +154,57 @@ function usePrivateChat(senderUser, receiverUser) {
 <template>
     <Loader v-if="userLoading" />
     <template v-else>
-    <section class="container p-4">    
+        <section class="container p-4">    
 
-        <h1 class="font-bold text-center mb-2">Chat con {{user.email}}</h1>
-    
-    <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
-        <div> 
-            <h2 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h2>
-        </div>        
-        <h2 class="sr-only">Mensajes</h2>
-   
-        <!-- Mensajes del chat -->
-        <div class="flex flex-col items-start min-h-[400px] p-4 rounded mb-4">
-            <Loader v-if="messagesLoading"></Loader>
-            <template v-else>
-            <div 
-            class="max-w-[70%] p-2 rounded mb-2"
-            v-for="message in messages"
-            :key="message.id"
-                :class="{
-                    'bg-gray-200': message.senderId !== authUser.id,
-                    'text-gray-700': message.senderId !== authUser.id,
-                    'bg-indigo-500': message.senderId === authUser.id, 
-                    'text-white':  message.senderId === authUser.id,
-                    'self-end': message.senderId === authUser.id,
-                }"
-                >
-                    {{ message.message }}
-                    <div class="text-right">{{ dateToString(message.created_at) || "Enviando..." }}</div>
-               
-            </div>
-            </template>
+            <h1 class="font-bold text-center mb-2">Chat con {{user.email}}</h1>
         
-        </div>
-        <!-- Campo de entrada de texto -->
+            <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
+                <div> 
+                    <h2 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h2>
+                </div>        
+                <h2 class="sr-only">Mensajes</h2>
         
-            <h2 class="sr-only">Enviar mensaje</h2>
-            <form action=""
-            @submit.prevent="handleSendMessage"
-            class="col-8"
-            >
-            <div class="mb-2 mt-3 p-4">
-                <BaseLabel for="message" class="sr-only">Mensaje</BaseLabel>
-                <div class="flex items-center mt-2">
-                    <ChatInput type="text" 
-                    id="message"
-                    v-model="newMessage.message"
-                    class="shadow border border-gray-300"
-                    />
-                    <BaseButton class="rounded-full p-3 ml-2"></BaseButton>
+                <!-- Mensajes del chat -->
+                <div class="flex flex-col items-start min-h-[400px] p-4 rounded mb-4">
+                    <Loader v-if="messagesLoading"></Loader>
+                    <template v-else>
+                        <div 
+                        class="max-w-[70%] p-2 rounded mb-2"
+                        v-for="message in messages"
+                        :key="message.id"
+                            :class="{
+                                'bg-gray-200': message.senderId !== authUser.id,
+                                'text-gray-700': message.senderId !== authUser.id,
+                                'bg-indigo-500': message.senderId === authUser.id, 
+                                'text-white':  message.senderId === authUser.id,
+                                'self-end': message.senderId === authUser.id,
+                            }"
+                            >
+                                {{ message.message }}
+                                <div class="text-right">{{ dateToString(message.created_at) || "Enviando..." }}</div>
+                        
+                        </div>
+                    </template>
                 </div>
+                <!-- Campo de entrada de texto -->
+                <h2 class="sr-only">Enviar mensaje</h2>
+                <form action=""
+                    @submit.prevent="handleSendMessage"
+                    class="col-8"
+                >
+                    <div class="mb-2 mt-3 p-4">
+                        <BaseLabel for="message" class="sr-only">Mensaje</BaseLabel>
+                        <div class="flex items-center mt-2">
+                            <ChatInput type="text" 
+                            id="message"
+                            v-model="newMessage.message"
+                            class="shadow border border-gray-300"
+                            />
+                            <BaseButton class="rounded-full p-3 ml-2"></BaseButton>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
-    </section>
+        </section>
     </template>
 </template>

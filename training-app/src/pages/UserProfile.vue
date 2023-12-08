@@ -1,36 +1,3 @@
-<!-- <script>
-import SkeletonLoader from '../components/SkeletonLoader.vue';
-import { getUserProfileById } from '../services/user';
-
-
-    export default {
-    name: 'UserProfile', 
-    components: { SkeletonLoader },
-    data() {
-        return {
-            //Aca probar el skeleton loader
-            userLoading: true,
-            users: [],
-            user: {
-                id: null,
-                email: null,
-                rol: null,
-            }
-        };
-    },
-    async mounted() {
-        this.userLoading = true;
-        console.log(this.userLoading);
-        this.user = await getUserProfileById(this.$route.params.id);
-        this.userLoading = false;
-        this.users.push(this.user);
-        
-    },
-   
-}
-
-</script> -->
-<!-- CHEQUEAR SI HACE FALTA QUE EXISTA ESTE COMPONENTE -->
 <script setup>
 import SkeletonContext from '../components/SkeletonContext.vue';
 import { useRoute } from 'vue-router';
@@ -38,12 +5,10 @@ import { useUserProfile } from '../functions/useUserProfile'
 const route = useRoute();
 const { user, userLoading } = useUserProfile(route.params.id);
 
-
 </script>
 
 <template>
     <SkeletonContext :loading="userLoading">
-    <!-- <SkeletonLoader v-if="userLoading"></SkeletonLoader> --> 
         <div>
             <h1>Perfil de {{ user.email }}</h1>
             
