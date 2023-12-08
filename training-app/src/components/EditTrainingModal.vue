@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 import BaseButton from './BaseButton.vue'; // Asegúrate de importar tus componentes necesarios
 import BaseInput from './BaseInput.vue';
 import BaseLabel from './BaseLabel.vue';
@@ -120,7 +120,6 @@ export default {
             </div>
         </div>
     </section>
-          <!-- Agrega campos adicionales según tus necesidades -->
   
           <div class="mt-4 gap-4 flex justify-end"> 
             <BaseButton class="bg-white text-indigo-800 border border-indigo-800 hover:text-white" @click="closeModal">Cancelar</BaseButton>
@@ -129,5 +128,5 @@ export default {
         </form>
       </div>
     </div>
-</template>
+</template> -->
 

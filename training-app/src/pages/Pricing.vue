@@ -2,8 +2,8 @@
 import Loader from '../components/Loader.vue';
 import Basebutton from '../components/basebutton.vue';
 import { ref, onMounted, inject } from 'vue';
-import { getTrainings } from '../services/trainings';
-import { addTrainingToUser } from '../services/user';
+import { getTrainingIds, getTrainings } from '../services/trainings';
+import { addTrainingToUser, getUserTrainings } from '../services/user';
 import { getUserId } from '../services/auth';
 import { notificationKey } from '../symbols/symbols';
 
@@ -11,6 +11,15 @@ const { notification, setNotification } = inject(notificationKey);
 
 const trainings = ref([]);
 const trainingsLoading = ref(true);
+const trainingIsAlreadyAdded = ref(false);
+const trainingId = ref('');
+
+const truncateText = (text, maxLength) => {
+  if (text.length > maxLength) {
+    return text.slice(0, maxLength) + '...';
+  }
+  return text;
+};
 
 onMounted(async () => {
   try {
@@ -28,9 +37,15 @@ onMounted(async () => {
 const addTrainingToCurrentUser = async (training) => {
   const userId = getUserId();
   try {
-    if (userId) {
-      await addTrainingToUser(userId, training);
-      
+    if (userId) {     
+       await getTrainingIds(userId)
+      .then((result)=> {
+        console.log(result);
+        trainingId.value = result;
+      });
+
+      await addTrainingToUser(userId, {training, id: trainingId.value});
+
       setNotification({
         message: 'Entrenamiento contratado con éxito.',
         type: 'success'
@@ -49,9 +64,16 @@ const addTrainingToCurrentUser = async (training) => {
       }, 3000);
     }
   } catch (error) {
-    console.error('Error al añadir el entrenamiento al usuario:', error);
+    setNotification({
+        message: 'Entrenamiento ya contratado.',
+        type: 'error'
+      });
+      setTimeout(() => {
+        setNotification(null);
+      }, 3000);
   }
 };
+
 </script>
 
 <template>
@@ -65,17 +87,20 @@ const addTrainingToCurrentUser = async (training) => {
                     <div>
                         <img class="h-72 w-full object-cover" :src="training.img" :alt="training.name">
                     </div>
-                    <div class="p-8">
+                    <div class="p-4">
                         <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
                         <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
-                        <p class="mt-2 text-gray-500">{{training.description}}</p>
+                        <p class="mt-2 text-gray-500">{{ truncateText(training.description, 150) }}</p>
                         <p class="mt-4 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
                     </div>            
                 </div>
+                <div class="flex justify-center items-center p-2">
                 <Basebutton 
-                class="m-2"
-                @click="addTrainingToCurrentUser(training)"
+                  class="m-2"
+                  @click="addTrainingToCurrentUser(training)"
+                  :disabled="trainingIsAlreadyAdded"
                 >Obtener entrenamiento</Basebutton>
+                </div>
             </div>
         </div>
     </template>

@@ -80,10 +80,6 @@ export function login({email, password, rol}) {
     })
     .catch(error => {
         throw error;
-        // return {
-        //     code: error.code,
-        //     message: error.message,
-        // }
     });
 }
 

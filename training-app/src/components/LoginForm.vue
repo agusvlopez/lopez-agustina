@@ -74,8 +74,7 @@ const doLogin = async () => {
                 v-model="form.password"
                 placeholder="Ingresá tu contraseña"
             />
-        </div>
-        
+        </div>    
         <BaseButton
             :loading="loginLoading"
             class=" w-full"

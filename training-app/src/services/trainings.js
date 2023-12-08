@@ -35,9 +35,9 @@ export async function getTrainings(){
 
 /**
  * Elimina un documento en una colección de Firebase Firestore.
- * @param {string} collectionName - El nombre de la colección que contiene el documento.
- * @param {string} documentId - El ID del documento que deseas eliminar.
- * @returns {Promise} - Una promesa que se resuelve cuando se ha eliminado el documento.
+ * @param {string} collectionName
+ * @param {string} documentId 
+ * @returns {Promise}
  */
 export async function deleteDocument(documentId) {
   const documentRef = doc(db, 'trainings', documentId);
@@ -45,67 +45,52 @@ export async function deleteDocument(documentId) {
   await deleteDoc(documentRef);
 }
 
-
 export async function getTrainingDocs(){
   let trainingDocId;
   let documents = [];
   const querySnapshot = await getDocs(collection(db, 'trainings'));
-  console.log(querySnapshot);
 
   querySnapshot.forEach((doc) => {
+    const documentData = {
+      id: doc.id, 
+      ...doc.data(), 
+    }; 
+    documents.push(documentData);
+  });
 
-           const documentData = {
-               id: doc.id, // ID del documento
-               ...doc.data(), // Datos del documento
-           };
-   
-           documents.push(documentData);
-       });
-
-       trainingDocId = querySnapshot.docs[0];
-       console.log(trainingDocId.id);
-       return trainingDocId.id;
+  trainingDocId = querySnapshot.docs[0];
+  return trainingDocId.id;
 }
-
 
 export async function buscarYEliminarDocumento(valor) {
   const collectionName = 'trainings';
   const campo = 'name';
   let deleted;
   try {
-    
-      const collectionRef = collection(db, collectionName);
-      const q = query(collectionRef, where(campo, '==', valor));
-      const querySnapshot = await getDocs(q);
+    const collectionRef = collection(db, collectionName);
+    const q = query(collectionRef, where(campo, '==', valor));
+    const querySnapshot = await getDocs(q);
       
-      if (querySnapshot.empty) {
-      console.log('No se encontraron documentos que coincidan con la búsqueda.');
-      return;
-      }
-      
-      // Supongamos que quieres eliminar el primer documento encontrado (ajusta esta lógica según tus necesidades).
-      const documentToDelete = querySnapshot.docs[0];
-      console.log(documentToDelete);
-      const documentRef = doc(db, collectionName, documentToDelete.id);
-    
-     deleted = await deleteDoc(documentRef);
-      
-     
-      console.log(documentRef);
- 
+    if (querySnapshot.empty) {
+    console.log('No se encontraron documentos que coincidan con la búsqueda.');
+    return;
+    }
+    const documentToDelete = querySnapshot.docs[0];
+    console.log(documentToDelete);
+    const documentRef = doc(db, collectionName, documentToDelete.id);
 
-     
+    deleted = await deleteDoc(documentRef);
+
   } catch (error) {
-      console.error('Error al buscar y eliminar el documento:', error);
+    console.error('Error al buscar y eliminar el documento:', error);
   }
 
   return deleted;
-
 }
 
 export async function getTrainingIds() {
   const querySnapshot = await getDocs(collection(db, 'trainings'));
   const trainingIds = querySnapshot.docs.map(doc => doc.id);
 
-  return trainingIds;
+  return trainingIds[0];
 }

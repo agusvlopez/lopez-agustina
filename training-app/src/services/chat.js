@@ -34,8 +34,7 @@ export function chatSubscribeToMessages(callback) {
             user: doc.data().user,
             message: doc.data().message,
             created_at: doc.data().created_at?.toDate(),
-         }
-         
+         }    
         });
 
         callback(data);

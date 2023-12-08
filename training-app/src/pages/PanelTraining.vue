@@ -31,6 +31,14 @@ export default {
                 price: 0,
                 difficulty: '',
             },
+            editedTraining: {
+                name: '',
+                img: '',
+                description: '',
+                coach: '',
+                price: 0,
+                difficulty: '',
+            },
             newTraining: {
                 name: '',
                 img: '',
@@ -71,9 +79,9 @@ export default {
              allTrainings.forEach(async d => {
                  trainingDoc = d.data();
                  array.push(trainingDoc);
-             });
-                this.trainings = array;
-           
+            });
+            this.trainings = array;
+            this.showingTrainingForm = false;
         },
 
         async deleteTraining(valor) {
@@ -104,20 +112,19 @@ export default {
                 const trainingId = trainingIds[0];
 
                 await trainingsEditTraining(trainingId, {
-                    name: this.training.name,
-                    img: this.training.img,
-                    description: this.training.description,
-                    coach: this.training.coach,
-                    price: this.training.price,
-                    difficulty: this.training.difficulty,
+                    name: this.editedTraining.name,
+                    img: this.editedTraining.img,
+                    description: this.editedTraining.description,
+                    coach: this.editedTraining.coach,
+                    price: this.editedTraining.price,
+                    difficulty: this.editedTraining.difficulty,
                 });
 
-                const index = this.trainings.findIndex(t => t.id === this.training.id);
+                const index = this.trainings.findIndex(t => t.id === this.editedTraining.id);
                 if (index !== -1) {
-                    this.trainings[index] = { ...this.training };
+                    this.trainings[index] = { ...this.editedTraining };
                 }
                 console.log('Entrenamiento actualizado con éxito');
-
             } catch (error) {
                 console.error('Error al actualizar el entrenamiento:', error);
             } finally {
@@ -140,8 +147,9 @@ export default {
             this.valorDeEliminacion = event;
         },
         openEdit(document){
+            this.editedTraining = { ...document };
             this.editForm = true;
-            this.training = document;
+            console.log('Edited Training:', this.editedTraining);
         },
         closeEdit(){
             this.editForm = false;
@@ -177,12 +185,11 @@ export default {
         return this.trainingDoc;
     },
 
-      // Asegúrate de cancelar la suscripción cuando el componente se destruye
-  beforeDestroy() {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
-  },
+    beforeDestroy() {
+        if (this.unsubscribe) {
+          this.unsubscribe();
+        }
+    },
 
 }
 </script>
@@ -192,7 +199,12 @@ export default {
    <section class="border-b-2">
     <h1>Panel de entrenamientos</h1>
     <h2>Todos los entrenamientos </h2>
-   
+    <div class="flex gap-4 mt-4 mb-4">
+        <BaseButton
+            @click="showTrainingForm"
+            class="rounded-full "
+        >Agregar entrenamiento +</BaseButton>
+    </div>
     <div id="alertEliminar" role="alert"
         v-if="alert && !trainingsLoading  && !deletedTraining"
     >
@@ -269,12 +281,10 @@ export default {
     </section>
     <template 
     v-if="!editForm">
-    <div class="flex gap-4">
-        <BaseButton @click="showTrainingForm">Agregar entrenamiento</BaseButton>
-        <BaseButton v-if="showingTrainingForm" @click="cancelTrainingForm">Cancelar</BaseButton>
-    </div>
     <!-- <TrainingForm v-if="showingTrainingForm" /> -->
     <div v-if="showingTrainingForm">
+        <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+        <div class="bg-white p-6 shadow-md rounded-lg max-w-xxl">
         <h2 class="mt-4">Cargar un nuevo entrenamiento</h2>
         <form 
             action="#" 
@@ -313,6 +323,7 @@ export default {
                     class="shadow"
                     rows="4"
                     required
+                    placeholder="Escribe la descripción del entrenamiento..."
                     ></BaseTextarea> 
                 </div>
             </div>
@@ -354,9 +365,20 @@ export default {
             </div>
         </section>
         </div>
-            <BaseButton class="rounded-full p-3 ml-2"
-            ></BaseButton>    
-        </form>  
+            <div class="flex justify-between">
+                <BaseButton 
+                    class="rounded-full p-3 ml-2 bg-white border border-indigo-600 text-indigo-700 hover:text-white hover:bg-indigo-600"
+                    @click="cancelTrainingForm"
+                >Cancelar</BaseButton> 
+
+                <BaseButton 
+                class="rounded-full p-3 ml-2"
+                ></BaseButton>  
+            </div> 
+        </form>
+        
+    </div>
+    </div>  
     </div>
     </template>
     <template v-if="editForm">
@@ -370,9 +392,9 @@ export default {
                 <div class="mt-2">
                 <BaseInput
                     id="name"
-                    v-model="training.name"
+                    v-model="editedTraining.name"
                     class="shadow"
-                    :placeholder="training.name"
+                    :placeholder="editedTraining.name"
                     required
                 ></BaseInput>
                 </div>
@@ -382,9 +404,9 @@ export default {
                 <div class="mt-2">
                 <BaseInput
                     id="img"
-                    v-model="training.img"
+                    v-model="editedTraining.img"
                     class="shadow"
-                    :placeholder="training.img"
+                    :placeholder="editedTraining.img"
                     required
                 ></BaseInput>
                 </div>
@@ -395,10 +417,10 @@ export default {
             <div class="mt-2">
                 <BaseTextarea
                 id="description"
-                v-model="training.description"
+                v-model="editedTraining.description"
                 class="shadow"
                 rows="4"
-                :placeholder="training.description"
+                :placeholder="editedTraining.description"
                 required
                 ></BaseTextarea>
             </div>
@@ -409,9 +431,9 @@ export default {
                 <div class="mt-2">
                 <BaseInput
                     id="coach"
-                    v-model="training.coach"
+                    v-model="editedTraining.coach"
                     class="shadow"
-                    :placeholder="training.coach"
+                    :placeholder="editedTraining.coach"
                     required
                 ></BaseInput>
                 </div>
@@ -422,9 +444,9 @@ export default {
                 <BaseInput
                     type="number"
                     id="price"
-                    v-model="training.price"
+                    v-model="editedTraining.price"
                     class="shadow"
-                    :placeholder="training.price"
+                    :placeholder="editedTraining.price"
                     required
                 ></BaseInput>
                 </div>
@@ -434,9 +456,9 @@ export default {
                 <div class="mt-2">
                 <BaseInput
                     id="difficulty"
-                    v-model="training.difficulty"
+                    v-model="editedTraining.difficulty"
                     class="shadow"
-                    :placeholder="training.difficulty"
+                    :placeholder="editedTraining.difficulty"
                     required
                 ></BaseInput>
                 </div>
@@ -447,7 +469,7 @@ export default {
                 @click="closeEdit"
                 class="rounded-full shadow-lg text-indigo-700 p-3 ml-2"
                 >Cerrar</button>
-                <BaseButton class="rounded-full p-3 ml-2">Editar</BaseButton>
+                <BaseButton type="submit" class="rounded-full p-3 ml-2">Editar</BaseButton>
             </div>
         </form>
         </div>

@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { trainingsSaveTraining, getTrainings } from '../services/trainings';
 import BaseLabel from './BaseLabel.vue';
@@ -145,4 +145,4 @@ onBeforeUnmount(() => unsubscribe());
         <Basebutton class="rounded-full p-3 ml-2"
         ></Basebutton>    
     </form>  
-</template>
+</template> -->
