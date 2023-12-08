@@ -12,7 +12,6 @@ const { notification, setNotification } = inject(notificationKey);
 const trainings = ref([]);
 const trainingsLoading = ref(true);
 const trainingIsAlreadyAdded = ref(false);
-const trainingId = ref('');
 
 const truncateText = (text, maxLength) => {
   if (text.length > maxLength) {
@@ -36,15 +35,8 @@ onMounted(async () => {
 
 const addTrainingToCurrentUser = async (training) => {
   const userId = getUserId();
-  try {
-    if (userId) {     
-       await getTrainingIds(userId)
-      .then((result)=> {
-        console.log(result);
-        trainingId.value = result;
-      });
-
-      await addTrainingToUser(userId, {training, id: trainingId.value});
+  try {   
+      await addTrainingToUser(userId, training);
 
       setNotification({
         message: 'Entrenamiento contratado con éxito.',
@@ -54,17 +46,8 @@ const addTrainingToCurrentUser = async (training) => {
         setNotification(null);
       }, 3000);
 
-    } else {
-      setNotification({
-        message: 'Hubo un error al intentar contratar el entrenamiento. Por favor intente nuevamente más tarde.',
-        type: 'error'
-      });
-      setTimeout(() => {
-        setNotification(null);
-      }, 3000);
-    }
   } catch (error) {
-
+    
     setNotification({
         message: 'Entrenamiento ya contratado.',
         type: 'error'
@@ -74,6 +57,8 @@ const addTrainingToCurrentUser = async (training) => {
       }, 3000);
   }
 };
+
+
 </script>
 
 <template>

@@ -32,7 +32,7 @@ defineProps({
                 <ul>
                     <li v-for="training in trainings" :key="training.id">
                         <span class="dumbbellIcon inline-block mr-1"></span>
-                        {{ training.training.name }} - Dificultad: {{ training.training.difficulty }}
+                        {{ training.name }} - Dificultad: {{ training.difficulty }}
                     </li>
                 </ul>
                 <p v-if="trainings.length === 0">No hay entrenamientos contratados.</p>

@@ -360,7 +360,9 @@ export default {
         <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
             <div class="bg-white p-6 shadow-md rounded-lg max-w-xxl">
                 <p class="text-xl font-semibold mb-4">Editar Entrenamiento</p>
-                <form action="#" @submit.prevent="edit">
+                <form action="#" 
+                    @submit.prevent="edit"
+                >
                     <div class="flex flex-wrap">
                         <div class="p-2 w-full lg:w-1/2">
                             <BaseLabel for="name" class="text-sm">Nombre: </BaseLabel>
@@ -444,7 +446,7 @@ export default {
                         @click="closeEdit"
                         class="rounded-full shadow-lg text-indigo-700 p-3 ml-2"
                         >Cerrar</button>
-                        <BaseButton type="submit" class="rounded-full p-3 ml-2">Editar</BaseButton>
+                        <BaseButton class="rounded-full p-3 ml-2">Editar</BaseButton>
                     </div>
                 </form>
             </div>

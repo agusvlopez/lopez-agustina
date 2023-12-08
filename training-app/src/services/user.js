@@ -87,7 +87,6 @@ export async function getAllUsers(){
 }
 
 /**
- * 
  * @param {string} id 
  * @param {{displayName: string|null, photoURL: string|null, trainings: Array|null}} data
  * @returns {Promise} 
@@ -99,57 +98,25 @@ export async function updateUserProfile(id, data) {
     )
 }
 
-
 /**
  * Agrega un documento a la subcolección "trainings" dentro de la colección "users".
  * @param {string} userId - ID del usuario al que se le añadirá el entrenamiento.
- * @param {string} trainingId - ID del entrenamiento que se copiará.
  * @param {Object} trainingData - Datos del entrenamiento a añadir.
  * @returns {Promise}
  */
-// export async function addTrainingToUser(userId, trainingId, trainingData) {
-//     try {
-//         const userRef = doc(db, 'users', userId);
-//         const userTrainingsRef = collection(userRef, 'trainings');
-
-//         // Utiliza addDoc y proporciona el ID deseado para el nuevo documento
-//         const newTrainingRef = await addDoc(userTrainingsRef, {
-//             ...trainingData,
-//             created_at: serverTimestamp(),
-//             // Asigna el ID deseado para el nuevo documento en la subcolección
-//             id: trainingId,
-//         });
-
-//         console.log(newTrainingRef);
-//         return newTrainingRef;
-//     } catch (error) {
-//         console.error('Error al añadir el entrenamiento al usuario:', error);
-//         throw error;
-//     }
-// }
-
-export async function addTrainingToUser(userId, newData) {
-    const trainingsCollectionRef = collection(db, `users/${userId}/trainings`);
-
+export async function addTrainingToUser(userId, trainingData) {
     try {
-        // Consulta para verificar si ya existe un documento con el mismo ID
-        const q = query(trainingsCollectionRef, where('id', '==', newData.id));
-        const querySnapshot = await getDocs(q);
-
-        // Si no hay documentos con el mismo ID, agrega el nuevo documento
-        if (querySnapshot.empty) {
-            const newTraining = await addDoc(trainingsCollectionRef, {
-                ...newData,
-                created_at: serverTimestamp(),
-            });
-
-            return newTraining;
-        } else {
-            // Si ya existe un documento con el mismo ID, puedes manejarlo de acuerdo a tus necesidades
-            console.log('El documento ya existe en la subcolección trainings.');
-            throw error; // Puedes devolver null o cualquier otro valor que desees
-        }
+      const userRef = doc(db, 'users', userId);
+      const userTrainingsRef = collection(userRef, 'trainings');
+  
+      const newTrainingRef = await addDoc(userTrainingsRef, {
+        ...trainingData,
+        created_at: serverTimestamp(),
+      });
+      console.log(newTrainingRef);
+      return newTrainingRef.id;
     } catch (error) {
-        throw new Error('Error al agregar a trainings: ' + error.message);
+      console.error('Error al añadir el entrenamiento al usuario:', error);
+      throw error;
     }
-};
+  }
