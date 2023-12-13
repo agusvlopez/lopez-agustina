@@ -1,8 +1,10 @@
-import {db} from './firebase.js';
+import {db, storage} from './firebase.js';
 import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy, getDocs, doc, deleteDoc, where, updateDoc } from "firebase/firestore";
+import { getFileURL, uploadFile } from './storage.js';
+import { ref } from 'firebase/storage';
 
-  const refTraining = collection(db, 'trainings');
-  console.log(refTraining);
+const refTraining = collection(db, 'trainings');
+console.log(refTraining);
 
 /**
  * Guarda un nuevo mensaje de chat (documento) en la colección trainings con la data correspondiente incluyendo la fecha y hora que se publicó. 
@@ -17,7 +19,21 @@ export function trainingsSaveTraining(data){
     });
 };
 
+async function getDocumentId() {
+  try {
+    const querySnapshot = await getDocs(refTraining);
+    querySnapshot.forEach((doc) => {
+      // doc.id will give you the ID of each document in the collection
+      const documentId = doc.id;
+      console.log('Document ID:', documentId);
+    });
+  } catch (error) {
+    console.error('Error getting documents: ', error);
+  }
+}
+
 export function trainingsEditTraining(trainingId, data){
+  // const trainingId = getDocumentId();
   const trainingRef = doc(db, 'trainings', trainingId);
   return updateDoc(trainingRef, {
       ...data,
@@ -93,4 +109,20 @@ export async function getTrainingIds() {
   const trainingIds = querySnapshot.docs.map(doc => doc.id);
 
   return trainingIds[0];
+}
+
+/**
+ * @param {String} trainingId
+ * @param {File} file 
+ * @returns {Promise}
+ */
+export async function uploadTrainingPhoto(file) {
+  const trainingId = getDocumentId();
+  const fileId = `${Date.now()}`;
+  const path = `trainings/${trainingId}/${file.name}`;
+  await uploadFile(path, file)
+
+  const photoURL = await getFileURL(path);
+
+  return photoURL;
 }

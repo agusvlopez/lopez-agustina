@@ -74,7 +74,7 @@ const addTrainingToCurrentUser = async (training) => {
                     </div>
                     <div class="p-4">
                         <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
-                        <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
+                        <h2 class="block mt-1 text-lg leading-tight font-medium text-black">{{training.name}}</h2>
                         <p class="mt-2 text-gray-500">{{ truncateText(training.description, 150) }}</p>
                         <p class="mt-4 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
                     </div>            

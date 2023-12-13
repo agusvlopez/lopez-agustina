@@ -1,0 +1,13 @@
+Carrera: Diseño y Desarrollo Web
+Materia: Clientes Web Mobile
+Cuatrimestre: 4to cuatrimestre
+Año: 2023
+Turno: noche
+Comisión: DWN4BV
+Apellido y nombre: Lopez Agustina
+Docente: Santiago Gallino
+Carácter de entrega: 2do parcial. 
+
+Credenciales del usuario administrador:
+Email: admin@admin.com
+Contraseña: 123456
