@@ -41,18 +41,18 @@ export default {
 
     async mounted () {
        
-       this.trainingsLoading = true; 
+        this.trainingsLoading = true; 
 
-       let trainingsAll = await getTrainings();
+        let trainingsAll = await getTrainings();
      
-       let trainingDoc;
+        let trainingDoc;
         let contador = 0; 
         
-        trainingsAll.forEach(async doc => {
+        trainingsAll.map(async doc => {
            if (contador < 3) {
             // Realiza alguna acción con el elemento
             console.log(doc);
-            trainingDoc = doc.data();
+            trainingDoc = doc;
             this.trainings.push(trainingDoc);
             contador++; // Incrementa el contador  
             }
@@ -62,7 +62,7 @@ export default {
        this.trainingsLoading = false;
        console.log(this.trainings);
        return this.trainingDoc;
-   },
+    },
 
 }
 </script>

@@ -4,7 +4,7 @@ import BaseInput from '../components/BaseInput.vue';
 import BaseLabel from '../components/BaseLabel.vue';
 import BaseTextarea from '../components/BaseTextarea.vue';
 import ChatInput from '../components/ChatInput.vue';
-import { getTrainingIds, getTrainings, trainingsSaveTraining, trainingsEditTraining, buscarYEliminarDocumento } from '../services/trainings';
+import { getTrainingIds, getTrainings, trainingsSaveTraining, trainingsEditTraining, buscarYEliminarDocumento, editTrainingPhoto, getDocumentId, deleteTrainingPhoto } from '../services/trainings';
 import Loader from '../components/Loader.vue';
 
 export default {
@@ -22,6 +22,10 @@ export default {
             alert: false,
             editForm: false,
             showingTrainingForm: false,
+            photoData: {
+                file: null,
+                preview: null,
+            },
             training: {
                 name: '',
                 img: '',
@@ -50,80 +54,124 @@ export default {
         };
     },
     methods: {
-     async saveTraining() {
-            let array = []; 
-           
-            trainingsSaveTraining({ 
-                name: this.training.name,
-                img: this.training.img,
-                description: this.training.description,
-                coach: this.training.coach,
-                price: this.training.price,
-                difficulty: this.training.difficulty,
-            })
-                .then(() => {
-                 this.trainingsLoading = false;
-                this.training.name = '';
-                this.training.img = '',
-                this.training.description = '';
-                this.training.coach = '';
-                this.training.price = 0;
-                this.training.difficulty = '';
-                let trainingDoc;
-             
-                // this.newMessageSaving = false;
-            });
-             let trainingDoc;
-             let allTrainings = await getTrainings();
-             allTrainings.forEach(async d => {
-                 trainingDoc = d.data();
-                 array.push(trainingDoc);
-            });
-            this.trainings = array;
-            this.showingTrainingForm = false;
-        },
+        handlePhotoFileChange(event) {
+        console.log("evento: ", event);
+        this.photoData.file = event.target.files[0];
+            console.log(this.photoData.file);
+            console.log(this.training.img);
+        const reader = new FileReader();
 
-        async deleteTraining(valor) {
-            let docs = [];
-            this.deletedTraining = true;
-            let trainingDocument;
-            buscarYEliminarDocumento(valor)
+        reader.addEventListener('load', () => {
+            this.training.img = reader.result;
+            console.log(reader.result);
+        });
+
+        reader.readAsDataURL(this.photoData.file);
+        
+        },
+        async saveTraining() {
+        try {
+            this.trainingsLoading = true;
+            // Guarda el nuevo entrenamiento y obtén su ID
+            const newTrainingRef = await trainingsSaveTraining({
+            name: this.training.name,
+            img: '', // Deja esto en blanco por ahora
+            description: this.training.description,
+            coach: this.training.coach,
+            price: this.training.price,
+            difficulty: this.training.difficulty,
+            });
+
+            // Obtiene el ID del nuevo entrenamiento
+            const newTrainingId = newTrainingRef.id;
+
+            // Sube la imagen al Storage utilizando el ID del entrenamiento
+            const imageUrl = await editTrainingPhoto(this.photoData.file, newTrainingId);
+
+            // Actualiza el campo 'img' del entrenamiento con la URL de la imagen
+            await trainingsEditTraining(newTrainingId, { img: imageUrl });
+
+            // Actualiza la lista de entrenamientos después de agregar uno nuevo
+            const allTrainings = await getTrainings();
+            this.trainings = allTrainings;
+
+            // Restablece los campos del formulario
             
-            let trainingsDocs = await getTrainings();
-
-            trainingsDocs.forEach(async docu => {
-                trainingDocument = docu.data();
-                docs.push(trainingDocument);
-            });
-            this.trainings = docs;
-          
-            this.alert = false;
+            this.training.name = '';
+            this.training.description = '';
+            this.training.coach = '';
+            this.training.price = 0;
+            this.training.difficulty = '';
             this.trainingsLoading = false;
-            this.deletedTraining = false;
-            this.valorDeEliminacion = ''; 
+            this.showingTrainingForm = false;
+        } catch (error) {
+            console.error('Error al guardar el entrenamiento:', error);
+        }
         },
-
-        async edit() {
+        async deleteTraining(valor) {
             try {
-                this.editLoading = true;
+                this.deletedTraining = true;
 
-                const trainingIds = await getTrainingIds();
-                const trainingId = trainingIds[0];
+                // Obtén el documento a eliminar
+                const trainingToDelete = await buscarYEliminarDocumento(valor);
 
-                await trainingsEditTraining(trainingId, {
+                if (!trainingToDelete) {
+                console.log('No se encontró el documento a eliminar.');
+                return;
+                }
+
+                // Verifica si hay una URL de imagen asociada al entrenamiento
+                if (trainingToDelete.img) {
+                    deleteTrainingPhoto(trainingToDelete)
+                }
+
+                // Actualiza la lista de entrenamientos después de eliminar uno
+                const trainingsDocs = await getTrainings();
+                this.trainings = trainingsDocs;
+
+                // Restablece los estados
+                this.alert = false;
+                this.trainingsLoading = false;
+                this.deletedTraining = false;
+                this.valorDeEliminacion = '';
+            } catch (error) {
+                console.error('Error al eliminar el entrenamiento:', error);
+            }
+        },
+        openEdit(document){
+            this.editedTraining = { ...document };
+            this.editForm = true;
+            console.log('Edited Training:', this.editedTraining);
+            this.documentId = document.id;
+            console.log(this.documentId);
+        },
+        async edit() {
+            this.editLoading = true;
+
+            try {
+                let imageUrl = this.editedTraining.img;
+
+                // Check if a new file has been selected
+                if (this.photoData.file) {
+                    // Sube la nueva imagen y obtén la URL
+                    imageUrl = await editTrainingPhoto(this.photoData.file, this.documentId);
+                }
+
+                // Luego, actualiza el entrenamiento en la base de datos con la nueva URL
+                await trainingsEditTraining(this.documentId, {
                     name: this.editedTraining.name,
-                    img: this.editedTraining.img,
+                    img: imageUrl,
                     description: this.editedTraining.description,
                     coach: this.editedTraining.coach,
                     price: this.editedTraining.price,
                     difficulty: this.editedTraining.difficulty,
                 });
 
-                const index = this.trainings.findIndex(t => t.id === this.editedTraining.id);
-                if (index !== -1) {
-                    this.trainings[index] = { ...this.editedTraining };
-                }
                 console.log('Entrenamiento actualizado con éxito');
+
+                // Llama a getTrainings nuevamente para obtener la lista actualizada
+                const trainingsAll = await getTrainings();
+                this.trainings = trainingsAll;
             } catch (error) {
                 console.error('Error al actualizar el entrenamiento:', error);
             } finally {
@@ -143,11 +191,6 @@ export default {
             this.alert = true;
             this.valorDeEliminacion = event;
         },
-        openEdit(document){
-            this.editedTraining = { ...document };
-            this.editForm = true;
-            console.log('Edited Training:', this.editedTraining);
-        },
         closeEdit(){
             this.editForm = false;
         },
@@ -155,29 +198,25 @@ export default {
             this.alert = false;
         },
         showTrainingForm () {
-        this.showingTrainingForm = true;
+            this.showingTrainingForm = true;
         },
         cancelTrainingForm () {
             this.showingTrainingForm = false;
         }
     },
-    async mounted () {    
-        this.trainingsLoading = true; 
-      
-         console.log();
-        console.log(this.trainings);
-        let trainingsAll = await getTrainings();
-      
-        let trainingDoc;
-        trainingsAll.forEach(async d => {
-            trainingDoc = d.data();
-            this.trainings.push(trainingDoc); 
-        });
+    async mounted() {
+        this.trainingsLoading = true;
+
+        try {
+        // Llama a la función getTrainings directamente
+        const trainingsAll = await getTrainings();
+        this.trainings = trainingsAll;
+        } catch (error) {
+        console.error('Error al obtener entrenamientos:', error);
+        } finally {
         this.trainingsLoading = false;
-
-        return this.trainingDoc;
+        }
     },
-
     beforeDestroy() {
         if (this.unsubscribe) {
           this.unsubscribe();
@@ -212,7 +251,9 @@ export default {
                             class="mt-2"> Cancelar
                         </BaseButton>
                         <BaseButton 
-                            class="bg-red-500 hover:bg-red-600 mt-2"> Eliminar
+                            class="bg-red-500 hover:bg-red-600 mt-2"
+                            :loading="deletedTraining"
+                            > Eliminar
                         </BaseButton>
                     </div>
                     </form>
@@ -259,7 +300,6 @@ export default {
     </section>
         <template 
         v-if="!editForm">
-        <!-- <TrainingForm v-if="showingTrainingForm" /> -->
             <div v-if="showingTrainingForm">
                 <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
                     <div class="bg-white p-6 shadow-md rounded-lg max-w-xxl">
@@ -282,14 +322,14 @@ export default {
                                     </div>
                                 </div>
                                 <div class="m-3 flex-auto w-64">
-                                    <BaseLabel for="img" class="text-sm">URL de la imagen: </BaseLabel>
-                                    <div class="mt-2">
-                                        <BaseInput
-                                            id="img" 
-                                            v-model="training.img"
-                                            class="shadow"
-                                        ></BaseInput> 
-                                    </div>
+                                    <BaseLabel for="newPhoto">Imagen</BaseLabel>
+                                    <input 
+                                        class="w-full px-1.5 py-1 border border-gray-400 rounded disabled:bg-gray-100"
+                                        type="file"
+                                        id="newPhoto"
+                                        :disabled="editLoading"
+                                        @change="handlePhotoFileChange"
+                                    />     
                                 </div>
                             </section>
                             <div class="m-3">
@@ -349,6 +389,7 @@ export default {
                             >Cancelar</button> 
                             <BaseButton 
                             class="rounded-full p-3 ml-2"
+                            :loading="trainingsLoading"
                             ></BaseButton>  
                         </div> 
                     </form>   
@@ -377,15 +418,22 @@ export default {
                             </div>
                         </div>
                         <div class="p-2 w-full lg:w-1/2">
-                            <BaseLabel for="img" class="text-sm">URL de la imagen: </BaseLabel>
-                            <div class="mt-2">
-                            <BaseInput
-                                id="img"
-                                v-model="editedTraining.img"
-                                class="shadow"
-                                :placeholder="editedTraining.img"
-                                required
-                            ></BaseInput>
+                            <div class="flex">
+                                <div
+                                    v-if="editedTraining.img !== null"
+                                >
+                                    <img class="w-36 pr-2" :src="editedTraining.img" alt="">
+                                </div>
+                                <div>
+                                    <BaseLabel for="newPhoto">Imagen de Perfil</BaseLabel>
+                                    <input 
+                                        class="w-full px-1.5 py-1 border border-gray-400 rounded disabled:bg-gray-100"
+                                        type="file"
+                                        id="newPhoto"
+                                        :disabled="editLoading"
+                                        @change="handlePhotoFileChange"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -403,7 +451,7 @@ export default {
                         </div>
                     </div>
                     <div class="flex flex-wrap">
-                        <div class="p-2 w-full lg:w-1/2">
+                        <div class="p-2 w-full lg:w-1/3">
                             <BaseLabel for="coach" class="text-sm">Coach: </BaseLabel>
                             <div class="mt-2">
                             <BaseInput
@@ -415,7 +463,7 @@ export default {
                             ></BaseInput>
                             </div>
                         </div>
-                        <div class="p-2 w-full lg:w-1/2">
+                        <div class="p-2 w-full lg:w-1/3">
                             <BaseLabel for="price" class="text-sm">Precio: $</BaseLabel>
                             <div class="mt-2">
                             <BaseInput
@@ -428,7 +476,7 @@ export default {
                             ></BaseInput>
                             </div>
                         </div>
-                        <div class="p-2 w-full sm:w-1/2">
+                        <div class="p-2 w-full sm:w-1/3">
                             <BaseLabel for="difficulty" class="text-sm">Dificultad: </BaseLabel>
                             <div class="mt-2">
                             <BaseInput
@@ -446,7 +494,10 @@ export default {
                         @click="closeEdit"
                         class="rounded-full shadow-lg text-indigo-700 p-3 ml-2"
                         >Cerrar</button>
-                        <BaseButton class="rounded-full p-3 ml-2">Editar</BaseButton>
+                        <BaseButton 
+                        class="rounded-full p-3 ml-2"
+                        :loading="editLoading"
+                        >Editar</BaseButton>
                     </div>
                 </form>
             </div>

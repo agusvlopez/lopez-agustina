@@ -24,8 +24,8 @@ onMounted(async () => {
   try {
     const trainingsAll = await getTrainings();
     trainingsLoading.value = true;
-
-    trainings.value = trainingsAll.map(doc => doc.data());
+    
+    trainings.value = trainingsAll;
 
     trainingsLoading.value = false;
   } catch (error) {

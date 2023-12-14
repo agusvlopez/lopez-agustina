@@ -1,6 +1,6 @@
 import {db, storage} from './firebase.js';
-import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy, getDocs, doc, deleteDoc, where, updateDoc } from "firebase/firestore";
-import { getFileURL, uploadFile } from './storage.js';
+import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy, getDocs, doc, deleteDoc, where, updateDoc, getDoc } from "firebase/firestore";
+import { deleteFile, getFileURL, uploadFile } from './storage.js';
 import { ref } from 'firebase/storage';
 
 const refTraining = collection(db, 'trainings');
@@ -19,33 +19,36 @@ export function trainingsSaveTraining(data){
     });
 };
 
-async function getDocumentId() {
+export async function getDocumentId() {
   try {
     const querySnapshot = await getDocs(refTraining);
     querySnapshot.forEach((doc) => {
       // doc.id will give you the ID of each document in the collection
       const documentId = doc.id;
       console.log('Document ID:', documentId);
+
+      return documentId;
     });
   } catch (error) {
     console.error('Error getting documents: ', error);
   }
 }
 
-export function trainingsEditTraining(trainingId, data){
-  // const trainingId = getDocumentId();
+export async function trainingsEditTraining(trainingId, data) {
   const trainingRef = doc(db, 'trainings', trainingId);
+  //const trainingId = trainingRef.id;
+  
   return updateDoc(trainingRef, {
-      ...data,
-      created_at: serverTimestamp(),
+    id: trainingId,
+    ...data,
+    created_at: serverTimestamp(),
   });
-};
+}
 
 export async function getTrainings(){
   let getTrainings = await getDocs(refTraining);
-  console.log(getTrainings);
-  let trainingDocs = getTrainings.docs;
-
+  let trainingDocs = getTrainings.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+  console.log(trainingDocs);
   return trainingDocs;
 }
 
@@ -81,27 +84,35 @@ export async function getTrainingDocs(){
 export async function buscarYEliminarDocumento(valor) {
   const collectionName = 'trainings';
   const campo = 'name';
-  let deleted;
+  let deletedDocument;
   try {
     const collectionRef = collection(db, collectionName);
     const q = query(collectionRef, where(campo, '==', valor));
     const querySnapshot = await getDocs(q);
-      
+
     if (querySnapshot.empty) {
-    console.log('No se encontraron documentos que coincidan con la búsqueda.');
-    return;
+      console.log('No se encontraron documentos que coincidan con la búsqueda.');
+      return null;
     }
+
     const documentToDelete = querySnapshot.docs[0];
     console.log(documentToDelete);
+
+    // Obtiene los datos del documento antes de eliminarlo
+    const deletedData = documentToDelete.data();
+
     const documentRef = doc(db, collectionName, documentToDelete.id);
 
-    deleted = await deleteDoc(documentRef);
+    // Elimina el documento
+    await deleteDoc(documentRef);
 
+    // Devuelve los datos del documento eliminado
+    deletedDocument = { id: documentToDelete.id, ...deletedData };
   } catch (error) {
     console.error('Error al buscar y eliminar el documento:', error);
   }
 
-  return deleted;
+  return deletedDocument;
 }
 
 export async function getTrainingIds() {
@@ -111,18 +122,53 @@ export async function getTrainingIds() {
   return trainingIds[0];
 }
 
+// /**
+//  * @param {String} trainingId
+//  * @param {File} file 
+//  * @returns {Promise}
+//  */
+// export async function uploadTrainingPhoto(file) {
+//   const trainingId = getDocumentId();
+//   const fileId = `${Date.now()}`;
+//   const path = `trainings/${trainingId}/${file.name}`;
+//   await uploadFile(path, file)
+
+//   const photoURL = await getFileURL(path);
+
+//   return photoURL;
+// }
+
 /**
- * @param {String} trainingId
+ * 
  * @param {File} file 
  * @returns {Promise}
  */
-export async function uploadTrainingPhoto(file) {
-  const trainingId = getDocumentId();
-  const fileId = `${Date.now()}`;
-  const path = `trainings/${trainingId}/${file.name}`;
-  await uploadFile(path, file)
+export async function editTrainingPhoto(file, id) {
+  const path = `trainings/${id}/training`;
+  try {
+    await uploadFile(path, file);
+    const photoURL = await getFileURL(path);
+    return photoURL;
+  } catch (error) {
+    console.error('Error al subir la imagen:', error);
+    throw error; 
+  }
+  
+}
 
-  const photoURL = await getFileURL(path);
+export async function deleteTrainingPhoto(trainingToDelete){
 
-  return photoURL;
+  try {
+    // Construye la ruta del almacenamiento a partir de la URL de la imagen
+    const path = `trainings/${trainingToDelete.id}/training`;
+
+    // Elimina la foto del almacenamiento
+    const deletedFile = await deleteFile(path);
+
+    return deletedFile;
+  } catch(error){
+    console.error('Error al eliminar la imagen:', error);
+    throw error; 
+  }
+
 }
