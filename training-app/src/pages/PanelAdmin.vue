@@ -17,6 +17,7 @@ export default {
                 <router-link to="/panel-admin/entrenamientos">Configuración de entrenamientos</router-link>   
                 </CardRadio>
                 <CardRadio><router-link to="/panel-admin/chats">Mensajes/Chats</router-link></CardRadio>
+                <CardRadio><router-link to="/panel-admin/plans">Usuarios y planes contratados</router-link></CardRadio>
             </div>
         </div> 
     </div>  

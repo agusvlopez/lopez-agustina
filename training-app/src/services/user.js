@@ -1,5 +1,6 @@
 import { addDoc, collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore';
 import { db } from './firebase';
+import { getDocumentId } from './trainings';
 
 //Manejar los perfiles de usuario
 
@@ -38,19 +39,27 @@ async function getUserData(id) {
     };
 }
 
+/**
+* @param {string} id 
+* @returns {Promise}
+*/
 export async function getUserTrainings(id) {
-    const userRef = doc(db, `users/${id}`);
-    const trainingsRef = collection(userRef, 'trainings');
-    const trainingsSnapshot = await getDocs(trainingsRef);
-    return trainingsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    try {
+        const userTrainingsRef = collection(db, `users/${id}/trainings`);
+        const trainingsSnapshot = await getDocs(userTrainingsRef);
+        return trainingsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+        console.error('Error al obtener entrenamientos del usuario:', error);
+        throw error;
+    }
 }
 
 /**
- * 
- * @param {string} id 
- * @param {{email:string, rol: string}} data
- * @returns {Promise} 
- */
+* 
+* @param {string} id 
+* @param {{email:string, rol: string}} data
+* @returns {Promise} 
+*/
 export async function createUserProfile(id, data) {
     //Pido la referencia
     const refUser = doc(db, `users/${id}`);
@@ -109,14 +118,46 @@ export async function addTrainingToUser(userId, trainingData) {
       const userRef = doc(db, 'users', userId);
       const userTrainingsRef = collection(userRef, 'trainings');
   
-      const newTrainingRef = await addDoc(userTrainingsRef, {
+    // Utiliza el ID proporcionado manualmente en los datos del entrenamiento
+        await setDoc(doc(userTrainingsRef, trainingData.id), {
         ...trainingData,
         created_at: serverTimestamp(),
       });
-      console.log(newTrainingRef);
-      return newTrainingRef.id;
+  
+      // Devuelve el ID proporcionado manualmente
+      return trainingData.id;
     } catch (error) {
       console.error('Error al añadir el entrenamiento al usuario:', error);
       throw error;
     }
-  }
+}
+
+export async function getAllUsersWithTrainings() {
+    const usersRef = collection(db, 'users');
+
+    try {
+        const querySnapshot = await getDocs(usersRef);
+        const usersWithTrainings = [];
+
+        for (const doc of querySnapshot.docs) {
+            const userData = doc.data();
+            const userTrainingsRef = collection(doc.ref, 'trainings');
+            const trainingsSnapshot = await getDocs(userTrainingsRef);
+            const trainingsData = trainingsSnapshot.docs.map(trainingDoc => ({
+                id: trainingDoc.id,
+                ...trainingDoc.data(),
+            }));
+
+            usersWithTrainings.push({
+                id: doc.id,
+                ...userData,
+                trainings: trainingsData,
+            });
+        }
+
+        return usersWithTrainings;
+    } catch (error) {
+        console.error('Error al obtener usuarios con entrenamientos:', error);
+        throw error;
+    }
+}

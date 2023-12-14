@@ -9,6 +9,7 @@ import PanelAdmin from './../pages/PanelAdmin.vue';
 import PanelTraining from './../pages/PanelTraining.vue';
 import PanelChat from './../pages/PanelChat.vue';
 import ChatClient from './../pages/ChatClient.vue';
+import PanelPlans from './../pages/PanelPlans.vue';
 import {createRouter, createWebHashHistory} from 'vue-router';
 import { subscribeToAuth } from '../services/auth';
 
@@ -25,6 +26,7 @@ const routes = [
     {path: '/panel-admin',                      component: PanelAdmin,      meta: { requiresAuth: true },},
     {path: '/panel-admin/entrenamientos',       component: PanelTraining,      meta: { requiresAuth: true },},
     {path: '/panel-admin/chats',                component: PanelChat,      meta: { requiresAuth: true },},
+    {path: '/panel-admin/plans',                component: PanelPlans,      meta: { requiresAuth: true },},
 ]
 
 const router = createRouter({

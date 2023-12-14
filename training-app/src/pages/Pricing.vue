@@ -2,8 +2,8 @@
 import Loader from '../components/Loader.vue';
 import Basebutton from '../components/basebutton.vue';
 import { ref, onMounted, inject } from 'vue';
-import { getTrainingIds, getTrainings } from '../services/trainings';
-import { addTrainingToUser, getUserTrainings } from '../services/user';
+import { getDocumentId, getTrainings } from '../services/trainings';
+import { addTrainingToUser } from '../services/user';
 import { getUserId } from '../services/auth';
 import { notificationKey } from '../symbols/symbols';
 
@@ -23,6 +23,7 @@ const truncateText = (text, maxLength) => {
 onMounted(async () => {
   try {
     const trainingsAll = await getTrainings();
+    console.log(trainingsAll);
     trainingsLoading.value = true;
     
     trainings.value = trainingsAll;
@@ -34,10 +35,12 @@ onMounted(async () => {
 });
 
 const addTrainingToCurrentUser = async (training) => {
-  const userId = getUserId();
+  const userId = getUserId();      
+  const trainingsIds = await getDocumentId();
+      console.log(trainingsIds);
   try {   
       await addTrainingToUser(userId, training);
-
+    console.log(training);
       setNotification({
         message: 'Entrenamiento contratado con éxito.',
         type: 'success'
