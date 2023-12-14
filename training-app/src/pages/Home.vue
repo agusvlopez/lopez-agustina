@@ -5,7 +5,7 @@ import { getTrainings } from '../services/trainings';
 
 export default {
     name: 'Home',
-    components: { BaseButton, Loader, BaseH1 },
+    components: { BaseButton, Loader},
     data() {
         return {
             trainingsLoading: true,
