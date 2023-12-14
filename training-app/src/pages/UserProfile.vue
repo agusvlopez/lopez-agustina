@@ -2,6 +2,7 @@
 import SkeletonContext from '../components/SkeletonContext.vue';
 import { useRoute } from 'vue-router';
 import { useUserProfile } from '../functions/useUserProfile'
+import BaseH1 from '../components/BaseH1.vue';
 const route = useRoute();
 const { user, userLoading } = useUserProfile(route.params.id);
 
@@ -10,8 +11,7 @@ const { user, userLoading } = useUserProfile(route.params.id);
 <template>
     <SkeletonContext :loading="userLoading">
         <div>
-            <h1>Perfil de {{ user.email }}</h1>
-            
+            <BaseH1>Perfil de {{ user.email }}</BaseH1>
             <UserProfileData :user="user" />
 
             <h2>Conversación privada</h2>

@@ -6,10 +6,11 @@ import BaseTextarea from '../components/BaseTextarea.vue';
 import ChatInput from '../components/ChatInput.vue';
 import { getTrainingIds, getTrainings, trainingsSaveTraining, trainingsEditTraining, buscarYEliminarDocumento, editTrainingPhoto, getDocumentId, deleteTrainingPhoto } from '../services/trainings';
 import Loader from '../components/Loader.vue';
+import BaseH1 from '../components/BaseH1.vue';
 
 export default {
     name: 'PanelTraining',
-    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader },
+    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader, BaseH1 },
     data() {
         return {
             editLoading: false,
@@ -227,7 +228,7 @@ export default {
 
 <template class="container mx-auto p-4">
    <section class="border-b-2">
-        <h1>Panel de entrenamientos</h1>
+        <BaseH1>Panel de entrenamientos</BaseH1>
         <h2>Todos los entrenamientos </h2>
         <div class="flex gap-4 mt-4 mb-4">
             <BaseButton

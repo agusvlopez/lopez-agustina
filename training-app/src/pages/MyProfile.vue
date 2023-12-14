@@ -9,6 +9,7 @@ import Loader from '../components/Loader.vue';
 import UserProfileData from '../components/UserProfileData.vue';
 import { notificationKey } from '../symbols/symbols';
 import { getUserTrainings } from '../services/user';
+import BaseH1 from '../components/BaseH1.vue';
 
 const { setNotification } = inject(notificationKey);
 
@@ -158,7 +159,7 @@ function usePhotoEdit() {
 </script>
 
 <template>
-<h1 class="font-bold text-center">Mi perfil</h1>
+    <BaseH1>Mi perfil</BaseH1>
     <template v-if="user.fullProfileLoaded && !trainingsLoading">
         <template v-if="!editing && !editingPhoto">
             <section class="container p-4">

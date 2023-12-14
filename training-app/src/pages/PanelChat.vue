@@ -10,10 +10,11 @@ import BaseButton from '../components/BaseButton.vue';
 import { db } from '../services/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import ProfileImage from '../components/ProfileImage.vue';
+import BaseH1 from '../components/BaseH1.vue';
 
 export default {
     name: 'PanelChat',
-    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader, ProfileImage },
+    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader, ProfileImage, BaseH1 },
     data() {
         return {
             userLoading: true,
@@ -112,7 +113,7 @@ export default {
 <template>
     <section class="container p-4">
         <div>
-            <h1 class="mb-4 mt-4">Chats con clientes</h1>
+            <BaseH1>Chats con clientes</BaseH1>
         </div>
         <div class="flex flex-wrap">
             <template v-for="user in nonAdminUsers" :key="user.id" v-if="!this.userLoading">

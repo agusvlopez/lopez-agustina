@@ -5,7 +5,7 @@ import { getTrainings } from '../services/trainings';
 
 export default {
     name: 'Home',
-    components: { BaseButton, Loader },
+    components: { BaseButton, Loader, BaseH1 },
     data() {
         return {
             trainingsLoading: true,
@@ -69,7 +69,6 @@ export default {
 
 <template>
 <div>
-    <h1 class="hidden">Home</h1>
     <div class="portada text-white py-16 text-center imgPortada">
         <div class="container mx-auto w-3/4 p-4 bg-black rounded ">
             <h1 class="text-4xl font-semibold mb-4">Bienvenido a Training App</h1>

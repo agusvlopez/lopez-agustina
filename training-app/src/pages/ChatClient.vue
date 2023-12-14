@@ -9,6 +9,7 @@ import { useAuth } from '../functions/useAuth';
 import { useUserProfile } from '../functions/useUserProfile';
 import { onUnmounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import Baseh1 from '../components/BaseH1.vue';
 
 const route = useRoute();
 const { user: authUser } = useAuth();
@@ -60,8 +61,7 @@ function usePrivateChat(senderUser, receiverUser) {
     <Loader v-if="userLoading"></Loader>
     <template v-else>
 <section class="container p-4">
-        <h1 class="font-bold text-center mb-2">Chat con {{user.email}}</h1>
-    
+    <Baseh1>Chat con {{user.email}}</Baseh1>  
     <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
         <div> 
             <h2 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h2>
