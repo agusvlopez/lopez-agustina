@@ -263,33 +263,33 @@ export default {
         <div class="flex p-4 flex-wrap">    
             <template
             v-if="!trainingsLoading  && !deletedTraining && !editLoading" >
-            <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden p-4"
-            v-for="training in trainings"
-            :key="training.id"  
-            >
-            <form action=""
-            @submit.prevent="openAlert(training.name)">
-                <div>
-                <div>
-                    <img class="h-24 w-full object-cover" :src="training.img" :alt="training.name">
-                </div>
-                <div class="p-4">
-                <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
-                    <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
-                    <p class="mt-1 text-gray-500">{{training.description}}</p>
-                    <p class="mt-1 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
+                <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden p-4"
+                    v-for="training in trainings"
+                    :key="training.id"  
+                >
+                    <div class="flex justify-end align-middle mb-4">
+                        <button @click="openEdit(training)" class="font-bold text-indigo-500 flex items-center"> Editar entrenamiento <span class="editIcon block ml-1"></span></button>
+                    </div>
+                    <form action=""
+                    @submit.prevent="openAlert(training.name)">
+                        <div>
+                            <div>
+                                <img class="h-24 w-full object-cover" :src="training.img" :alt="training.name">
+                            </div>
+                            <div class="p-4">
+                                <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
+                                <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
+                                <p class="mt-1 text-gray-500">{{training.description}}</p>
+                                <p class="mt-1 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
 
-                    <BaseButton 
-                    class="bg-red-500 hover:bg-red-600 mt-2"
-                    :value="training.name"
-                    id="buttonAlert"
-                >Eliminar </BaseButton>
-                </div>
-                </div>
-            </form>
-                <div class="flex justify-end align-middle">
-                    <button @click="openEdit(training)" class="font-bold text-indigo-500 flex items-center"> Editar entrenamiento <span class="editIcon block ml-1"></span></button>
-                </div>
+                                <BaseButton 
+                                    class="bg-red-500 hover:bg-red-600 mt-4"
+                                    :value="training.name"
+                                    id="buttonAlert"
+                                >Eliminar </BaseButton>
+                            </div>
+                        </div>
+                    </form>
                 </div>  
             </template>
             <template
@@ -300,6 +300,7 @@ export default {
     </section>
         <template 
         v-if="!editForm">
+
             <div v-if="showingTrainingForm">
                 <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
                     <div class="bg-white p-6 shadow-md rounded-lg max-w-xxl">
