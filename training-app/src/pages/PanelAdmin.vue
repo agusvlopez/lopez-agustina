@@ -1,11 +1,7 @@
-<script>
+<script setup>
 import BaseH1 from '../components/BaseH1.vue';
 import CardRadio from '../components/CardRadio.vue';
 
-export default {
-    name: 'PanelAdmin',
-    components: { CardRadio, BaseH1 }
-}
 </script>
 
 <template>

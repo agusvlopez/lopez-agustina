@@ -15,11 +15,11 @@ defineProps({
 </script>
 
 <template>
-    <div class="flex gap-4">
+    <div class="flex gap-4 mx-auto">
         <div class="w-2/12">
             <ProfileImage
                 :src="user.photoURL"
-                class="pb-4"
+                class="mb-4 rounded-full"
             />
         </div>
         <dl class="w-10/12 mb-4">

@@ -1,97 +1,3 @@
-<!-- <script>
-import { getAllUsers, getUserProfileById } from '../services/user';
-import { dateToString } from '../helpers/date';
-import Loader from '../components/Loader.vue';
-import ChatInput from '../components/ChatInput.vue';
-import BaseLabel from '../components/BaseLabel.vue';
-import BaseButton from '../components/BaseButton.vue';
-import { sendPrivateChatMessage, subscribeToPrivateChat } from '../services/private-chat';
-import { subscribeToAuth } from '../services/auth';
-
-
-export default {
-    name: 'PrivateChat',
-    components: { Loader, ChatInput, BaseLabel, BaseButton, Loader },
-    data() {
-        return {
-            userLoading: true,
-            users: [],
-            usersIds: [],
-            usersAdmins: [],
-            user: {
-                id: 'HZSqZ8YP0OafEltH7j1assYE0AT2',
-                email: null,
-            },
-            authUser: {
-                id: null,
-                email: null,
-            },
-            unsubscribeAuth: () => {},
-            newMessage: {
-                message: '',
-            },
-            messagesLoading: true,
-            messages: [],
-            unsubscribeMessages: () => {},
-        };
-    },
-    methods: {
-        handleSendMessage() {
-            sendPrivateChatMessage({
-                senderId: this.authUser.id,
-                receiverId: this.user.id,
-                message: this.newMessage.message
-            });
-            this.newMessage.message = '';
-        },
-        formatDate(data) {
-            return dateToString(data);
-        }
-    },  
-
-    async mounted() {
-        this.userLoading = true;
-        this.user = await getUserProfileById(this.$route.params.id);
-        this.unsubscribeAuth = subscribeToAuth(newUser => this.authUser = newUser);
-        this.userLoading = false;
-        this.unsubscribeMessages = await subscribeToPrivateChat({
-            senderId: this.authUser.id,
-            receiverId: this.user.id
-        },
-        (newMessages) => this.messages = newMessages);
-        this.messagesLoading = false;
-       
-        
-        let ids = [];
-        const idsDocs = await getAllUsers();
-        let array = [];
-
-        console.log(idsDocs);
-        idsDocs.forEach((doc) => {
-            console.log(doc.id);
-            ids.push(doc.id);
-        })
-        this.usersIds = ids;
-        console.log(this.idsDocs);
-        if(idsDocs){
-            idsDocs.forEach((user) => {
-            array.push(user.data());
-            console.log(array);
-           })
-           console.log(array);
-            this.usersAdmins = array;
-            console.log(this.usersAdmins);
-
-        }
-        console.log(this.usersAdmins);
-    },
-    unmounted() {
-        this.unsubscribeAuth();
-        this.unsubscribeMessages();
-    }
-   
-}
-</script> -->
 <script setup>
 import BaseButton from '../components/BaseButton.vue';
 import Loader from '../components/Loader.vue';
@@ -104,6 +10,7 @@ import { useRoute } from 'vue-router';
 import BaseLabel from '../components/BaseLabel.vue';
 import ChatInput from '../components/ChatInput.vue';
 import BaseH1 from '../components/BaseH1.vue';
+import Loadingcontext from '../components/LoadingContext.vue';
 
 const route = useRoute();
 const { user: authUser } = useAuth();
@@ -153,10 +60,9 @@ function usePrivateChat(senderUser, receiverUser) {
 </script>
 
 <template>
-    <Loader v-if="userLoading" />
-    <template v-else>
+    <Loadingcontext :loading="userLoading">
         <section class="container p-4">    
-            <BaseH1>Chat con {{user.email}}</BaseH1>
+            <BaseH1>Chat con <router-link :to="`/usuario/${user.id}`" class="text-indigo-600"> {{user.email}} </router-link></BaseH1>
             <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
                 <div> 
                     <h2 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h2>
@@ -165,8 +71,7 @@ function usePrivateChat(senderUser, receiverUser) {
         
                 <!-- Mensajes del chat -->
                 <div class="flex flex-col items-start min-h-[400px] p-4 rounded mb-4">
-                    <Loader v-if="messagesLoading"></Loader>
-                    <template v-else>
+                    <Loadingcontext :loading="messagesLoading">
                         <div 
                         class="max-w-[70%] p-2 rounded mb-2"
                         v-for="message in messages"
@@ -183,7 +88,7 @@ function usePrivateChat(senderUser, receiverUser) {
                                 <div class="text-right">{{ dateToString(message.created_at) || "Enviando..." }}</div>
                         
                         </div>
-                    </template>
+                    </Loadingcontext>   
                 </div>
                 <!-- Campo de entrada de texto -->
                 <h2 class="sr-only">Enviar mensaje</h2>
@@ -205,5 +110,5 @@ function usePrivateChat(senderUser, receiverUser) {
                 </form>
             </div>
         </section>
-    </template>
+    </Loadingcontext>
 </template>

@@ -5,12 +5,15 @@ import BaseLabel from '../components/BaseLabel.vue';
 import BaseTextarea from '../components/BaseTextarea.vue';
 import ChatInput from '../components/ChatInput.vue';
 import { getTrainingIds, getTrainings, trainingsSaveTraining, trainingsEditTraining, buscarYEliminarDocumento, editTrainingPhoto, getDocumentId, deleteTrainingPhoto } from '../services/trainings';
+import { loadImage } from '../services/storage';
 import Loader from '../components/Loader.vue';
 import BaseH1 from '../components/BaseH1.vue';
+import CreateTrainingForm from '../components/CreateTrainingForm.vue';
+import DeleteTrainingForm from '../components/DeleteTrainingForm.vue';
 
 export default {
     name: 'PanelTraining',
-    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader, BaseH1 },
+    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader, BaseH1, CreateTrainingForm, DeleteTrainingForm },
     data() {
         return {
             editLoading: false,
@@ -19,7 +22,7 @@ export default {
             documentId: null,
             trainings: [],
             editTraining: false,
-            valorDeEliminacion: '',
+            deletedValue: '',
             alert: false,
             editForm: false,
             showingTrainingForm: false,
@@ -55,90 +58,96 @@ export default {
         };
     },
     methods: {
-        handlePhotoFileChange(event) {
-        console.log("evento: ", event);
-        this.photoData.file = event.target.files[0];
-            console.log(this.photoData.file);
-            console.log(this.training.img);
-        const reader = new FileReader();
+        // handlePhotoFileChange(event) {
+        // console.log("evento: ", event);
+        // this.photoData.file = event.target.files[0];
+        //     console.log(this.photoData.file);
+        //     console.log(this.training.img);
+        // const reader = new FileReader();
 
-        reader.addEventListener('load', () => {
-            this.training.img = reader.result;
-            console.log(reader.result);
-        });
+        // reader.addEventListener('load', () => {
+        //     this.training.img = reader.result;
+        //     console.log(reader.result);
+        // });
 
-        reader.readAsDataURL(this.photoData.file);
+        // reader.readAsDataURL(this.photoData.file);
         
+        // },
+        handlePhotoFileChange(event) {
+            this.photoData.file = event.target.files[0];
+            loadImage(this.photoData.file, 'img', this.training);
         },
-        async saveTraining() {
-        try {
-            this.trainingsLoading = true;
-            // Guarda el nuevo entrenamiento y obtén su ID
-            const newTrainingRef = await trainingsSaveTraining({
-            name: this.training.name,
-            img: '', // Deja esto en blanco por ahora
-            description: this.training.description,
-            coach: this.training.coach,
-            price: this.training.price,
-            difficulty: this.training.difficulty,
-            });
+        //AGREGAR ENTRENAMIENTO
+        // async saveTraining() {
+        // try {
+        //     this.trainingsLoading = true;
+        //     // Guarda el nuevo entrenamiento y obtén su ID
+        //     const newTrainingRef = await trainingsSaveTraining({
+        //     name: this.training.name,
+        //     img: '', // Deja esto en blanco por ahora
+        //     description: this.training.description,
+        //     coach: this.training.coach,
+        //     price: this.training.price,
+        //     difficulty: this.training.difficulty,
+        //     });
 
-            // Obtiene el ID del nuevo entrenamiento
-            const newTrainingId = newTrainingRef.id;
+        //     // Obtiene el ID del nuevo entrenamiento
+        //     const newTrainingId = newTrainingRef.id;
 
-            // Sube la imagen al Storage utilizando el ID del entrenamiento
-            const imageUrl = await editTrainingPhoto(this.photoData.file, newTrainingId);
+        //     // Sube la imagen al Storage utilizando el ID del entrenamiento
+        //     const imageUrl = await editTrainingPhoto(this.photoData.file, newTrainingId);
 
-            // Actualiza el campo 'img' del entrenamiento con la URL de la imagen
-            await trainingsEditTraining(newTrainingId, { img: imageUrl });
+        //     // Actualiza el campo 'img' del entrenamiento con la URL de la imagen
+        //     await trainingsEditTraining(newTrainingId, { img: imageUrl });
 
-            // Actualiza la lista de entrenamientos después de agregar uno nuevo
-            const allTrainings = await getTrainings();
-            this.trainings = allTrainings;
+        //     // Actualiza la lista de entrenamientos después de agregar uno nuevo
+        //     const allTrainings = await getTrainings();
+        //     this.trainings = allTrainings;
 
-            // Restablece los campos del formulario
+        //     // Restablece los campos del formulario
             
-            this.training.name = '';
-            this.training.description = '';
-            this.training.coach = '';
-            this.training.price = 0;
-            this.training.difficulty = '';
-            this.trainingsLoading = false;
-            this.showingTrainingForm = false;
-        } catch (error) {
-            console.error('Error al guardar el entrenamiento:', error);
-        }
-        },
-        async deleteTraining(valor) {
-            try {
-                this.deletedTraining = true;
+        //     this.training.name = '';
+        //     this.training.description = '';
+        //     this.training.coach = '';
+        //     this.training.price = 0;
+        //     this.training.difficulty = '';
+        //     this.trainingsLoading = false;
+        //     this.showingTrainingForm = false;
+        // } catch (error) {
+        //     console.error('Error al guardar el entrenamiento:', error);
+        // }
+        // },
+        //ELIMINAR ENTRENAMIENTO
+        // async deleteTraining(valor) {
+        //     try {
+        //         this.deletedTraining = true;
 
-                // Obtén el documento a eliminar
-                const trainingToDelete = await buscarYEliminarDocumento(valor);
+        //         // Obtén el documento a eliminar
+        //         const trainingToDelete = await buscarYEliminarDocumento(valor);
 
-                if (!trainingToDelete) {
-                console.log('No se encontró el documento a eliminar.');
-                return;
-                }
+        //         if (!trainingToDelete) {
+        //         console.log('No se encontró el documento a eliminar.');
+        //         return;
+        //         }
 
-                // Verifica si hay una URL de imagen asociada al entrenamiento
-                if (trainingToDelete.img) {
-                    deleteTrainingPhoto(trainingToDelete)
-                }
+        //         // Verifica si hay una URL de imagen asociada al entrenamiento
+        //         if (trainingToDelete.img) {
+        //             deleteTrainingPhoto(trainingToDelete)
+        //         }
 
-                // Actualiza la lista de entrenamientos después de eliminar uno
-                const trainingsDocs = await getTrainings();
-                this.trainings = trainingsDocs;
+        //         // Actualiza la lista de entrenamientos después de eliminar uno
+        //         const trainingsDocs = await getTrainings();
+        //         this.trainings = trainingsDocs;
 
-                // Restablece los estados
-                this.alert = false;
-                this.trainingsLoading = false;
-                this.deletedTraining = false;
-                this.valorDeEliminacion = '';
-            } catch (error) {
-                console.error('Error al eliminar el entrenamiento:', error);
-            }
-        },
+        //         // Restablece los estados
+        //         this.alert = false;
+        //         this.trainingsLoading = false;
+        //         this.deletedTraining = false;
+        //         this.valorDeEliminacion = '';
+        //     } catch (error) {
+        //         console.error('Error al eliminar el entrenamiento:', error);
+        //     }
+        // },
         openEdit(document){
             this.editedTraining = { ...document };
             this.editForm = true;
@@ -188,9 +197,10 @@ export default {
             this.editTraining = false;
         },
         openAlert(event) {
-            this.valorDeEliminacion = '';
+            console.log(event);
+            this.deletedValue = '';
             this.alert = true;
-            this.valorDeEliminacion = event;
+            this.deletedValue = event;
         },
         closeEdit(){
             this.editForm = false;
@@ -203,13 +213,22 @@ export default {
         },
         cancelTrainingForm () {
             this.showingTrainingForm = false;
+        },
+        async saveTraining(){
+            const trainingsAll = await getTrainings();
+            this.trainings = trainingsAll;
+            this.showingTrainingForm = false;
+        },
+        async deleteTraining(){
+            const trainingsAll = await getTrainings();
+            this.trainings = trainingsAll;
+            this.alert = false;
         }
     },
     async mounted() {
         this.trainingsLoading = true;
 
         try {
-        // Llama a la función getTrainings directamente
         const trainingsAll = await getTrainings();
         this.trainings = trainingsAll;
         } catch (error) {
@@ -239,7 +258,18 @@ export default {
         <div id="alertEliminar" role="alert"
             v-if="alert && !trainingsLoading  && !deletedTraining"
         >
-            <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+        <DeleteTrainingForm
+            @closeAlert="closeAlert"
+            @deleteTraining="deleteTraining"
+            :deletedValue="deletedValue"
+        >
+        </DeleteTrainingForm>
+            <CreateTrainingForm 
+            v-if="showingTrainingForm"
+            @cancelTrainingForm="cancelTrainingForm"
+            @saveTraining="saveTraining"
+            ></CreateTrainingForm>
+            <!-- <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
                 <div class="bg-white p-8 shadow-lg rounded-lg max-w-md border-2 border-red-400 text-red-700">    
                 <p class="font-bold">¡Atención!</p>
                     <span class="block sm:inline">Estás a punto de eliminar <span class="font-bold">{{ this.valorDeEliminacion }}. </span>¿Estas seguro que queres eliminarlo?</span>
@@ -259,8 +289,9 @@ export default {
                     </div>
                     </form>
                 </div>
-            </div>
+            </div> -->
         </div>
+        <!-- CARDS DE ENTRENAMIENTOS... -->
         <div class="flex p-4 flex-wrap">    
             <template
             v-if="!trainingsLoading  && !deletedTraining && !editLoading" >
@@ -299,7 +330,16 @@ export default {
             </template>
         </div>
     </section>
-        <template 
+    <template 
+        v-if="!editForm"
+    >
+        <CreateTrainingForm 
+        v-if="showingTrainingForm"
+        @cancelTrainingForm="cancelTrainingForm"
+        @saveTraining="saveTraining"
+        ></CreateTrainingForm>
+    </template>
+        <!-- <template 
         v-if="!editForm">
 
             <div v-if="showingTrainingForm">
@@ -398,7 +438,7 @@ export default {
                 </div>
             </div>  
         </div>
-    </template>
+    </template> -->
     <template v-if="editForm">
         <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
             <div class="bg-white p-6 shadow-md rounded-lg max-w-xxl">

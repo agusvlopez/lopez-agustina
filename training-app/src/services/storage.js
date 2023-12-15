@@ -38,3 +38,11 @@ export async function deleteFile(path) {
       throw error;
     }
 }
+
+export async function loadImage(file, field, target) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => {
+  target[field] = reader.result;
+  });
+  return reader.readAsDataURL(file);
+}

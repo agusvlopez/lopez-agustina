@@ -1,10 +1,12 @@
-<script>
-export default {
-    name: 'ChatInput',
+<script setup>
+defineProps({
+    modelValue: {
+        type: String,
+        required: true,
+    }
+});
 
-    props: ['modelValue'],
-    emits: ['update:modelValue']
-}
+defineEmits(['update:modelValue']);
 </script>
 
 <template>

@@ -2,7 +2,7 @@
 import Loader from '../components/Loader.vue';
 import Basebutton from '../components/basebutton.vue';
 import { ref, onMounted, inject } from 'vue';
-import { getDocumentId, getTrainings } from '../services/trainings';
+import { getDocumentId, getTrainings, truncateText } from '../services/trainings';
 import { addTrainingToUser } from '../services/user';
 import { getUserId } from '../services/auth';
 import { notificationKey } from '../symbols/symbols';
@@ -13,13 +13,6 @@ const { notification, setNotification } = inject(notificationKey);
 const trainings = ref([]);
 const trainingsLoading = ref(true);
 const trainingIsAlreadyAdded = ref(false);
-
-const truncateText = (text, maxLength) => {
-  if (text.length > maxLength) {
-    return text.slice(0, maxLength) + '...';
-  }
-  return text;
-};
 
 onMounted(async () => {
   try {
@@ -38,9 +31,8 @@ onMounted(async () => {
 const addTrainingToCurrentUser = async (training) => {
   const userId = getUserId();      
   const trainingsIds = await getDocumentId();
-      console.log(trainingsIds);
   try {   
-      await addTrainingToUser(userId, training);
+    await addTrainingToUser(userId, training);
     console.log(training);
       setNotification({
         message: 'Entrenamiento contratado con éxito.',
@@ -49,9 +41,7 @@ const addTrainingToCurrentUser = async (training) => {
       setTimeout(() => {
         setNotification(null);
       }, 3000);
-
   } catch (error) {
-    
     setNotification({
         message: 'Entrenamiento ya contratado.',
         type: 'error'
@@ -61,8 +51,6 @@ const addTrainingToCurrentUser = async (training) => {
       }, 3000);
   }
 };
-
-
 </script>
 
 <template>

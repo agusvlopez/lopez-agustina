@@ -19,10 +19,10 @@ const props = defineProps(['items']);
           <tr v-for="item in items" :key="item.id">
             <td class="py-2 px-8 flex justify-center items-center"><img :src="item.photoURL || noImage" alt="" class="w-24"></td>
             <td class="py-2 px-8 border-b text-center">{{ item.email }}</td>
-            <td class="py-2 px-8 border-b ">
+            <td class="py-2 px-8 border-b">
               <template v-if="item.trainings && item.trainings.length > 0">
                 <ul class="list-disc">
-                  <li class="font-semibold" v-for="training in item.trainings">{{ training.name }}</li>
+                  <li class="font-semibold" v-for="training in item.trainings">{{ training.name }} - <span class="text-indigo-600">${{ training.price }}</span></li>
                 </ul>
               </template>
               <template v-else>

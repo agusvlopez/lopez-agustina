@@ -5,11 +5,11 @@ import BaseInput from '../components/BaseInput.vue';
 import BaseLabel from '../components/BaseLabel.vue';
 import { editProfile, editProfilePhoto } from '../services/auth';
 import { inject, onMounted, ref } from 'vue';
-import Loader from '../components/Loader.vue';
 import UserProfileData from '../components/UserProfileData.vue';
 import { notificationKey } from '../symbols/symbols';
 import { getUserTrainings } from '../services/user';
 import BaseH1 from '../components/BaseH1.vue';
+import SkeletonContext from '../components/SkeletonContext.vue';
 
 const { setNotification } = inject(notificationKey);
 
@@ -158,9 +158,10 @@ function usePhotoEdit() {
 }
 </script>
 
-<template>
+<template> 
+    <SkeletonContext :loading="trainingsLoading">
     <BaseH1>Mi perfil</BaseH1>
-    <template v-if="user.fullProfileLoaded && !trainingsLoading">
+    <!-- <template v-if="user.fullProfileLoaded && !trainingsLoading"> -->
         <template v-if="!editing && !editingPhoto">
             <section class="container p-4">
 
@@ -239,8 +240,5 @@ function usePhotoEdit() {
                 >Cancelar</BaseButton>
             </form>
         </template>
-    </template>
-    <template v-else>
-        <Loader />
-    </template>
+    </SkeletonContext>
 </template>
