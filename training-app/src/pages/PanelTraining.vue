@@ -10,10 +10,12 @@ import Loader from '../components/Loader.vue';
 import BaseH1 from '../components/BaseH1.vue';
 import CreateTrainingForm from '../components/CreateTrainingForm.vue';
 import DeleteTrainingForm from '../components/DeleteTrainingForm.vue';
+import EditTrainingForm from '../components/EditTrainingForm.vue';
+
 
 export default {
     name: 'PanelTraining',
-    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader, BaseH1, CreateTrainingForm, DeleteTrainingForm },
+    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader, BaseH1, CreateTrainingForm, DeleteTrainingForm, EditTrainingForm },
     data() {
         return {
             editLoading: false,
@@ -151,51 +153,56 @@ export default {
         openEdit(document){
             this.editedTraining = { ...document };
             this.editForm = true;
+            this.editTraining = true;
             console.log('Edited Training:', this.editedTraining);
             this.documentId = document.id;
             console.log(this.documentId);
         },
-        async edit() {
-            this.editLoading = true;
+        // async edit() {
+        //     this.editLoading = true;
 
-            try {
-                let imageUrl = this.editedTraining.img;
+        //     try {
+        //         let imageUrl = this.editedTraining.img;
 
-                // Check if a new file has been selected
-                if (this.photoData.file) {
-                    // Sube la nueva imagen y obtén la URL
-                    imageUrl = await editTrainingPhoto(this.photoData.file, this.documentId);
-                }
+        //         // Check if a new file has been selected
+        //         if (this.photoData.file) {
+        //             // Sube la nueva imagen y obtén la URL
+        //             imageUrl = await editTrainingPhoto(this.photoData.file, this.documentId);
+        //         }
 
-                // Luego, actualiza el entrenamiento en la base de datos con la nueva URL
-                await trainingsEditTraining(this.documentId, {
-                    name: this.editedTraining.name,
-                    img: imageUrl,
-                    description: this.editedTraining.description,
-                    coach: this.editedTraining.coach,
-                    price: this.editedTraining.price,
-                    difficulty: this.editedTraining.difficulty,
-                });
+        //         // Luego, actualiza el entrenamiento en la base de datos con la nueva URL
+        //         await trainingsEditTraining(this.documentId, {
+        //             name: this.editedTraining.name,
+        //             img: imageUrl,
+        //             description: this.editedTraining.description,
+        //             coach: this.editedTraining.coach,
+        //             price: this.editedTraining.price,
+        //             difficulty: this.editedTraining.difficulty,
+        //         });
 
-                console.log('Entrenamiento actualizado con éxito');
+        //         console.log('Entrenamiento actualizado con éxito');
 
-                // Llama a getTrainings nuevamente para obtener la lista actualizada
-                const trainingsAll = await getTrainings();
-                this.trainings = trainingsAll;
-            } catch (error) {
-                console.error('Error al actualizar el entrenamiento:', error);
-            } finally {
-                this.editLoading = false;
-                this.editForm = false;
-            }
-        },
-        editTrue() {
-            this.editTraining = true;
-        },
-        editFalse() {
-            this.rolLoading = false;
-            this.editTraining = false;
-        },
+        //         // Llama a getTrainings nuevamente para obtener la lista actualizada
+        //         const trainingsAll = await getTrainings();
+        //         this.trainings = trainingsAll;
+        //     } catch (error) {
+        //         console.error('Error al actualizar el entrenamiento:', error);
+        //     } finally {
+        //         this.editLoading = false;
+        //         this.editForm = false;
+        //         this.editTraining = false;
+        //     }
+        // },
+        // showEdit() {
+        //     this.editTraining = true;
+        // },
+        // editTrue() {
+        //     this.editTraining = true;
+        // },
+        // editFalse() {
+        //     this.rolLoading = false;
+        //     this.editTraining = false;
+        // },
         openAlert(event) {
             console.log(event);
             this.deletedValue = '';
@@ -223,6 +230,10 @@ export default {
             const trainingsAll = await getTrainings();
             this.trainings = trainingsAll;
             this.alert = false;
+        },
+        async handleUpdateTrainings(trainings){
+            this.trainings = trainings;
+            this.editForm = false;
         }
     },
     async mounted() {
@@ -264,11 +275,12 @@ export default {
             :deletedValue="deletedValue"
         >
         </DeleteTrainingForm>
-            <CreateTrainingForm 
+
+        <CreateTrainingForm 
             v-if="showingTrainingForm"
             @cancelTrainingForm="cancelTrainingForm"
             @saveTraining="saveTraining"
-            ></CreateTrainingForm>
+        ></CreateTrainingForm>
             <!-- <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
                 <div class="bg-white p-8 shadow-lg rounded-lg max-w-md border-2 border-red-400 text-red-700">    
                 <p class="font-bold">¡Atención!</p>
@@ -440,7 +452,16 @@ export default {
         </div>
     </template> -->
     <template v-if="editForm">
-        <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+            <!-- EditTrainingForm -->
+        <EditTrainingForm
+        :editedTraining="editedTraining"
+        :documentId="documentId"
+        :editLoading="editLoading"
+        @edit="edit"
+        @closeEdit="closeEdit"
+        @update-trainings="handleUpdateTrainings"
+        />
+        <!-- <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
             <div class="bg-white p-6 shadow-md rounded-lg max-w-xxl">
                 <p class="text-xl font-semibold mb-4">Editar Entrenamiento</p>
                 <form action="#" 
@@ -543,6 +564,6 @@ export default {
                     </div>
                 </form>
             </div>
-        </div>
+        </div> -->
     </template>
 </template>
