@@ -137,9 +137,8 @@ export default {
                                 <p class="mt-1 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
 
                                 <BaseButton 
-                                    class="bg-red-500 hover:bg-red-600 mt-4"
-                                    :value="training.name"
-                                    id="buttonAlert"
+                                    :styleType="'danger'"
+                                    :value="training.name"      
                                 >Eliminar </BaseButton>
                             </div>
                         </div>

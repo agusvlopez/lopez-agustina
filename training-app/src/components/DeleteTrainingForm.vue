@@ -68,9 +68,9 @@ function closeAlert() {
                   > Cancelar
                 </BaseButton>
                 <BaseButton 
-                    :classButton="'transition motion-reduce:transition-none bg-red-600 text-white px-4 py-2 hover:bg-red-500 active:bg-red-800 disabled:bg-red-400 rounded'"
+                    :styleType="'danger'"
                     :loading="deletedTraining"
-                    > Eliminar
+                > Eliminar
                 </BaseButton>
             </div>
             </form>

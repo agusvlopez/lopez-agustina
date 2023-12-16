@@ -10,7 +10,7 @@ const allUsersTrainings = ref([]);
 const isLoading = ref(false);
 
 onMounted(async () => {
-    isLoading.value = true;
+  isLoading.value = true;
   try {
     allUsersTrainings.value = await getAllUsersWithTrainings();
     console.log(allUsersTrainings.value);

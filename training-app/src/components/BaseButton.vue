@@ -6,9 +6,9 @@ defineProps({
         type: Boolean,
         default: false,
     },
-    classButton: {
+    styleType: {
         type: String,
-        default: 'transition motion-reduce:transition-none bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-500 active:bg-indigo-800 disabled:bg-indigo-400 rounded'
+        default: 'normal'
     }
 });
 </script>
@@ -16,7 +16,17 @@ defineProps({
 <template>
     <button type="submit" 
     :disabled="loading"
-    :class="classButton"
+    class="transition motion-reduce:transition-none text-white px-4 py-2   disabled:bg-indigo-400 rounded"
+    :class="{
+        'disabled:bg-indigo-400' : styleType == 'normal',
+        'active:bg-indigo-800': styleType == 'normal',
+        'hover:bg-indigo-500': styleType == 'normal',
+        'bg-indigo-600': styleType == 'normal',
+        'disabled:bg-red-400': styleType == 'danger',
+        'active:bg-red-800': styleType == 'danger',
+        'hover:bg-red-500': styleType == 'danger',
+        'bg-red-600': styleType == 'danger',
+    }"
     >
 
     <div v-if="!loading">
