@@ -5,13 +5,19 @@ defineProps({
     loading: {
         type: Boolean,
         default: false,
+    },
+    classButton: {
+        type: String,
+        default: 'transition motion-reduce:transition-none bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-500 active:bg-indigo-800 disabled:bg-indigo-400 rounded'
     }
 });
 </script>
 
 <template>
-    <button type="submit" class="transition motion-reduce:transition-none bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-500 active:bg-indigo-800 disabled:bg-indigo-400 rounded"
-    :disabled="loading">
+    <button type="submit" 
+    :disabled="loading"
+    :class="classButton"
+    >
 
     <div v-if="!loading">
         <slot>Enviar</slot>

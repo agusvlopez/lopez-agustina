@@ -7,9 +7,10 @@ import BaseTextarea from './BaseTextarea.vue';
 import { trainingsEditTraining, editTrainingPhoto, getTrainings } from '../services/trainings';
 import { loadImage } from '../services/storage';
 
-const { editedTraining, documentId, editLoading } = defineProps(['editedTraining', 'documentId', 'editLoading']);
-const emits = defineEmits();
+const { editedTraining, documentId } = defineProps(['editedTraining', 'documentId']);
+const emit = defineEmits();
 
+const editLoading = ref(false);
 const editForm = ref(false);
 const photoData = ref({
   file: null,
@@ -22,7 +23,7 @@ const handlePhotoFileChange = (event) => {
 };
 
 const edit = async () => {
-  emits('edit-loading', true);
+    editLoading.value = true;
 
   try {
     let imageUrl = editedTraining.img;
@@ -43,19 +44,19 @@ const edit = async () => {
     console.log('Entrenamiento actualizado con éxito');
 
     const trainingsAll = await getTrainings();
-    emits('update-trainings', trainingsAll); // Emitir evento con la nueva lista de entrenamientos
+    emit('update-trainings', trainingsAll); // Emitir evento con la nueva lista de entrenamientos
   } catch (error) {
     console.error('Error al actualizar el entrenamiento:', error);
   } finally {
-    emits('edit-loading', false);
+    editLoading.value = false;
     editForm.value = false;
-    emits('close-edit'); // Emitir evento para indicar al padre que el formulario se cerró
+    emit('close-edit'); // Emitir evento para indicar al padre que el formulario se cerró
   }
 };
 
 const closeEdit = () => {
   editForm.value = false;
-  emits('close-edit'); // Emitir evento para indicar al padre que el formulario se cerró
+  emit('close-edit'); // Emitir evento para indicar al padre que el formulario se cerró
 };
 
 </script>

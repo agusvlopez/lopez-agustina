@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { buscarYEliminarDocumento, deleteTrainingPhoto, getTrainings } from '../services/trainings';
 import BaseButton from './BaseButton.vue';
 
-const emit = defineEmits(['closeAlert', 'deleteTraining']);
+const emit = defineEmits(['closeAlert', 'deleteTraining', 'update-trainings']);
 const props = defineProps(['deletedValue']);
 
 const deletedTraining = ref(false);
@@ -31,9 +31,8 @@ async function deleteTraining() {
       deleteTrainingPhoto(trainingToDelete);
     }
 
-    // Actualiza la lista de entrenamientos después de eliminar uno
-    // const trainingsDocs = await getTrainings();
-    // trainings.value = trainingsDocs;
+    const trainingsAll = await getTrainings();
+    emit('update-trainings', trainingsAll);
 
     // Restablece los estados
     alert.value = false;
@@ -62,13 +61,14 @@ function closeAlert() {
             <form action="#" 
                 @submit.prevent="deleteTraining"
             >
-            <div class="flex gap-4 justify-between mt-4">
+            <div class="flex gap-4 justify-between mt-6">
                 <BaseButton 
-                @click="closeAlert()"
-                    class="mt-2"> Cancelar
+                    @click="closeAlert()"
+                    :classButton="'bg-white border border-indigo-500 text-indigo-600 px-4 py-2 rounded'"
+                  > Cancelar
                 </BaseButton>
                 <BaseButton 
-                    class="bg-red-500 hover:bg-red-600 mt-2"
+                    :classButton="'transition motion-reduce:transition-none bg-red-600 text-white px-4 py-2 hover:bg-red-500 active:bg-red-800 disabled:bg-red-400 rounded'"
                     :loading="deletedTraining"
                     > Eliminar
                 </BaseButton>

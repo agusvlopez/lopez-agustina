@@ -7,8 +7,10 @@ import BaseInput from './BaseInput.vue';
 import Baselabel from './BaseLabel.vue';
 import BaseTextarea from './BaseTextarea.vue';
 
-const emit = defineEmits(['cancelTrainingForm', 'saveTraining']);
+const emit = defineEmits(['cancelTrainingForm', 'saveTraining', 'update-trainings']);
 
+const trainingsLoading = ref(false);
+const showingTrainingForm = ref(false);
 const trainings = ref([]);
 const training = ref({
   name: '',
@@ -24,8 +26,6 @@ const photoData = ref({
   preview: null,
 });
 
-const trainingsLoading = ref(false);
-const showingTrainingForm = ref(false);
 
 function handlePhotoFileChange(event) {
     photoData.value.file = event.target.files[0];
@@ -54,6 +54,8 @@ async function saveTraining  () {
         // Actualiza el campo 'img' del entrenamiento con la URL de la imagen
         await trainingsEditTraining(newTrainingId, { img: imageUrl });
 
+        const trainingsAll = await getTrainings();
+        emit('update-trainings', trainingsAll);
         //  // Actualiza la lista de entrenamientos después de agregar uno nuevo
         // const allTrainings = await getTrainings();
         // trainings.value = allTrainings;
