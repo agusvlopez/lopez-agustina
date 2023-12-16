@@ -16,7 +16,7 @@ defineProps({
 <template>
     <button type="submit" 
     :disabled="loading"
-    class="transition motion-reduce:transition-none text-white px-4 py-2   disabled:bg-indigo-400 rounded"
+    class="transition motion-reduce:transition-none text-white px-4 py-2 rounded"
     :class="{
         'disabled:bg-indigo-400' : styleType == 'normal',
         'active:bg-indigo-800': styleType == 'normal',

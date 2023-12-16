@@ -1,27 +1,27 @@
 <script setup>
 import Loader from '../components/Loader.vue';
-import Basebutton from '../components/basebutton.vue';
+import BaseButton from '../components/BaseButton.vue';
 import { ref, onMounted, inject } from 'vue';
 import { getDocumentId, getTrainings, truncateText } from '../services/trainings';
 import { addTrainingToUser } from '../services/user';
 import { getUserId } from '../services/auth';
 import { notificationKey } from '../symbols/symbols';
 import BaseH1 from '../components/BaseH1.vue';
+import ModalNotification from '../components/ModalNotification.vue';
 
 const { notification, setNotification } = inject(notificationKey);
 
 const trainings = ref([]);
 const trainingsLoading = ref(true);
 const trainingIsAlreadyAdded = ref(false);
+const selectedTraining = ref(null);
+const isModalVisible = ref(false);
 
 onMounted(async () => {
   try {
     const trainingsAll = await getTrainings();
-    console.log(trainingsAll);
     trainingsLoading.value = true;
-    
     trainings.value = trainingsAll;
-
     trainingsLoading.value = false;
   } catch (error) {
     console.error('Error:', error);
@@ -29,28 +29,50 @@ onMounted(async () => {
 });
 
 const addTrainingToCurrentUser = async (training) => {
-  const userId = getUserId();      
+  const userId = getUserId();
   const trainingsIds = await getDocumentId();
-  try {   
+  try {
     await addTrainingToUser(userId, training);
-    console.log(training);
-      setNotification({
-        message: 'Entrenamiento contratado con éxito.',
-        type: 'success'
-      });
-      setTimeout(() => {
-        setNotification(null);
-      }, 3000);
-  } catch (error) {
     setNotification({
-        message: 'Entrenamiento ya contratado.',
-        type: 'error'
-      });
-      setTimeout(() => {
-        setNotification(null);
-      }, 3000);
+      message: 'Entrenamiento contratado con éxito.',
+      type: 'success'
+    });
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  } catch (error) {
+    // Maneja el caso de error
+    trainingIsAlreadyAdded.value = true; // Actualiza el estado para deshabilitar el botón
+    console.error('Error al añadir el entrenamiento al usuario:', error);
+    setNotification({
+      message: 'Entrenamiento ya contratado.',
+      type: 'error'
+    });
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
   }
 };
+
+function handleModalSubmit(training) {
+  selectedTraining.value = training;
+  isModalVisible.value = true;
+  trainingIsAlreadyAdded.value = false; // Resetear el estado al abrir el modal
+}
+
+function handleModalClose() {
+  isModalVisible.value = false;
+  if (trainingIsAlreadyAdded.value) {
+    // Puedes mostrar una notificación aquí si lo deseas
+    setNotification({
+      message: 'Entrenamiento ya contratado.',
+      type: 'error'
+    });
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  }
+}
 </script>
 
 <template>
@@ -58,8 +80,11 @@ const addTrainingToCurrentUser = async (training) => {
   <BaseH1>Precios de nuestros planes de entrenamiento</BaseH1>
     <template v-if="!trainingsLoading">
         <div class="flex p-4 flex-wrap">
-            <div class="mb-4 max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden"
-            v-for="training in trainings" :key="training.id">
+            <div 
+              class="mb-4 max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden"
+              v-for="training in trainings" :key="training.id">
+            <template v-if="alert">
+            </template>
                 <div>
                     <div>
                         <img class="h-72 w-full object-cover" :src="training.img" :alt="training.name">
@@ -72,13 +97,19 @@ const addTrainingToCurrentUser = async (training) => {
                     </div>            
                 </div>
                 <div class="flex justify-center items-center p-2">
-                <Basebutton 
+                <BaseButton
                   class="m-2"
-                  @click="addTrainingToCurrentUser(training)"
-                  :disabled="trainingIsAlreadyAdded"
-                >Obtener entrenamiento</Basebutton>
+                  @click="handleModalSubmit(training)"
+                >Obtener entrenamiento</BaseButton>
                 </div>
             </div>
+            <ModalNotification
+              v-if="isModalVisible"
+              :title="selectedTraining.name"
+              :message="`Estás a punto de contratar el entrenamiento ${selectedTraining.name}. ¡Muchas gracias! Apretá en Aceptar para confirmar.`"
+              :submitAction="() => addTrainingToCurrentUser(selectedTraining)"
+              @closeAlert="handleModalClose"
+            />
         </div>
     </template>
     <template 

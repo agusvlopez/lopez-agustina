@@ -118,8 +118,19 @@ export async function addTrainingToUser(userId, trainingData) {
       const userRef = doc(db, 'users', userId);
       const userTrainingsRef = collection(userRef, 'trainings');
   
-    // Utiliza el ID proporcionado manualmente en los datos del entrenamiento
-        await setDoc(doc(userTrainingsRef, trainingData.id), {
+      // Consulta la colección de entrenamientos del usuario
+      const querySnapshot = await getDocs(userTrainingsRef);
+  
+      // Verifica si el entrenamiento ya está presente
+      const existingTraining = querySnapshot.docs.find(doc => doc.data().id === trainingData.id);
+  
+      if (existingTraining) {
+        console.warn('Entrenamiento ya contratado.');
+        throw new Error('Entrenamiento ya contratado.');
+      }
+  
+      // Si no existe, añade el nuevo entrenamiento
+      await setDoc(doc(userTrainingsRef, trainingData.id), {
         ...trainingData,
         created_at: serverTimestamp(),
       });
@@ -130,7 +141,25 @@ export async function addTrainingToUser(userId, trainingData) {
       console.error('Error al añadir el entrenamiento al usuario:', error);
       throw error;
     }
-}
+  }
+// export async function addTrainingToUser(userId, trainingData) {
+//     try {
+//       const userRef = doc(db, 'users', userId);
+//       const userTrainingsRef = collection(userRef, 'trainings');
+  
+//     // Utiliza el ID proporcionado manualmente en los datos del entrenamiento
+//         await setDoc(doc(userTrainingsRef, trainingData.id), {
+//         ...trainingData,
+//         created_at: serverTimestamp(),
+//       });
+  
+//       // Devuelve el ID proporcionado manualmente
+//       return trainingData.id;
+//     } catch (error) {
+//       console.error('Error al añadir el entrenamiento al usuario:', error);
+//       throw error;
+//     }
+// }
 
 export async function getAllUsersWithTrainings() {
     const usersRef = collection(db, 'users');

@@ -57,14 +57,13 @@ function closeAlert() {
     <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
         <div class="bg-white p-8 shadow-lg rounded-lg max-w-md border-2 border-red-400 text-red-700">    
         <p class="font-bold">¡Atención!</p>
-            <span class="block sm:inline">Estás a punto de eliminar <span class="font-bold">{{ props.deletedValue }}. </span>¿Estas seguro que queres eliminarlo?</span>
+            <span class="block sm:inline">Estás a punto de eliminar <span class="font-bold">{{ deletedValue }}. </span>¿Estas seguro que queres eliminarlo?</span>
             <form action="#" 
                 @submit.prevent="deleteTraining"
             >
             <div class="flex gap-4 justify-between mt-6">
                 <BaseButton 
                     @click="closeAlert()"
-                    :classButton="'bg-white border border-indigo-500 text-indigo-600 px-4 py-2 rounded'"
                   > Cancelar
                 </BaseButton>
                 <BaseButton 
