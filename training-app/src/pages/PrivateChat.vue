@@ -64,8 +64,11 @@ function usePrivateChat(senderUser, receiverUser) {
         <section class="container p-4">    
             <BaseH1>Chat con <router-link :to="`/usuario/${user.id}`" class="text-indigo-600"> {{user.email}} </router-link></BaseH1>
             <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
-                <div> 
-                    <h2 class="bg-indigo-500 text-white p-3 rounded-t-lg mb-4">Conversación con {{user.email}}</h2>
+                <div class="bg-indigo-500 flex items-center rounded-t-lg"> 
+                    <div class="w-16 mb-4">
+                        <img :src="user.photoURL" class="rounded-full mt-3 ml-3">
+                    </div>
+                    <h2 class="text-white ml-3 p-3">{{user.email}}</h2>
                 </div>        
                 <h2 class="sr-only">Mensajes</h2>
         
