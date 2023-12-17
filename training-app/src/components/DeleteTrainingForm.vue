@@ -1,7 +1,10 @@
 <script setup>
-import { ref } from 'vue';
-import { buscarYEliminarDocumento, deleteTrainingPhoto, getTrainings } from '../services/trainings';
+import { inject, ref } from 'vue';
+import { lookForAndDeleteDocument, deleteTrainingPhoto, getTrainings } from '../services/trainings';
 import BaseButton from './BaseButton.vue';
+import { notificationKey } from '../symbols/symbols';
+
+const { notification, setNotification } = inject(notificationKey);
 
 const emit = defineEmits(['closeAlert', 'deleteTraining', 'update-trainings']);
 const props = defineProps(['deletedValue']);
@@ -19,7 +22,7 @@ async function deleteTraining() {
     deletedTraining.value = true;
 
     // Obtén el documento a eliminar
-    const trainingToDelete = await buscarYEliminarDocumento(props.deletedValue);
+    const trainingToDelete = await lookForAndDeleteDocument(props.deletedValue);
     console.log(trainingToDelete);
     if (!trainingToDelete) {
       console.log('No se encontró el documento a eliminar.');
@@ -38,12 +41,27 @@ async function deleteTraining() {
     alert.value = false;
     trainingsLoading.value = false;
     deletedTraining.value = false;
-    //deletedValue.value = '';
 
     emit('deleteTraining');
 
+    setNotification({
+        message: 'Entrenamiento eliminado con éxito.',
+        type: 'success'
+    });
+    setTimeout(() => {
+        setNotification(null);
+    }, 3000);
+
   } catch (error) {
     console.error('Error al eliminar el entrenamiento:', error);
+    
+    setNotification({
+        message: 'Hubo un error al eliminar el entrenamiento. Por favor, intentá nuevamente mas tarde.',
+        type: 'success'
+    });
+    setTimeout(() => {
+        setNotification(null);
+    }, 3000);
   }
 }
 

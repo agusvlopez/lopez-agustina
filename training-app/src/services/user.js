@@ -1,6 +1,5 @@
 import { addDoc, collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore';
 import { db } from './firebase';
-import { getDocumentId } from './trainings';
 
 //Manejar los perfiles de usuario
 
@@ -142,24 +141,6 @@ export async function addTrainingToUser(userId, trainingData) {
       throw error;
     }
   }
-// export async function addTrainingToUser(userId, trainingData) {
-//     try {
-//       const userRef = doc(db, 'users', userId);
-//       const userTrainingsRef = collection(userRef, 'trainings');
-  
-//     // Utiliza el ID proporcionado manualmente en los datos del entrenamiento
-//         await setDoc(doc(userTrainingsRef, trainingData.id), {
-//         ...trainingData,
-//         created_at: serverTimestamp(),
-//       });
-  
-//       // Devuelve el ID proporcionado manualmente
-//       return trainingData.id;
-//     } catch (error) {
-//       console.error('Error al añadir el entrenamiento al usuario:', error);
-//       throw error;
-//     }
-// }
 
 export async function getAllUsersWithTrainings() {
     const usersRef = collection(db, 'users');

@@ -168,7 +168,7 @@ const handleLogout = () => {
         <router-view></router-view>
     </div>
     <div
-        v-if="user.fullProfileLoaded"
+        v-if="user.fullProfileLoaded && user.rol === 'cliente'"
         class="chat-link bg-white p-4 rounded-full shadow-lg transition-transform transform hover:-translate-y-2 hover:shadow-md"
     >
         <router-link to="/usuario/d6dfuuXe7laEyCh33M0uxKtb9xk1/chat">

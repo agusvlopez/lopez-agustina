@@ -1,13 +1,16 @@
 <script setup>
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { trainingsSaveTraining, editTrainingPhoto, getTrainings, trainingsEditTraining } from '../services/trainings';
 import { loadImage } from '../services/storage';
 import BaseButton from './BaseButton.vue';
 import BaseInput from './BaseInput.vue';
 import Baselabel from './BaseLabel.vue';
 import BaseTextarea from './BaseTextarea.vue';
+import { notificationKey } from '../symbols/symbols';
 
 const emit = defineEmits(['cancelTrainingForm', 'saveTraining', 'update-trainings']);
+
+const { notification, setNotification } = inject(notificationKey);
 
 const trainingsLoading = ref(false);
 const showingTrainingForm = ref(false);
@@ -70,8 +73,24 @@ async function saveTraining  () {
 
         emit('saveTraining');
 
+        setNotification({
+        message: 'Entrenamiento creado con éxito.',
+        type: 'success'
+        });
+        setTimeout(() => {
+            setNotification(null);
+        }, 3000);
+
     } catch (error) {
         console.error('Error al guardar el entrenamiento:', error);
+
+        setNotification({
+            message: 'Hubo un error al crear el entrenamiento. Por favor, intentá nuevamente mas tarde.',
+            type: 'success'
+        });
+            setTimeout(() => {
+            setNotification(null);
+        }, 3000);
     }
 }
 

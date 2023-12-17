@@ -7,7 +7,7 @@ import CardRadio from '../components/CardRadio.vue';
 <template>
     <div class="container mx-auto p-4">
         <BaseH1>Panel del Administrador/a</BaseH1>
-        <div>
+        <div class="mt-6">
             <p class="mb-3 font-semibold"></p>
             <div class="flex justify-center gap-3 mb-8">
                 <CardRadio> 

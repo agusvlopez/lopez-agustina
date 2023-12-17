@@ -1,11 +1,14 @@
 <script setup>
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import BaseButton from './BaseButton.vue';
 import BaseInput from './BaseInput.vue';
 import BaseLabel from './BaseLabel.vue';
 import BaseTextarea from './BaseTextarea.vue';
 import { trainingsEditTraining, editTrainingPhoto, getTrainings } from '../services/trainings';
 import { loadImage } from '../services/storage';
+import { notificationKey } from '../symbols/symbols';
+
+const { notification, setNotification } = inject(notificationKey);
 
 const { editedTraining, documentId } = defineProps(['editedTraining', 'documentId']);
 const emit = defineEmits();
@@ -44,9 +47,27 @@ const edit = async () => {
     console.log('Entrenamiento actualizado con éxito');
 
     const trainingsAll = await getTrainings();
-    emit('update-trainings', trainingsAll); // Emitir evento con la nueva lista de entrenamientos
+    emit('update-trainings', trainingsAll); 
+
+    setNotification({
+        message: 'Entrenamiento editado con éxito.',
+        type: 'success'
+    });
+    setTimeout(() => {
+        setNotification(null);
+    }, 3000);
+
   } catch (error) {
     console.error('Error al actualizar el entrenamiento:', error);
+
+    setNotification({
+        message: 'Hubo un error al editar el entrenamiento. Por favor, intentá nuevamente mas tarde.',
+        type: 'success'
+    });
+    setTimeout(() => {
+        setNotification(null);
+    }, 3000);
+
   } finally {
     editLoading.value = false;
     editForm.value = false;

@@ -81,7 +81,7 @@ export async function getTrainingDocs(){
   return trainingDocId.id;
 }
 
-export async function buscarYEliminarDocumento(valor) {
+export async function lookForAndDeleteDocument(valor) {
   const collectionName = 'trainings';
   const campo = 'name';
   let deletedDocument;
@@ -121,22 +121,6 @@ export async function getTrainingIds() {
 
   return trainingIds[0];
 }
-
-// /**
-//  * @param {String} trainingId
-//  * @param {File} file 
-//  * @returns {Promise}
-//  */
-// export async function uploadTrainingPhoto(file) {
-//   const trainingId = getDocumentId();
-//   const fileId = `${Date.now()}`;
-//   const path = `trainings/${trainingId}/${file.name}`;
-//   await uploadFile(path, file)
-
-//   const photoURL = await getFileURL(path);
-
-//   return photoURL;
-// }
 
 /**
  * 
