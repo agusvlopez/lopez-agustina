@@ -1,5 +1,5 @@
 <script setup>
-import Loader from '../components/Loader.vue';
+import LoadingContext from '../components/LoadingContext.vue';
 import BaseButton from '../components/BaseButton.vue';
 import { ref, onMounted, inject } from 'vue';
 import { getDocumentId, getTrainings, truncateText } from '../services/trainings';
@@ -30,9 +30,10 @@ onMounted(async () => {
 
 const addTrainingToCurrentUser = async (training) => {
   const userId = getUserId();
-  const trainingsIds = await getDocumentId();
+
   try {
     await addTrainingToUser(userId, training);
+    
     setNotification({
       message: 'Entrenamiento contratado con éxito.',
       type: 'success'
@@ -40,10 +41,10 @@ const addTrainingToCurrentUser = async (training) => {
     setTimeout(() => {
       setNotification(null);
     }, 3000);
+
   } catch (error) {
-    // Maneja el caso de error
-    trainingIsAlreadyAdded.value = true; // Actualiza el estado para deshabilitar el botón
-    console.error('Error al añadir el entrenamiento al usuario:', error);
+    trainingIsAlreadyAdded.value = true;
+
     setNotification({
       message: 'Entrenamiento ya contratado.',
       type: 'error'
@@ -51,6 +52,7 @@ const addTrainingToCurrentUser = async (training) => {
     setTimeout(() => {
       setNotification(null);
     }, 3000);
+
   }
 };
 
@@ -78,7 +80,7 @@ function handleModalClose() {
 <template>
 <section class="container p-6 bg-gray-200">
   <BaseH1>Precios de nuestros planes de entrenamiento</BaseH1>
-    <template v-if="!trainingsLoading">
+  <LoadingContext :loading="trainingsLoading">
         <div class="flex p-4 flex-wrap">
             <div 
               class="mb-4 max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden"
@@ -111,10 +113,6 @@ function handleModalClose() {
               @closeAlert="handleModalClose"
             />
         </div>
-    </template>
-    <template 
-    v-else>
-        <Loader></Loader>
-    </template>
+      </LoadingContext>
 </section>
 </template>

@@ -165,7 +165,7 @@ function cancelTrainingForm () {
                 </div>
                 <div class="flex justify-between">
                     <button 
-                        class="rounded-full shadow text-indigo-700 p-3 ml-2"
+                        class="rounded-full shadow-lg text-indigo-700 p-3 ml-2"
                         @click="cancelTrainingForm"
                     >Cancelar</button> 
                     <BaseButton 

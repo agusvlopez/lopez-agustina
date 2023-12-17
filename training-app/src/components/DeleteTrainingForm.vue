@@ -62,11 +62,13 @@ function closeAlert() {
                 @submit.prevent="deleteTraining"
             >
             <div class="flex gap-4 justify-between mt-6">
-                <BaseButton 
+                <button 
+                    class="rounded-full shadow-lg text-indigo-700 p-3 ml-2"
                     @click="closeAlert()"
-                  > Cancelar
-                </BaseButton>
+                > Cancelar
+                </button>
                 <BaseButton 
+                    class="rounded-full p-3 ml-2"
                     :styleType="'danger'"
                     :loading="deletedTraining"
                 > Eliminar

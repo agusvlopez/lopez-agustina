@@ -5,7 +5,7 @@ import BaseLabel from '../components/BaseLabel.vue';
 import BaseTextarea from '../components/BaseTextarea.vue';
 import ChatInput from '../components/ChatInput.vue';
 import { getTrainings } from '../services/trainings';
-import Loader from '../components/Loader.vue';
+import LoadingContext from '../components/LoadingContext.vue';
 import BaseH1 from '../components/BaseH1.vue';
 import CreateTrainingForm from '../components/CreateTrainingForm.vue';
 import DeleteTrainingForm from '../components/DeleteTrainingForm.vue';
@@ -14,7 +14,7 @@ import EditTrainingForm from '../components/EditTrainingForm.vue';
 
 export default {
     name: 'PanelTraining',
-    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, Loader, BaseH1, CreateTrainingForm, DeleteTrainingForm, EditTrainingForm },
+    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, LoadingContext, BaseH1, CreateTrainingForm, DeleteTrainingForm, EditTrainingForm },
     data() {
         return {
             editLoading: false,
@@ -115,8 +115,9 @@ export default {
         </div>
         <!-- CARDS DE ENTRENAMIENTOS... -->
         <div class="flex p-4 flex-wrap">    
-            <template
-            v-if="!trainingsLoading  && !deletedTraining && !editLoading" >
+            <LoadingContext
+                :loading="trainingsLoading" 
+            >
                 <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden p-4"
                     v-for="training in trainings"
                     :key="training.id"  
@@ -144,11 +145,7 @@ export default {
                         </div>
                     </form>
                 </div>  
-            </template>
-            <template
-            v-else>
-                <Loader></Loader>
-            </template>
+            </LoadingContext>
         </div>
     </section>
 

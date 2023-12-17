@@ -73,7 +73,7 @@ function useProfileEdit(user) {
             console.log("error: ", error);
             //Notificación de error          
             setNotification({
-                message: error,
+                message: 'Hubo un error y no se pudo editar la información de tu perfil. Por favor, intentá nuevamente mas tarde.',
                 type: 'error'
             });
             setTimeout(() => {
@@ -121,7 +121,7 @@ function usePhotoEdit() {
             }, 3000);
         } catch (error) {
             setNotification({
-                message: "Hubo un error al intentar agregar la foto. Por favor intente nuevamente en unos instantes.",
+                message: "Hubo un error al intentar agregar la foto. Por favor intentá nuevamente mas tarde.",
                 type: 'error'
             });
             setTimeout(() => {
