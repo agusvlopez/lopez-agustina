@@ -39,7 +39,7 @@ const doLogin = async () => {
         
     } catch (error) {
         setNotification({
-            message: error,
+            message: 'Error al iniciar sesión, por favor corregí los datos e intentá nuevamente.',
             type: 'error'
         });
         setTimeout(() => {

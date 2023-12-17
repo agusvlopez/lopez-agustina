@@ -110,6 +110,27 @@ h2 {
   height: 18px;
   background-size: contain;
 }
+
+.chat-link {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  cursor: pointer;  
+}
+
+.chat-icon {
+  width: 38px; 
+}
+
+/* Estilo de transición en el hover */
+.hover\:translate-y-2:hover {
+  transform: translateY(-2px);
+}
+
+.hover\:shadow-md:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
 .portada .bg-black {
   opacity: 80%;
 }

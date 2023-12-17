@@ -29,6 +29,7 @@ import { useRouter } from 'vue-router';
 import { useAuth } from './functions/useAuth';
 import { notificationKey } from './symbols/symbols';
 import Notification from './components/Notification.vue';
+import chatIcon from '../src/imgs/chat.png';
 
 const mobileMenuOpen = ref(false);
 const { user } = useAuth();
@@ -85,12 +86,12 @@ const handleLogout = () => {
             <template
             v-else
             >
-            <template
+            <!-- <template
             v-if="user.rol === 'cliente' && user.fullProfileLoaded">
                 <li>
                     <router-link to="/usuario/d6dfuuXe7laEyCh33M0uxKtb9xk1/chat">Chateá con nosotros</router-link>
                 </li>
-            </template>
+            </template> -->
                 <li>
                     <router-link to="/perfil">Mi perfil</router-link>
                 </li>
@@ -165,6 +166,14 @@ const handleLogout = () => {
             <Notification :message="notification.message" :type="notification.type" />
         </div>
         <router-view></router-view>
+    </div>
+    <div
+        v-if="user.fullProfileLoaded"
+        class="chat-link bg-white p-4 rounded-full shadow-lg transition-transform transform hover:-translate-y-2 hover:shadow-md"
+    >
+        <router-link to="/usuario/d6dfuuXe7laEyCh33M0uxKtb9xk1/chat">
+            <img :src="chatIcon" alt="Chat" class="chat-icon">
+        </router-link>
     </div>
 </main>
     <footer class="flex justify-center items-center h-[100px] bgNav text-white">
