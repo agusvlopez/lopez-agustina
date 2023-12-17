@@ -71,13 +71,13 @@ const edit = async () => {
   } finally {
     editLoading.value = false;
     editForm.value = false;
-    emit('close-edit'); // Emitir evento para indicar al padre que el formulario se cerró
+    emit('close-edit'); 
   }
 };
 
 const closeEdit = () => {
   editForm.value = false;
-  emit('close-edit'); // Emitir evento para indicar al padre que el formulario se cerró
+  emit('close-edit'); 
 };
 
 </script>

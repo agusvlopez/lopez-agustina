@@ -1,7 +1,6 @@
 import {db, storage} from './firebase.js';
 import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy, getDocs, doc, deleteDoc, where, updateDoc, getDoc } from "firebase/firestore";
 import { deleteFile, getFileURL, uploadFile } from './storage.js';
-import { ref } from 'firebase/storage';
 
 const refTraining = collection(db, 'trainings');
 console.log(refTraining);

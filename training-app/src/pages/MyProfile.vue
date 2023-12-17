@@ -142,8 +142,7 @@ function usePhotoEdit() {
             console.log(reader.result);
         });
 
-        reader.readAsDataURL(photoData.value.file);
-        
+        reader.readAsDataURL(photoData.value.file);   
     }
 
     return {

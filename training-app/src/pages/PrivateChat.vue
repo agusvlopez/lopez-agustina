@@ -11,6 +11,9 @@ import BaseLabel from '../components/BaseLabel.vue';
 import ChatInput from '../components/ChatInput.vue';
 import BaseH1 from '../components/BaseH1.vue';
 import Loadingcontext from '../components/LoadingContext.vue';
+import Image from '../components/Image.vue';
+import noImage from '../imgs/no-image.jpg';
+
 
 const route = useRoute();
 const { user: authUser } = useAuth();
@@ -66,7 +69,12 @@ function usePrivateChat(senderUser, receiverUser) {
             <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
                 <div class="bg-indigo-500 flex items-center rounded-t-lg"> 
                     <div class="w-16 mb-4">
-                        <img :src="user.photoURL" class="rounded-full mt-3 ml-3">
+                        <Image
+                            class="rounded-full mt-3 ml-3"
+                            :src="user.photoURL"
+                            :default="noImage"
+                            default-alt="No existe imagen de perfil"
+                        />
                     </div>
                     <h2 class="text-white ml-3 p-3">{{user.email}}</h2>
                 </div>        

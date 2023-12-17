@@ -85,8 +85,6 @@ function handleModalClose() {
             <div 
               class="mb-4 max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden"
               v-for="training in trainings" :key="training.id">
-            <template v-if="alert">
-            </template>
                 <div>
                     <div>
                         <img class="h-72 w-full object-cover" :src="training.img" :alt="training.name">

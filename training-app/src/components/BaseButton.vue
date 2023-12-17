@@ -29,14 +29,14 @@ defineProps({
     }"
     >
 
-    <div v-if="!loading">
+    <template v-if="!loading">
         <slot>Enviar</slot>
-    </div>
-    <div v-else>
+    </template>
+    <template v-else>
         <!-- <slot class="disabled:bg-indigo-200">Enviar</slot> 
         <div class="sr-only">Cargando...</div> -->
         <Loader size="small" />
-    </div>
+    </template>
     </button>
 
 </template>

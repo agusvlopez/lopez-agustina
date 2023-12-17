@@ -14,7 +14,6 @@ const { notification, setNotification } = inject(notificationKey);
 
 const trainingsLoading = ref(false);
 const showingTrainingForm = ref(false);
-const trainings = ref([]);
 const training = ref({
   name: '',
   img: '',
@@ -59,9 +58,6 @@ async function saveTraining  () {
 
         const trainingsAll = await getTrainings();
         emit('update-trainings', trainingsAll);
-        //  // Actualiza la lista de entrenamientos después de agregar uno nuevo
-        // const allTrainings = await getTrainings();
-        // trainings.value = allTrainings;
 
         training.value.name = '';
         training.value.description = '';
