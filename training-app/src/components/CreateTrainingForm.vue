@@ -7,6 +7,7 @@ import BaseInput from './BaseInput.vue';
 import Baselabel from './BaseLabel.vue';
 import BaseTextarea from './BaseTextarea.vue';
 import { notificationKey } from '../symbols/symbols';
+import CancelButton from './CancelButton.vue';
 
 const emit = defineEmits(['cancelTrainingForm', 'saveTraining', 'update-trainings']);
 
@@ -179,13 +180,12 @@ function cancelTrainingForm () {
                     </section>
                 </div>
                 <div class="flex justify-between">
-                    <button 
-                        class="rounded-full shadow-lg text-indigo-700 p-3 ml-2"
+                    <CancelButton
                         @click="cancelTrainingForm"
-                    >Cancelar</button> 
+                    >Cancelar</CancelButton> 
                     <BaseButton 
-                    class="rounded-full p-3 ml-2"
-                    :loading="trainingsLoading"
+                        class="rounded-full p-3 ml-2"
+                        :loading="trainingsLoading"
                     ></BaseButton>  
                 </div> 
             </form>   

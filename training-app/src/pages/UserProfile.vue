@@ -11,15 +11,9 @@ const { user, userLoading } = useUserProfile(route.params.id);
 
 <template>
     <SkeletonContext :loading="userLoading">
-        <div>
+        <div class="p-4">
             <BaseH1>Perfil de {{ user.email }}</BaseH1>
             <Userprofiledata :user="user" />
-
-            <h2>Conversación privada</h2>
-            <router-link
-            :to="`/usuario/${user.id}/chat`"
-            class="transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800"
-            >Iniciar una conversación privada con {{ user.email }}</router-link>
         </div>
     </SkeletonContext>  
 </template>

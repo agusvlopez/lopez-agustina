@@ -217,4 +217,6 @@ function clearUserData() {
 
 export function getUserId() {
     return userData.id;
-  }
+}
+
+

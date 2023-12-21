@@ -5,11 +5,11 @@ import BaseInput from '../components/BaseInput.vue';
 import BaseLabel from '../components/BaseLabel.vue';
 import { editProfile, editProfilePhoto } from '../services/auth';
 import { inject, onMounted, ref } from 'vue';
-import UserProfileData from '../components/UserProfileData.vue';
 import { notificationKey } from '../symbols/symbols';
 import { getUserTrainings } from '../services/user';
 import BaseH1 from '../components/BaseH1.vue';
 import SkeletonContext from '../components/SkeletonContext.vue';
+import MyProfileData from '../components/MyProfileData.vue';
 
 const { setNotification } = inject(notificationKey);
 
@@ -164,7 +164,7 @@ function usePhotoEdit() {
         <template v-if="!editing && !editingPhoto">
             <section class="container p-4">
 
-                <UserProfileData :user="user" :trainings="trainings" />
+                <MyProfileData :user="user" :trainings="trainings" />
                 
                 <div class="flex gap-2">
                 <BaseButton
@@ -176,10 +176,6 @@ function usePhotoEdit() {
                 >Editar mi foto de perfil</BaseButton>
             </div>
             </section>   
-            <section v-if="user.rol == 'cliente'">
-                <h2 class="text-xl font-bolder">Mis mensajes con Training App</h2>
-                <p class="mt-2 font-bold text-indigo-600 hover:text-indigo-700"> <router-link to="/usuario/d6dfuuXe7laEyCh33M0uxKtb9xk1/chat">Ir a la conversación »</router-link> </p>
-            </section>
         </template>
         <template v-else-if="editing">
             <form 

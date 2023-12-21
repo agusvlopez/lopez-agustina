@@ -93,7 +93,7 @@ const handleLogout = () => {
                 </li>
             </template> -->
                 <li>
-                    <router-link to="/perfil">Mi perfil</router-link>
+                    <router-link to="/perfil/">Mi perfil</router-link>
                 </li>
                 <li>
                 <form action=""

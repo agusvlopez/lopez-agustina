@@ -1,5 +1,4 @@
 <script setup>
-import Chat from './Chat.vue';
 import ProfileImage from './ProfileImage.vue';
 
 defineProps({
@@ -39,13 +38,9 @@ defineProps({
                 <p v-if="trainings.length === 0">No hay entrenamientos contratados.</p>
             </dd>
         </dl> 
-        <div class="w-8/12 mb-4">
-            <h2 class="mt-2">Chat con {{ user.email }}</h2>
-            <router-link
-                :to="`/usuario/${user.id}/chat`"
-                class="transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800"
-            >Abrir chat »</router-link>
-            <Chat />
-        </div>
+        <section v-if="user.rol == 'cliente'" class="p-4 mt-2">
+                <h2 class="text-xl font-bolder">Mis mensajes con Training App</h2>
+                <p class="mt-2 font-bold text-indigo-600 hover:text-indigo-700"> <router-link to="/usuario/d6dfuuXe7laEyCh33M0uxKtb9xk1/chat">Ir a la conversación »</router-link> </p>
+        </section>
     </div>
 </template>

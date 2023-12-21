@@ -3,6 +3,7 @@ import { inject, ref } from 'vue';
 import { lookForAndDeleteDocument, deleteTrainingPhoto, getTrainings } from '../services/trainings';
 import BaseButton from './BaseButton.vue';
 import { notificationKey } from '../symbols/symbols';
+import CancelButton from './CancelButton.vue';
 
 const { notification, setNotification } = inject(notificationKey);
 
@@ -80,11 +81,10 @@ function closeAlert() {
                 @submit.prevent="deleteTraining"
             >
             <div class="flex gap-4 justify-between mt-6">
-                <button 
-                    class="rounded-full shadow-lg text-indigo-700 p-3 ml-2"
+                <CancelButton
                     @click="closeAlert()"
                 > Cancelar
-                </button>
+                </CancelButton>
                 <BaseButton 
                     class="rounded-full p-3 ml-2"
                     :styleType="'danger'"

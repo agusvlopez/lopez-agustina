@@ -106,7 +106,8 @@ function handleModalClose() {
             <ModalNotification
               v-if="isModalVisible"
               :title="selectedTraining.name"
-              :message="`Estás a punto de contratar el entrenamiento ${selectedTraining.name}. ¡Muchas gracias! Apretá en Aceptar para confirmar.`"
+              :price="selectedTraining.price"
+              :message="`Apretá en Aceptar para confirmar. ¡Muchas gracias!`"
               :submitAction="() => addTrainingToCurrentUser(selectedTraining)"
               @closeAlert="handleModalClose"
             />

@@ -7,6 +7,7 @@ import BaseTextarea from './BaseTextarea.vue';
 import { trainingsEditTraining, editTrainingPhoto, getTrainings } from '../services/trainings';
 import { loadImage } from '../services/storage';
 import { notificationKey } from '../symbols/symbols';
+import CancelButton from './CancelButton.vue';
 
 const { notification, setNotification } = inject(notificationKey);
 
@@ -175,13 +176,12 @@ const closeEdit = () => {
                         </div>
                     </div>
                     <div class="flex gap-4 justify-end">
-                        <button 
-                        @click="closeEdit"
-                        class="rounded-full shadow-lg text-indigo-700 p-3 ml-2"
-                        >Cerrar</button>
+                        <CancelButton
+                            @click="closeEdit"
+                        >Cerrar</CancelButton>
                         <BaseButton 
-                        class="rounded-full p-3 ml-2"
-                        :loading="editLoading"
+                            class="rounded-full p-3 ml-2"
+                            :loading="editLoading"
                         >Editar</BaseButton>
                     </div>
                 </form>
