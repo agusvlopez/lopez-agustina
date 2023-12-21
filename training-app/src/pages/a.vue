@@ -10,16 +10,14 @@ const allUsersTrainings = ref([]);
 const isLoading = ref(false);
 
 onMounted(async () => {
-  isLoading.value = true;
-  try {
-    allUsersTrainings.value = await getAllUsersWithTrainings();
-    console.log(allUsersTrainings.value);
-    isLoading.value = false;
-  } catch (error) {
-    console.error('Error al obtener datos:', error);
-  }
+    isLoading.value = true;
+    try {
+        allUsersTrainings.value = await getAllUsersWithTrainings();
+        isLoading.value = false;
+    } catch (error) {
+        console.error('Error al obtener datos:', error);
+    }
 });
-
 </script>
 
 <template>

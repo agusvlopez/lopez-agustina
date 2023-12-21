@@ -17,10 +17,7 @@ defineProps({
 <template>
     <div class="flex gap-4 mx-auto">
         <div class="w-2/12">
-            <ProfileImage
-                :src="user.photoURL"
-                class="mb-4 rounded-full"
-            />
+            <ProfileImage :src="user.photoURL" class="mb-4 rounded-full" />
         </div>
         <dl class="w-8/12 mb-4">
             <dt class="mb-1 font-bold">Email</dt>
@@ -37,10 +34,12 @@ defineProps({
                 </ul>
                 <p v-if="trainings.length === 0">No hay entrenamientos contratados.</p>
             </dd>
-        </dl> 
+        </dl>
         <section v-if="user.rol == 'cliente'" class="p-4 mt-2">
-                <h2 class="text-xl font-bolder">Mis mensajes con Training App</h2>
-                <p class="mt-2 font-bold text-indigo-600 hover:text-indigo-700"> <router-link to="/usuario/d6dfuuXe7laEyCh33M0uxKtb9xk1/chat">Ir a la conversación »</router-link> </p>
+            <h2 class="text-xl font-bolder">Mis mensajes con Training App</h2>
+            <p class="mt-2 font-bold text-indigo-600 hover:text-indigo-700">
+                <router-link to="/usuario/d6dfuuXe7laEyCh33M0uxKtb9xk1/chat">Ir a la conversación »</router-link>
+            </p>
         </section>
     </div>
 </template>

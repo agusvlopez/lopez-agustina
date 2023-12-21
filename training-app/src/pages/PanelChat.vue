@@ -16,7 +16,7 @@ const authUser = ref({
     rol: null,
 });
 
-let unsubscribeAuth = () => {};
+let unsubscribeAuth = () => { };
 
 onMounted(async () => {
     try {
@@ -57,24 +57,20 @@ onUnmounted(() => {
         </div>
         <div class="flex flex-wrap">
             <LoadingContext :loading="userLoading">
-                <template v-for="user in nonAdminUsers" :key="user.id"> 
-                        <div v-if="user.rol != 'admin'">
-                            <div class="bg-white p-4 rounded-lg shadow m-2">
-                                <div>
-                                    <ProfileImage
-                                    :src="user.photoURL"
-                                    class="pb-4 w-60"
-                                    />
-                                    <p class="text-md font-semibold mt-4 m-2">Usuario: {{ user.email }}</p>
-                                    <p class="text-gray-600 m-2">Estado: Activo</p>
-                                    <router-link
-                                    :to="`/usuario/${user.id}/chat`"
-                                    class="m-2 transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800"
-                                    >Ver mensajes</router-link>
-                                </div>
+                <template v-for="user in nonAdminUsers" :key="user.id">
+                    <div v-if="user.rol != 'admin'">
+                        <div class="bg-white p-4 rounded-lg shadow m-2">
+                            <div>
+                                <ProfileImage :src="user.photoURL" class="pb-4 w-60" />
+                                <p class="text-md font-semibold mt-4 m-2">Usuario: {{ user.email }}</p>
+                                <p class="text-gray-600 m-2">Estado: Activo</p>
+                                <router-link :to="`/usuario/${user.id}/chat`"
+                                    class="m-2 transition motion-reduce:transition-none text-indigo-600 font-bold hover:text-indigo-800">Ver
+                                    mensajes</router-link>
                             </div>
-                        </div>    
-                </template> 
+                        </div>
+                    </div>
+                </template>
             </LoadingContext>
         </div>
     </section>

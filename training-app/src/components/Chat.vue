@@ -25,7 +25,7 @@ function usePrivateChat(senderUser, receiverUser) {
     });
     const messagesLoading = ref(true);
     const messages = ref([]);
-    let unsubscribeMessages = () => {};
+    let unsubscribeMessages = () => { };
 
     async function handleSendMessage() {
         sendPrivateChatMessage({
@@ -37,7 +37,7 @@ function usePrivateChat(senderUser, receiverUser) {
     }
 
     watch(receiverUser, async newReceiverUser => {
-        if(newReceiverUser.id !== null) {
+        if (newReceiverUser.id !== null) {
             unsubscribeMessages = await subscribeToPrivateChat(
                 {
                     senderId: senderUser.value.id,
@@ -62,58 +62,43 @@ function usePrivateChat(senderUser, receiverUser) {
 </script>
 
 <template>
-            <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
-                <div class="bg-indigo-500 flex items-center rounded-t-lg"> 
-                    <div class="w-16 mb-4">
-                        <Image
-                            class="rounded-full mt-3 ml-3"
-                            :src="user.photoURL"
-                            :default="noImage"
-                            default-alt="No existe imagen de perfil"
-                        />
-                    </div>
-                    <p class="text-white ml-3 p-3">{{user.email}}</p>
-                </div>        
-                <h2 class="sr-only">Mensajes</h2>
-        
-                <!-- Mensajes del chat -->
-                <div class="flex flex-col items-start min-h-[400px] p-4 rounded mb-4">
-                    <LoadingContext :loading="messagesLoading">
-                        <div 
-                        class="max-w-[70%] p-2 rounded mb-2"
-                        v-for="message in messages"
-                        :key="message.id"
-                            :class="{
-                                'bg-gray-200': message.senderId !== authUser.id,
-                                'text-gray-700': message.senderId !== authUser.id,
-                                'bg-indigo-500': message.senderId === authUser.id, 
-                                'text-white':  message.senderId === authUser.id,
-                                'self-end': message.senderId === authUser.id,
-                            }"
-                            >
-                                {{ message.message }}
-                                <div class="text-right">{{ dateToString(message.created_at) || "Enviando..." }}</div>
-                        
-                        </div>
-                    </LoadingContext>   
+    <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
+        <div class="bg-indigo-500 flex items-center rounded-t-lg">
+            <div class="w-16 mb-4">
+                <Image class="rounded-full mt-3 ml-3" :src="user.photoURL" :default="noImage"
+                    default-alt="No existe imagen de perfil" />
+            </div>
+            <p class="text-white ml-3 p-3">{{ user.email }}</p>
+        </div>
+        <h2 class="sr-only">Mensajes</h2>
+
+        <!-- Mensajes del chat -->
+        <div class="flex flex-col items-start min-h-[400px] p-4 rounded mb-4">
+            <LoadingContext :loading="messagesLoading">
+                <div class="max-w-[70%] p-2 rounded mb-2" v-for="message in messages" :key="message.id" :class="{
+                    'bg-gray-200': message.senderId !== authUser.id,
+                    'text-gray-700': message.senderId !== authUser.id,
+                    'bg-indigo-500': message.senderId === authUser.id,
+                    'text-white': message.senderId === authUser.id,
+                    'self-end': message.senderId === authUser.id,
+                }">
+                    {{ message.message }}
+                    <div class="text-right">{{ dateToString(message.created_at) || "Enviando..." }}</div>
+
                 </div>
-                <!-- Campo de entrada de texto -->
-                <h2 class="sr-only">Enviar mensaje</h2>
-                <form action=""
-                    @submit.prevent="handleSendMessage"
-                    class="col-8"
-                >
-                    <div class="mb-2 mt-3 p-4">
-                        <BaseLabel for="message" class="sr-only">Mensaje</BaseLabel>
-                        <div class="flex items-center mt-2">
-                            <ChatInput type="text" 
-                            id="message"
-                            v-model="newMessage.message"
-                            class="shadow border border-gray-300"
-                            />
-                            <BaseButton class="rounded-full p-3 ml-2"></BaseButton>
-                        </div>
-                    </div>
-                </form>
-            </div>    
+            </LoadingContext>
+        </div>
+        <!-- Campo de entrada de texto -->
+        <h2 class="sr-only">Enviar mensaje</h2>
+        <form action="" @submit.prevent="handleSendMessage" class="col-8">
+            <div class="mb-2 mt-3 p-4">
+                <BaseLabel for="message" class="sr-only">Mensaje</BaseLabel>
+                <div class="flex items-center mt-2">
+                    <ChatInput type="text" id="message" v-model="newMessage.message"
+                        class="shadow border border-gray-300" />
+                    <BaseButton class="rounded-full p-3 ml-2"></BaseButton>
+                </div>
+            </div>
+        </form>
+    </div>
 </template>

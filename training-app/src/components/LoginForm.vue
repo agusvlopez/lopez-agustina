@@ -36,7 +36,7 @@ const doLogin = async () => {
         }, 3000);
 
         router.push('/perfil');
-        
+
     } catch (error) {
         setNotification({
             message: 'Error al iniciar sesión, por favor intentá nuevamente.',
@@ -51,33 +51,17 @@ const doLogin = async () => {
 </script>
 
 <template>
-    <form 
-    action="#"
-    @submit.prevent="doLogin"
-    >
+    <form action="#" @submit.prevent="doLogin">
         <div class="mb-3">
             <BaseLabel for="email">Email</BaseLabel>
-            <BaseInput
-                :disabled="loginLoading"
-                type="email" 
-                id="email"
-                v-model="form.email"
-                placeholder="Ingresá tu correo electrónico"
-            />
+            <BaseInput :disabled="loginLoading" type="email" id="email" v-model="form.email"
+                placeholder="Ingresá tu correo electrónico" />
         </div>
         <div class="mb-6">
             <BaseLabel for="password">Contraseña</BaseLabel>
-            <BaseInput
-                :disabled="loginLoading"
-                type="password" 
-                id="password"
-                v-model="form.password"
-                placeholder="Ingresá tu contraseña"
-            />
-        </div>    
-        <BaseButton
-            :loading="loginLoading"
-            class=" w-full"
-        >Ingresar</BaseButton>     
+            <BaseInput :disabled="loginLoading" type="password" id="password" v-model="form.password"
+                placeholder="Ingresá tu contraseña" />
+        </div>
+        <BaseButton :loading="loginLoading" class=" w-full">Ingresar</BaseButton>
     </form>
 </template>

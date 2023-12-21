@@ -41,11 +41,11 @@ export default {
                 coach: '',
                 price: 0,
                 difficulty: '',
-            },           
+            },
         };
     },
     methods: {
-        openEdit(document){
+        openEdit(document) {
             this.editedTraining = { ...document };
             this.editForm = true;
             console.log('Edited Training:', this.editedTraining);
@@ -58,27 +58,27 @@ export default {
             this.alert = true;
             this.deletedValue = event;
         },
-        closeEdit(){
+        closeEdit() {
             this.editForm = false;
         },
-        closeAlert(){
+        closeAlert() {
             this.alert = false;
         },
-        showTrainingForm () {
+        showTrainingForm() {
             this.showingTrainingForm = true;
         },
-        cancelTrainingForm () {
+        cancelTrainingForm() {
             this.showingTrainingForm = false;
         },
-        handleCreateTraining(trainings){
+        handleCreateTraining(trainings) {
             this.trainings = trainings;
             this.showingTrainingForm = false;
         },
-        handleDeleteTraining(trainings){
+        handleDeleteTraining(trainings) {
             this.trainings = trainings;
             this.alert = false;
         },
-        handleEditTraining(trainings){
+        handleEditTraining(trainings) {
             this.trainings = trainings;
             this.editForm = false;
         }
@@ -87,102 +87,76 @@ export default {
         this.trainingsLoading = true;
 
         try {
-        const trainingsAll = await getTrainings();
-        this.trainings = trainingsAll;
+            const trainingsAll = await getTrainings();
+            this.trainings = trainingsAll;
         } catch (error) {
-        console.error('Error al obtener entrenamientos:', error);
+            console.error('Error al obtener entrenamientos:', error);
         } finally {
-        this.trainingsLoading = false;
+            this.trainingsLoading = false;
         }
     },
     beforeDestroy() {
         if (this.unsubscribe) {
-          this.unsubscribe();
+            this.unsubscribe();
         }
     },
 }
 </script>
 
 <template class="container mx-auto p-4">
-   <section class="border-b-2">
+    <section class="border-b-2">
         <BaseH1>Panel de entrenamientos</BaseH1>
         <h2>Todos los entrenamientos </h2>
         <div class="flex gap-4 mt-4 mb-4">
-            <BaseButton
-                @click="showTrainingForm"
-                class="rounded-full "
-            >Agregar entrenamiento +</BaseButton>
+            <BaseButton @click="showTrainingForm" class="rounded-full ">Agregar entrenamiento +</BaseButton>
         </div>
         <!-- CARDS DE ENTRENAMIENTOS... -->
-        <div class="flex p-4 flex-wrap">    
-            <LoadingContext
-                :loading="trainingsLoading" 
-            >
+        <div class="flex p-4 flex-wrap">
+            <LoadingContext :loading="trainingsLoading">
                 <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden p-4"
-                    v-for="training in trainings"
-                    :key="training.id"  
-                >
+                    v-for="training in trainings" :key="training.id">
                     <div class="flex justify-end align-middle mb-4">
-                        <button @click="openEdit(training)" class="font-bold text-indigo-500 flex items-center"> Editar entrenamiento <span class="editIcon block ml-1"></span></button>
+                        <button @click="openEdit(training)" class="font-bold text-indigo-500 flex items-center"> Editar
+                            entrenamiento <span class="editIcon block ml-1"></span></button>
                     </div>
-                    <form action=""
-                    @submit.prevent="openAlert(training.name)">
+                    <form action="" @submit.prevent="openAlert(training.name)">
                         <div>
                             <div>
                                 <img class="h-24 w-full object-cover" :src="training.img" :alt="training.name">
                             </div>
                             <div class="p-4">
-                                <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad {{training.difficulty}}</div>
-                                <a href="#" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{training.name}}</a>
-                                <p class="mt-1 text-gray-500">{{training.description}}</p>
-                                <p class="mt-1 text-indigo-500 text-lg font-semibold text-end">${{training.price}}</p>
+                                <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad
+                                    {{ training.difficulty }}</div>
+                                <a href="#"
+                                    class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{{
+                                        training.name }}</a>
+                                <p class="mt-1 text-gray-500">{{ training.description }}</p>
+                                <p class="mt-1 text-indigo-500 text-lg font-semibold text-end">${{ training.price }}</p>
 
-                                <BaseButton 
-                                    :styleType="'danger'"
-                                    :value="training.name"      
-                                >Eliminar </BaseButton>
+                                <BaseButton :styleType="'danger'" :value="training.name">Eliminar </BaseButton>
                             </div>
                         </div>
                     </form>
-                </div>  
+                </div>
             </LoadingContext>
         </div>
     </section>
 
     <!-- Modal de crear un entrenamiento -->
-    <template 
-        v-if="!editForm"
-    >
-        <CreateTrainingForm 
-            v-if="showingTrainingForm"
-            @cancelTrainingForm="cancelTrainingForm"
-            @update-trainings="handleCreateTraining"
-        ></CreateTrainingForm>
+    <template v-if="!editForm">
+        <CreateTrainingForm v-if="showingTrainingForm" @cancelTrainingForm="cancelTrainingForm"
+            @update-trainings="handleCreateTraining"></CreateTrainingForm>
     </template>
 
     <!-- Modal de editar un entrenamiento -->
-    <template 
-        v-if="editForm"
-    >
-        <EditTrainingForm
-            :editedTraining="editedTraining"
-            :documentId="documentId"
-            @edit="edit"
-            @closeEdit="closeEdit"
-            @update-trainings="handleEditTraining"
-        />
+    <template v-if="editForm">
+        <EditTrainingForm :editedTraining="editedTraining" :documentId="documentId" @edit="edit" @closeEdit="closeEdit"
+            @update-trainings="handleEditTraining" />
     </template>
 
     <!-- Modal de eliminar un entrenamiento -->
-    <template 
-        id="alertEliminar" role="alert"
-        v-if="alert && !trainingsLoading && !deletedTraining"
-    >
-        <DeleteTrainingForm
-            @closeAlert="closeAlert"
-            :deletedValue="deletedValue"
-            @update-trainings="handleDeleteTraining"
-        >
+    <template id="alertEliminar" role="alert" v-if="alert && !trainingsLoading && !deletedTraining">
+        <DeleteTrainingForm @closeAlert="closeAlert" :deletedValue="deletedValue" @update-trainings="handleDeleteTraining">
         </DeleteTrainingForm>
-    </template>    
+    </template>
 </template>

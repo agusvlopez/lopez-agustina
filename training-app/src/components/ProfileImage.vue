@@ -13,10 +13,5 @@ defineProps({
 </script>
 
 <template>
-    <Image
-        :src="src"
-        :alt="alt"
-        :default="noImage"
-        default-alt="No existe imagen de perfil"
-    />
+    <Image :src="src" :alt="alt" :default="noImage" default-alt="No existe imagen de perfil" />
 </template>
