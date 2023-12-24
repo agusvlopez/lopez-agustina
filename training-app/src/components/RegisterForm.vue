@@ -6,6 +6,8 @@ import BaseLabel from '../components/BaseLabel.vue';
 import { register } from '../services/auth.js';
 import { useRouter } from 'vue-router';
 import { notificationKey } from '../symbols/symbols';
+import viewImage from '../imgs/view.png';
+import hideImage from '../imgs/hide.png';
 
 const { notification, setNotification } = inject(notificationKey);
 
@@ -57,6 +59,17 @@ const handleSubmit = async () => {
     registerLoading.value = false;
 };
 
+const inputType = ref('password');
+const showEyeIcon = ref(false);
+
+const togglePasswordVisibility = () => {
+    inputType.value = inputType.value === 'password' ? 'text' : 'password';
+    showEyeIcon.value = !showEyeIcon.value;
+
+    console.log(inputType.value);
+    console.log(newUser.value.password);
+};
+
 </script>
 <template>
     <form action="#" @submit.prevent="handleSubmit">
@@ -67,8 +80,16 @@ const handleSubmit = async () => {
         </div>
         <div class="mb-8">
             <BaseLabel for="password">Contraseña <span class="text-sm font-normal">(mínimo 6 caracteres)</span></BaseLabel>
-            <BaseInput :disabled="registerLoading" type="password" id="password" v-model="newUser.password"
-                placeholder="Ingresá tu contraseña" />
+            <div class="relative">
+                <BaseInput :disabled="registerLoading" :type="inputType" id="password" v-model="newUser.password"
+                    placeholder="Ingresá tu contraseña" />
+                <div v-if="showEyeIcon" class="w-8 absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <img @click="togglePasswordVisibility" :src="viewImage" alt="" srcset="">
+                </div>
+                <div v-else class="w-8 absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <img @click="togglePasswordVisibility" :src="hideImage" alt="" srcset="">
+                </div>
+            </div>
         </div>
         <BaseButton :loading="registerLoading" class=" w-full">Crear cuenta</BaseButton>
     </form>
