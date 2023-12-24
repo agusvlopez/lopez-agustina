@@ -63,32 +63,32 @@ export async function createUserProfile(id, data) {
     //Pido la referencia
     const refUser = doc(db, `users/${id}`);
     //setDoc me permite escribir un documento especifico
-    return setDoc(refUser,{...data, created_at:serverTimestamp()});
+    return setDoc(refUser, { ...data, created_at: serverTimestamp() });
 }
 
 
-export async function getAllUsers(){
+export async function getAllUsers() {
     const refUser = collection(db, 'users');
 
     try {
         // const querySnapshot = await getDocs(refUser);
-        const querySnapshot = await getDocs( 
+        const querySnapshot = await getDocs(
             query(refUser)
-         );
-         if(querySnapshot){
+        );
+        if (querySnapshot) {
             console.log(querySnapshot);
             const datosSubcoleccion = [];
             let documents = [];
-        querySnapshot.forEach((doc) => {
-          datosSubcoleccion.push(doc.data());
-          console.log(doc);
-          documents.push(doc);
-        });
-        console.log(datosSubcoleccion);
-        console.log(documents);
-        return documents;
+            querySnapshot.forEach((doc) => {
+                datosSubcoleccion.push(doc.data());
+                console.log(doc);
+                documents.push(doc);
+            });
+            console.log(datosSubcoleccion);
+            console.log(documents);
+            return documents;
         }
-            
+
     } catch (error) {
         console.error('Error al obtener datos de la subcolección:', error);
     }
@@ -102,7 +102,7 @@ export async function getAllUsers(){
 export async function updateUserProfile(id, data) {
     return updateDoc(
         doc(db, `users/${id}`),
-        {...data}
+        { ...data }
     )
 }
 
@@ -114,33 +114,33 @@ export async function updateUserProfile(id, data) {
  */
 export async function addTrainingToUser(userId, trainingData) {
     try {
-      const userRef = doc(db, 'users', userId);
-      const userTrainingsRef = collection(userRef, 'trainings');
-  
-      // Consulta la colección de entrenamientos del usuario
-      const querySnapshot = await getDocs(userTrainingsRef);
-  
-      // Verifica si el entrenamiento ya está presente
-      const existingTraining = querySnapshot.docs.find(doc => doc.data().id === trainingData.id);
-  
-      if (existingTraining) {
-        console.warn('Entrenamiento ya contratado.');
-        throw new Error('Entrenamiento ya contratado.');
-      }
-  
-      // Si no existe, añade el nuevo entrenamiento
-      await setDoc(doc(userTrainingsRef, trainingData.id), {
-        ...trainingData,
-        created_at: serverTimestamp(),
-      });
-  
-      // Devuelve el ID proporcionado manualmente
-      return trainingData.id;
+        const userRef = doc(db, 'users', userId);
+        const userTrainingsRef = collection(userRef, 'trainings');
+
+        // Consulta la colección de entrenamientos del usuario
+        const querySnapshot = await getDocs(userTrainingsRef);
+
+        // Verifica si el entrenamiento ya está presente
+        const existingTraining = querySnapshot.docs.find(doc => doc.data().id === trainingData.id);
+
+        if (existingTraining) {
+            console.warn('Entrenamiento ya contratado.');
+            throw new Error('Entrenamiento ya contratado.');
+        }
+
+        // Si no existe, añade el nuevo entrenamiento
+        await setDoc(doc(userTrainingsRef, trainingData.id), {
+            ...trainingData,
+            created_at: serverTimestamp(),
+        });
+
+        // Devuelve el ID proporcionado manualmente
+        return trainingData.id;
     } catch (error) {
-      console.error('Error al añadir el entrenamiento al usuario:', error);
-      throw error;
+        console.error('Error al añadir el entrenamiento al usuario:', error);
+        throw error;
     }
-  }
+}
 
 export async function getAllUsersWithTrainings() {
     const usersRef = collection(db, 'users');

@@ -52,7 +52,6 @@ provide(notificationKey, {
 const handleLogout = () => {
     logout();
     router.push('/iniciar-sesion');
-
 };
 
 </script>

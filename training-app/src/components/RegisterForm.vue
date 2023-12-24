@@ -21,9 +21,17 @@ const newUser = ref({
 const handleSubmit = async () => {
     registerLoading.value = true;
     try {
-        await register({ ...newUser.value });
-        if (newUser.value.email && (newUser.value.password).length >= 6) {
-            console.log((newUser.value.password).length > 6);
+        const result = await register({ ...newUser.value });
+        console.log(result);
+        if (result.code === 'auth/email-already-in-use') {
+            // El correo electrónico ya está en uso, manejarlo según tus necesidades
+            setNotification({
+                message: 'El correo electrónico ya está registrado.',
+                type: 'error'
+            });
+            registerError.value = true;
+        } else if (result.id) {
+            // Registro exitoso
             router.push('/');
             setNotification({
                 message: '¡Bienvenido/a!',
@@ -31,23 +39,20 @@ const handleSubmit = async () => {
             });
             registerError.value = false;
         } else {
+            // Otro tipo de error
             setNotification({
-                message: 'Por favor, completa todos los campos requeridos.',
+                message: 'Hubo un error durante el registro.',
                 type: 'error'
             });
-            setTimeout(() => {
-                setNotification(null);
-            }, 3000);
             registerError.value = true;
         }
     } catch (error) {
+        // Manejar otros errores
         setNotification({
-            message: error.message || 'Hubo un error durante el registro.',
+            message: 'Hubo un error durante el registro.',
             type: 'error'
         });
-        setTimeout(() => {
-            setNotification(null);
-        }, 3000);
+        registerError.value = true;
     }
     registerLoading.value = false;
 };

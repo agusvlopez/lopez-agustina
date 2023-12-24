@@ -57,7 +57,7 @@ onMounted(async () => {
 <template>
     <div>
         <div class="portada text-white py-16 text-center imgPortada ">
-            <div class=" container mx-auto w-full p-6 bg-black">
+            <div class="mx-auto w-full p-6 bg-black">
                 <h1 class="text-4xl font-semibold mb-4">
                     Bienvenido a Training App
                 </h1>

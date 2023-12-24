@@ -8,8 +8,12 @@ import { getUserId } from '../services/auth';
 import { notificationKey } from '../symbols/symbols';
 import BaseH1 from '../components/BaseH1.vue';
 import ModalNotification from '../components/ModalNotification.vue';
+import { useAuth } from '../functions/useAuth';
+import { useRouter } from 'vue-router';
 
 const { notification, setNotification } = inject(notificationKey);
+const { user } = useAuth();
+const router = useRouter();
 
 const trainings = ref([]);
 const trainingsLoading = ref(true);
@@ -72,14 +76,18 @@ function handleModalClose() {
         }, 3000);
     }
 }
+
+function goLogin() {
+    router.push('/iniciar-sesion');
+}
 </script>
 
 <template>
     <section class="container p-6 bg-gray-200">
         <BaseH1>Precios de nuestros planes de entrenamiento</BaseH1>
         <LoadingContext :loading="trainingsLoading">
-            <div class="flex p-4 flex-wrap">
-                <div class="mb-4 max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden"
+            <div class="flex p-4 flex-wrap gap-3">
+                <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden"
                     v-for="training in trainings" :key="training.id">
                     <div>
                         <div>
@@ -97,9 +105,13 @@ function handleModalClose() {
                         <BaseButton class="m-2" @click="handleModalSubmit(training)">Obtener entrenamiento</BaseButton>
                     </div>
                 </div>
-                <ModalNotification v-if="isModalVisible" :title="selectedTraining.name" :price="selectedTraining.price"
-                    :message="`Apretá en Aceptar para confirmar. ¡Muchas gracias!`"
+                <ModalNotification v-if="isModalVisible && user.id" :title="selectedTraining.name"
+                    :price="selectedTraining.price"
+                    :message="`Apretá en Aceptar para contratar el entrenamiento. ¡Muchas gracias!`"
                     :submitAction="() => addTrainingToCurrentUser(selectedTraining)" @closeAlert="handleModalClose" />
+                <ModalNotification v-else-if="isModalVisible" :title="selectedTraining.name" :price="selectedTraining.price"
+                    :message="`¡Tenés que iniciar sesión para comprar un entrenamiento!`" :submitAction="goLogin"
+                    :buttonName="`Iniciar sesión`" @closeAlert="handleModalClose" />
             </div>
         </LoadingContext>
     </section>

@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import { auth } from './firebase.js';
 import { createUserProfile, getUserProfileById, updateUserProfile } from './user.js';
 import { getFileURL, uploadFile } from './storage.js';
@@ -49,20 +49,29 @@ onAuthStateChanged(auth, async user => {
  */
 export async function register({ email, password, rol }) {
     try {
+        // Verifico si el correo electrónico ya está registrado
+        const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+
+        if (signInMethods && signInMethods.length > 0) {
+            throw new Error('El correo electrónico ya está asociado a otra cuenta.');
+        }
+
+        // Si el correo electrónico no está registrado, procede con la creación de cuenta
         const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-        console.log(userCredentials);
-        //Registro el perfil del usuario tambien en Firestore
+
+        // Registro el perfil del usuario también en Firestore
         createUserProfile(userCredentials.user.uid, { email, rol });
 
         return {
             id: userCredentials.user.uid,
             email: userCredentials.user.email,
-        }
+            rol: rol
+        };
     } catch (error) {
         return {
             code: error.code,
             message: error.message,
-        }
+        };
     }
 }
 
