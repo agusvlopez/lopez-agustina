@@ -16,19 +16,19 @@ let userData = {
 let observers = [];
 
 //Si el usuario figuraba como autenitcado, lo marcamos como tal inmediatamente
-if(localStorage.getItem('user')) {
+if (localStorage.getItem('user')) {
     userData = JSON.parse(localStorage.getItem('user'));
 }
 
 onAuthStateChanged(auth, async user => {
-    if(user) {
+    if (user) {
         setUserData({
             id: user.uid,
             email: user.email,
             displayName: user.displayName,
             photoURL: user.photoURL,
-        }); 
-        
+        });
+
         //Busco en firestore
         const fullData = await getUserProfileById(user.uid);
         setUserData({
@@ -36,34 +36,34 @@ onAuthStateChanged(auth, async user => {
             trainings: fullData.trainings,
             fullProfileLoaded: true,
         });
-    }else {
+    } else {
         clearUserData();
         localStorage.removeItem('user');
     }
-    
+
 });
 
 /**
 * @param {{email: string, password: string}} user 
 * @return {Promise}
  */
-export async function register({email, password}) {
+export async function register({ email, password, rol }) {
     try {
-       const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+        const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
         console.log(userCredentials);
-       //Registro el perfil del usuario tambien en Firestore
-       createUserProfile(userCredentials.user.uid, {email});
+        //Registro el perfil del usuario tambien en Firestore
+        createUserProfile(userCredentials.user.uid, { email, rol });
 
         return {
             id: userCredentials.user.uid,
             email: userCredentials.user.email,
-        }  
+        }
     } catch (error) {
         return {
             code: error.code,
             message: error.message,
         }
-    }  
+    }
 }
 
 /**
@@ -72,31 +72,31 @@ export async function register({email, password}) {
 * @param {{email: string, password: string}} user 
 * @return {Promise}
 */
-export function login({email, password, rol}) {
+export function login({ email, password, rol }) {
     return signInWithEmailAndPassword(auth, email, password)
-    .then(userCredentials => {
+        .then(userCredentials => {
 
-        return {...userData};
-    })
-    .catch(error => {
-        throw error;
-    });
+            return { ...userData };
+        })
+        .catch(error => {
+            throw error;
+        });
 }
 
 /**
 * @param {{displayName: string|null, photoURL: string|null, trainings: Array|null}} data
 * @returns {Promise}
 */
-export async function editProfile({displayName, photoURL, trainings}) {
+export async function editProfile({ displayName, photoURL, trainings }) {
     try {
         const data = {};
-        if(displayName !== undefined) data.displayName = displayName;
-        if(photoURL !== undefined) data.photoURL = photoURL;
+        if (displayName !== undefined) data.displayName = displayName;
+        if (photoURL !== undefined) data.photoURL = photoURL;
 
         //Actualizo en Authentication
         const promiseAuth = updateProfile(auth.currentUser, data);
 
-        if(trainings !== undefined) data.trainings = trainings;
+        if (trainings !== undefined) data.trainings = trainings;
 
         //Actualizo en Firestore
         const promiseProfile = updateUserProfile(userData.id, data);
@@ -120,14 +120,14 @@ export async function editProfile({displayName, photoURL, trainings}) {
  * @returns {Promise}
  */
 export async function editProfilePhoto(file) {
-   const path = `users/${userData.id}/user`;
-   await uploadFile(path, file)
+    const path = `users/${userData.id}/user`;
+    await uploadFile(path, file)
 
-   const photoURL = await getFileURL(path);
+    const photoURL = await getFileURL(path);
 
-   return editProfile({
-    photoURL
-   })
+    return editProfile({
+        photoURL
+    })
 }
 
 /**
@@ -136,9 +136,9 @@ export async function editProfilePhoto(file) {
  * 
  */
 export function logout() {
-    
+
     const promise = signOut(auth);
-    
+
     clearUserData();
 
     return promise;
@@ -153,8 +153,8 @@ export function logout() {
  * @param {({id: null|string, email: null|string, rol: null|string, displayName: null|string, trainings: null|Array}) => void} observer
  * @return {() => void} Función para cancelar la suscripción
  */
-export function subscribeToAuth(observer){
-   
+export function subscribeToAuth(observer) {
+
     //agrego el observer a la lista de observers
     observers.push(observer);
     console.log("cantidad de observers: ", observers.length);
@@ -179,10 +179,10 @@ function notifyAll() {
  * 
  * @param {() =>{}} observer 
  */
-function notify(observer){
+function notify(observer) {
     //ejecuta el observer y le pasa la data
     //siempre pasamos una copia del objeto
-    observer({...userData});
+    observer({ ...userData });
 }
 
 
