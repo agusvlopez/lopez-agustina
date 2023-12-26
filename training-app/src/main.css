@@ -3,64 +3,75 @@
 @tailwind utilities;
 
 .border-b-2 {
-    border-bottom-width: 1.5px;
+  border-bottom-width: 1.5px;
 }
 
 body {
-    color:rgb(49, 52, 58);
-    height: 100%;
-    background-color: #E5E7EB;
+  color: rgb(49, 52, 58);
+  height: 100%;
+  background-color: #E5E7EB;
 }
 
 h1 {
-    font-size: 1.5rem/* 24px */;
-    line-height: 2rem/* 32px */;
-    font-weight: 600;
+  font-size: 1.5rem
+    /* 24px */
+  ;
+  line-height: 2rem
+    /* 32px */
+  ;
+  font-weight: 600;
 }
 
 h2 {
-  font-size: 1.2rem/* 24px */;
-  line-height: 2rem/* 32px */;
+  font-size: 1.2rem
+    /* 24px */
+  ;
+  line-height: 2rem
+    /* 32px */
+  ;
   font-weight: 500;
 }
 
 .userIcon {
-  width:60px;
+  width: 60px;
 }
-.maxWidth{
-    max-width: 13rem;
+
+.maxWidth {
+  max-width: 13rem;
 }
 
 .bgNav {
-    background-color: #0F0F0F;
+  background-color: #0F0F0F;
 }
 
 /* Loader normal */
 .loader {
-    width: 30px;
-    height: 30px;
-    display: inline-block;
-    position: relative;
-  }
-  .loader::after,
-  .loader::before {
-    content: '';  
-    box-sizing: border-box;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 2px solid #999;
-    position: absolute;
-    left: 0;
-    top: 0;
-    animation: animloader 2s linear infinite;
-    
-  }
-  .loader::after {
-    animation-delay: 1s;
-  }
- 
-  
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  position: relative;
+}
+
+.loader::after,
+.loader::before {
+  content: '';
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #999;
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: animloader 2s linear infinite;
+
+}
+
+.loader::after {
+  animation-delay: 1s;
+}
+
+
 /* Loader mini */
 .loader-mini {
   width: 18px;
@@ -68,9 +79,10 @@ h2 {
   display: inline-block;
   position: relative;
 }
+
 .loader-mini::after,
 .loader-mini::before {
-  content: '';  
+  content: '';
   box-sizing: border-box;
   width: 18px;
   height: 18px;
@@ -80,22 +92,23 @@ h2 {
   left: 0;
   top: 0;
   animation: animloader 2s linear infinite;
-  
+
 }
+
 .loader-mini::after {
   animation-delay: 1s;
 }
 
 .imgPortada {
-  background-image: url('../src/imgs/portada-home.jpg');
+  background-image: url('../src/imgs/portada.jpg');
   background-repeat: no-repeat;
   background-size: cover;
-  background-position-y: 45%;
+  background-position-y: 55%;
 }
 
 .closeButton {
   background-image: url('./imgs/close.png');
- 
+
   background-repeat: no-repeat;
   width: 15px;
   height: 15px;
@@ -115,11 +128,11 @@ h2 {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  cursor: pointer;  
+  cursor: pointer;
 }
 
 .chat-icon {
-  width: 38px; 
+  width: 38px;
 }
 
 /* Estilo de transición en el hover */
@@ -132,7 +145,7 @@ h2 {
 }
 
 .portada .bg-black {
-  opacity: 80%;
+  opacity: 90%;
 }
 
 .dumbbellIcon {
@@ -144,13 +157,22 @@ h2 {
   background-size: contain;
 }
 
-  @keyframes animloader {
-    0% {
-      transform: scale(0);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 0;
-    }
+.backgroundDark {
+  background-color: #0f0f0fea;
+}
+
+.backgroundDark-ligther {
+  background-color: #0f0f0fdc;
+}
+
+@keyframes animloader {
+  0% {
+    transform: scale(0);
+    opacity: 1;
   }
+
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}

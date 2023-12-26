@@ -141,7 +141,8 @@ const handleLogout = () => {
         </nav>
     </header>
     <main>
-        <div class="container h-full m-auto p-4">
+        <!-- class="container h-full m-auto p-4" -->
+        <div>
             <div v-if="notification">
                 <Notification :message="notification.message" :type="notification.type" />
             </div>
