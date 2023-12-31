@@ -158,7 +158,7 @@ function usePhotoEdit() {
 </script>
 
 <template>
-    <div>
+    <div class="bg-gray-200 h-screen">
         <SkeletonContext :loading="trainingsLoading">
             <BaseH1>Mi Perfil</BaseH1>
             <!-- <template v-if="user.fullProfileLoaded && !trainingsLoading"> -->

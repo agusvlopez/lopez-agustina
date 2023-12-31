@@ -63,7 +63,7 @@ function usePrivateChat(senderUser, receiverUser) {
   
 <template>
     <LoadingContext :loading="userLoading">
-        <section class="container p-4">
+        <section class="container p-4 ">
             <Baseh1>Chat con {{ user.email }}</Baseh1>
             <div class="bg-white rounded-lg shadow-md max-w-xl mx-auto m-4">
                 <div>

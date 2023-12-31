@@ -15,9 +15,9 @@ const router = useRouter();
 const loginLoading = ref(false);
 const loginError = ref(false);
 const form = ref({
-    email: '',
-    password: '',
-    rol: ''
+    email: 'cliente@cliente.com',
+    password: '123456',
+    rol: 'cliente'
 });
 
 const doLogin = async () => {
