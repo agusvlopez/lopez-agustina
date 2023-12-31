@@ -83,36 +83,39 @@ function goLogin() {
 </script>
 
 <template>
-    <section class="container p-6 bg-gray-200 mx-auto">
-        <BaseH1>Precios de nuestros planes de entrenamiento</BaseH1>
-        <LoadingContext :loading="trainingsLoading">
-            <div class="flex p-4 flex-wrap gap-3">
-                <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden"
-                    v-for="training in trainings" :key="training.id">
-                    <div>
+    <div class="backgroundDark">
+        <section class="container p-6 mx-auto">
+            <BaseH1 class="text-white">Precios de nuestros planes de entrenamiento</BaseH1>
+            <LoadingContext :loading="trainingsLoading">
+                <div class="flex p-4 flex-wrap gap-3">
+                    <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden"
+                        v-for="training in trainings" :key="training.id">
                         <div>
-                            <img class="h-72 w-full object-cover" :src="training.img" :alt="training.name">
+                            <div>
+                                <img class="h-72 w-full object-cover" :src="training.img" :alt="training.name">
+                            </div>
+                            <div class="p-4">
+                                <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad
+                                    {{ training.difficulty }}</div>
+                                <h2 class="block mt-1 text-lg leading-tight font-medium text-black">{{ training.name }}</h2>
+                                <p class="mt-2 text-gray-500">{{ truncateText(training.description, 150) }}</p>
+                                <p class="mt-4 text-indigo-500 text-lg font-semibold text-end">${{ training.price }}</p>
+                            </div>
                         </div>
-                        <div class="p-4">
-                            <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Dificultad
-                                {{ training.difficulty }}</div>
-                            <h2 class="block mt-1 text-lg leading-tight font-medium text-black">{{ training.name }}</h2>
-                            <p class="mt-2 text-gray-500">{{ truncateText(training.description, 150) }}</p>
-                            <p class="mt-4 text-indigo-500 text-lg font-semibold text-end">${{ training.price }}</p>
+                        <div class="flex justify-center items-center p-2">
+                            <BaseButton class="m-2" @click="handleModalSubmit(training)">Obtener entrenamiento</BaseButton>
                         </div>
                     </div>
-                    <div class="flex justify-center items-center p-2">
-                        <BaseButton class="m-2" @click="handleModalSubmit(training)">Obtener entrenamiento</BaseButton>
-                    </div>
+                    <ModalNotification v-if="isModalVisible && user.id" :title="selectedTraining.name"
+                        :price="selectedTraining.price"
+                        :message="`Apretá en Aceptar para contratar el entrenamiento. ¡Muchas gracias!`"
+                        :submitAction="() => addTrainingToCurrentUser(selectedTraining)" @closeAlert="handleModalClose" />
+                    <ModalNotification v-else-if="isModalVisible" :title="selectedTraining.name"
+                        :price="selectedTraining.price"
+                        :message="`¡Tenés que iniciar sesión para comprar un entrenamiento!`" :submitAction="goLogin"
+                        :buttonName="`Iniciar sesión`" @closeAlert="handleModalClose" />
                 </div>
-                <ModalNotification v-if="isModalVisible && user.id" :title="selectedTraining.name"
-                    :price="selectedTraining.price"
-                    :message="`Apretá en Aceptar para contratar el entrenamiento. ¡Muchas gracias!`"
-                    :submitAction="() => addTrainingToCurrentUser(selectedTraining)" @closeAlert="handleModalClose" />
-                <ModalNotification v-else-if="isModalVisible" :title="selectedTraining.name" :price="selectedTraining.price"
-                    :message="`¡Tenés que iniciar sesión para comprar un entrenamiento!`" :submitAction="goLogin"
-                    :buttonName="`Iniciar sesión`" @closeAlert="handleModalClose" />
-            </div>
-        </LoadingContext>
-    </section>
+            </LoadingContext>
+        </section>
+    </div>
 </template>

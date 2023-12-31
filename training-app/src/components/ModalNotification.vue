@@ -38,11 +38,11 @@ async function sendAction() {
 
 <template>
     <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
-        <div class="bg-white p-8 shadow-lg rounded-lg max-w-md border-2">
-            <span class="font-bold text-lg block text-center">
+        <div class="bg-white p-8 shadow-xl rounded-lg max-w-md border-2 border-indigo-400">
+            <span class="font-bold text-2xl block text-center border-b-2 border-b-indigo-400 pb-2">
                 <span>{{ title }}</span>
             </span>
-            <p class="font-semibold text-center mb-2">Precio total: ${{ price }}</p>
+            <p class="font-semibold text-center mb-2 pt-2 text-lg">Precio total: ${{ price }}</p>
             <p class="block font-semibold text-lg text-center">{{ message }}</p>
             <form action="#" @submit.prevent="sendAction">
                 <div class="flex gap-4 justify-between mt-6">

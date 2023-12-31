@@ -4,7 +4,7 @@ import LoginForm from '../components/LoginForm.vue';
 </script>
 
 <template>
-    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center backgroundDark">
         <div class="bg-white p-8 rounded-lg shadow-md w-96">
             <BaseH1>Iniciar sesión</BaseH1>
             <LoginForm />

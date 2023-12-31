@@ -11,6 +11,8 @@ defineProps({
 </script>
 
 <template>
-    <SkeletonLoader v-if="loading" />
-    <slot v-else />
+    <div class="p-6">
+        <SkeletonLoader v-if="loading" />
+        <slot v-else />
+    </div>
 </template>

@@ -15,7 +15,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="flex gap-4 mx-auto p-6 container">
+    <div class="flex gap-4 container">
         <div class="w-2/12">
             <ProfileImage :src="user.photoURL" class="mb-4 rounded-full" />
         </div>

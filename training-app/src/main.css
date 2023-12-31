@@ -9,7 +9,7 @@
 body {
   color: rgb(49, 52, 58);
   height: 100%;
-  background-color: #E5E7EB;
+  background-color: #0f0f0fea;
 }
 
 h1 {
@@ -158,12 +158,20 @@ h2 {
 }
 
 .backgroundDark {
-  background-color: #0f0f0fea;
+  background-color: #0f0f0fa9;
 }
 
 .backgroundDark-ligther {
   background-color: #0f0f0fdc;
 }
+
+.imgNewsletter {
+  background-image: url('../src/imgs/newsletter_.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: 55%;
+}
+
 
 @keyframes animloader {
   0% {

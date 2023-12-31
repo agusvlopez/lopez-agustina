@@ -103,15 +103,15 @@ export default {
 }
 </script>
 
-<template class="container mx-auto p-4">
-    <section class="border-b-2">
+<template>
+    <section class="border-b-2 p-4 container mx-auto">
         <BaseH1>Panel de entrenamientos</BaseH1>
-        <h2>Todos los entrenamientos </h2>
+        <h2 class="text-2xl">Todos los entrenamientos </h2>
         <div class="flex gap-4 mt-4 mb-4">
             <BaseButton @click="showTrainingForm" class="rounded-full ">Agregar entrenamiento +</BaseButton>
         </div>
         <!-- CARDS DE ENTRENAMIENTOS... -->
-        <div class="flex p-4 flex-wrap">
+        <div class="flex pt-4 flex-wrap">
             <LoadingContext :loading="trainingsLoading">
                 <div class="mb-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden p-4"
                     v-for="training in trainings" :key="training.id">

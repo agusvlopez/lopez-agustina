@@ -158,49 +158,54 @@ function usePhotoEdit() {
 </script>
 
 <template>
-    <SkeletonContext :loading="trainingsLoading">
-        <BaseH1 class="pt-6">Mi perfil</BaseH1>
-        <!-- <template v-if="user.fullProfileLoaded && !trainingsLoading"> -->
-        <template v-if="!editing && !editingPhoto">
-            <section class="container p-4">
+    <div>
+        <SkeletonContext :loading="trainingsLoading">
+            <BaseH1>Mi Perfil</BaseH1>
+            <!-- <template v-if="user.fullProfileLoaded && !trainingsLoading"> -->
+            <template v-if="!editing && !editingPhoto">
+                <section class="container p-4 pb-4 mx-auto">
 
-                <MyProfileData :user="user" :trainings="trainings" />
+                    <MyProfileData :user="user" :trainings="trainings" />
 
-                <div class="flex gap-2">
-                    <BaseButton @click="handleEditShow">Editar mis datos</BaseButton>
+                    <div class="flex gap-2">
+                        <BaseButton @click="handleEditShow">Editar mis datos</BaseButton>
 
-                    <BaseButton @click="handlePhotoFormShow">Editar mi foto de perfil</BaseButton>
+                        <BaseButton @click="handlePhotoFormShow">Editar mi foto de perfil</BaseButton>
+                    </div>
+                </section>
+            </template>
+            <template v-else-if="editing">
+                <div class="p-6">
+                    <form action="#" method="post" @submit.prevent="handleEditForm">
+                        <div class="mb-2">
+                            <BaseLabel for="displayName">Nombre de Usuario</BaseLabel>
+                            <BaseInput id="displayName" :disabled="editingLoading" v-model="editData.displayName" />
+                        </div>
+                        <BaseButton class="mb-4" :loading="editingLoading">Actualizar mis Datos</BaseButton>
+                    </form>
+                    <BaseButton @click="handleEditCancel">Cancelar</BaseButton>
                 </div>
-            </section>
-        </template>
-        <template v-else-if="editing">
-            <form action="#" method="post" @submit.prevent="handleEditForm">
-                <div class="mb-2">
-                    <BaseLabel for="displayName">Nombre de Usuario</BaseLabel>
-                    <BaseInput id="displayName" :disabled="editingLoading" v-model="editData.displayName" />
-                </div>
-                <BaseButton class="mb-4" :loading="editingLoading">Actualizar mis Datos</BaseButton>
-            </form>
-            <BaseButton @click="handleEditCancel">Cancelar</BaseButton>
+            </template>
+            <template v-else>
+                <div class="p-6">
+                    <form action="#" method="post" @submit.prevent="handlePhotoFormSubmit">
+                        <div class="pb-4">
+                            <BaseLabel for="newPhoto">Imagen de Perfil</BaseLabel>
+                            <input class="w-full px-1.5 py-1 border border-gray-400 rounded disabled:bg-gray-100"
+                                type="file" id="newPhoto" :disabled="editingPhotoLoading" @change="handlePhotoFileChange" />
+                        </div>
+                        <div class="mb-2" v-if="photoData.preview !== null">
+                            <p>Previsualización de la imagen seleccionada</p>
+                            <img :src="photoData.preview" alt="">
+                        </div>
+                        <BaseButton class="mb-2" :loading="editingPhotoLoading">Actualizar mi Imagen de Perfil</BaseButton>
 
-        </template>
-        <template v-else>
-            <form action="#" method="post" @submit.prevent="handlePhotoFormSubmit">
-                <div class="mb-2">
-                    <BaseLabel for="newPhoto">Imagen de Perfil</BaseLabel>
-                    <input class="w-full px-1.5 py-1 border border-gray-400 rounded disabled:bg-gray-100" type="file"
-                        id="newPhoto" :disabled="editingPhotoLoading" @change="handlePhotoFileChange" />
-                </div>
-                <div class="mb-2" v-if="photoData.preview !== null">
-                    <p>Previsualización de la imagen seleccionada</p>
-                    <img :src="photoData.preview" alt="">
-                </div>
-                <BaseButton class="mb-4" :loading="editingPhotoLoading">Actualizar mi Imagen de Perfil</BaseButton>
+                        <hr class="mb-2">
 
-                <hr class="mb-4">
-
-                <BaseButton @click="handlePhotoFormCancel">Cancelar</BaseButton>
-            </form>
-        </template>
-    </SkeletonContext>
+                        <BaseButton @click="handlePhotoFormCancel">Cancelar</BaseButton>
+                    </form>
+                </div>
+            </template>
+        </SkeletonContext>
+    </div>
 </template>
