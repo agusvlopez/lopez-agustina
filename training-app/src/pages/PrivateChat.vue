@@ -12,8 +12,9 @@ const { user, userLoading } = useUserProfile(route.params.id);
 
 <template>
     <Loadingcontext :loading="userLoading">
-        <section class="container p-4">    
-            <BaseH1>Chat con <router-link :to="`/usuario/${user.id}`" class="text-indigo-600"> {{user.email}} </router-link></BaseH1>
+        <section class="container p-6 mx-auto">
+            <BaseH1>Chat con <router-link :to="`/usuario/${user.id}`" class="text-indigo-600"> {{ user.email }} </router-link>
+            </BaseH1>
             <Chat />
         </section>
     </Loadingcontext>

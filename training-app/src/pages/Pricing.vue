@@ -83,7 +83,7 @@ function goLogin() {
 </script>
 
 <template>
-    <section class="container p-6 bg-gray-200">
+    <section class="container p-6 bg-gray-200 mx-auto">
         <BaseH1>Precios de nuestros planes de entrenamiento</BaseH1>
         <LoadingContext :loading="trainingsLoading">
             <div class="flex p-4 flex-wrap gap-3">

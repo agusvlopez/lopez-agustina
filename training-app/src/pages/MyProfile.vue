@@ -159,7 +159,7 @@ function usePhotoEdit() {
 
 <template>
     <SkeletonContext :loading="trainingsLoading">
-        <BaseH1>Mi perfil</BaseH1>
+        <BaseH1 class="pt-6">Mi perfil</BaseH1>
         <!-- <template v-if="user.fullProfileLoaded && !trainingsLoading"> -->
         <template v-if="!editing && !editingPhoto">
             <section class="container p-4">
