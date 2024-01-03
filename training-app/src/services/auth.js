@@ -81,10 +81,9 @@ export async function register({ email, password, rol }) {
 * @param {{email: string, password: string}} user 
 * @return {Promise}
 */
-export function login({ email, password, rol }) {
+export async function login({ email, password, rol }) {
     return signInWithEmailAndPassword(auth, email, password)
         .then(userCredentials => {
-
             return { ...userData };
         })
         .catch(error => {

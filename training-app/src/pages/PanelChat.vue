@@ -5,6 +5,7 @@ import { getAllUsersWithTrainings } from '../services/user';
 import ProfileImage from '../components/ProfileImage.vue';
 import BaseH1 from '../components/BaseH1.vue';
 import LoadingContext from '../components/LoadingContext.vue';
+import PanelAdmin from './PanelAdmin.vue';
 
 const userLoading = ref(true);
 const users = ref([]);
@@ -39,7 +40,7 @@ onMounted(async () => {
         unsubscribeAuth = subscribeToAuth(newUser => authUser.value = newUser);
 
         // Filtrar usuarios que no son administradores
-        nonAdminUsers.value = users.value.filter(user => user.rol === 'cliente');
+        nonAdminUsers.value = users.value.filter(user => user.rol == 'cliente');
     } catch (error) {
         console.error('Error al obtener usuarios con entrenamientos:', error);
     }
@@ -51,9 +52,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <section class="container p-4">
-        <div>
-            <BaseH1>Chats con clientes</BaseH1>
+    <PanelAdmin />
+    <section class="container p-4 mx-auto">
+        <div class="mb-2">
+            <h2 class="text-white text-2xl text-center">Chats con clientes</h2>
         </div>
         <div class="flex flex-wrap">
             <LoadingContext :loading="userLoading">
@@ -61,7 +63,7 @@ onUnmounted(() => {
                     <div v-if="user.rol != 'admin'">
                         <div class="bg-white p-4 rounded-lg shadow m-2">
                             <div>
-                                <ProfileImage :src="user.photoURL" class="pb-4 w-60" />
+                                <ProfileImage :src="user.photoURL" alt="" class="pb-4 w-60 mx-auto" />
                                 <p class="text-md font-semibold mt-4 m-2">Usuario: {{ user.email }}</p>
                                 <p class="text-gray-600 m-2">Estado: Activo</p>
                                 <router-link :to="`/usuario/${user.id}/chat`"

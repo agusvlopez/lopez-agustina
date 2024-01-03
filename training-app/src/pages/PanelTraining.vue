@@ -10,11 +10,12 @@ import BaseH1 from '../components/BaseH1.vue';
 import CreateTrainingForm from '../components/CreateTrainingForm.vue';
 import DeleteTrainingForm from '../components/DeleteTrainingForm.vue';
 import EditTrainingForm from '../components/EditTrainingForm.vue';
+import PanelAdmin from './PanelAdmin.vue';
 
 
 export default {
     name: 'PanelTraining',
-    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, LoadingContext, BaseH1, CreateTrainingForm, DeleteTrainingForm, EditTrainingForm },
+    components: { BaseLabel, ChatInput, BaseButton, BaseInput, BaseTextarea, LoadingContext, BaseH1, CreateTrainingForm, DeleteTrainingForm, EditTrainingForm, PanelAdmin },
     data() {
         return {
             editLoading: false,
@@ -104,9 +105,10 @@ export default {
 </script>
 
 <template>
-    <section class="border-b-2 p-4 container mx-auto">
-        <BaseH1>Panel de entrenamientos</BaseH1>
-        <h2 class="text-2xl">Todos los entrenamientos </h2>
+    <PanelAdmin />
+    <section class="p-4 container mx-auto text-white">
+        <h2 class="text-2xl text-center">Panel de entrenamientos</h2>
+        <h3 class="text-2xl">Todos los entrenamientos</h3>
         <div class="flex gap-4 mt-4 mb-4">
             <BaseButton @click="showTrainingForm" class="rounded-full ">Agregar entrenamiento +</BaseButton>
         </div>
